@@ -308,9 +308,9 @@
     <p class="mt-2 text-slate-600">Nearshore Buoy: CDIP 092 · NOAA Marine Telemetry · Cloud Firestore Shared Sync</p>
   </footer>
 
-  <!-- Firebase Modular SDK & Core Application Script -->
+  <!-- Firebase Modular SDK (v13) & Core Application Script -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
     import { 
       getFirestore, 
       collection, 
@@ -321,37 +321,34 @@
       onSnapshot, 
       doc, 
       setDoc 
-    } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+    } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
-    // ==========================================
-    // PASTE YOUR FIREBASE CONFIG KEYS HERE:
-    // ==========================================
+    // Verified Firebase Configuration
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
+      apiKey: "AIzaSyDbeVhEyU289pEY9Y_iEyYmyLTV5Eyeo0Q",
       authDomain: "hb-raw-config-surf-report.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "hb-raw-config-surf-report.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      projectId: "hb-raw-config-surf-report",
+      storageBucket: "hb-raw-config-surf-report.firebasestorage.app",
+      messagingSenderId: "765436639191",
+      appId: "1:765436639191:web:8f19d54c3c26a065767d92"
     };
 
     let db = null;
     let isFirebaseActive = false;
 
-    // Gracefully initialize Firebase or fall back to localStorage
     try {
-      if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
-        const app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-        isFirebaseActive = true;
-        document.getElementById('cloud-sync-status').innerText = "LIVE CLOUD SYNC ON";
-        document.getElementById('cloud-sync-status').classList.replace('text-cyan-400', 'text-emerald-400');
-      } else {
-        document.getElementById('cloud-sync-status').innerText = "LOCAL MODE (CONFIG PENDING)";
+      const app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+      isFirebaseActive = true;
+      const statusBadge = document.getElementById('cloud-sync-status');
+      if (statusBadge) {
+        statusBadge.innerText = "LIVE CLOUD SYNC ON";
+        statusBadge.className = "text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono-code";
       }
     } catch (err) {
-      console.warn("Firebase not configured yet. Defaulting to local storage mode.", err);
-      document.getElementById('cloud-sync-status').innerText = "LOCAL MODE";
+      console.warn("Firebase initialization issue. Falling back to local storage.", err);
+      const statusBadge = document.getElementById('cloud-sync-status');
+      if (statusBadge) statusBadge.innerText = "LOCAL MODE";
     }
 
     // 5 Micro-Zones Profile
@@ -434,7 +431,7 @@
       }
     ];
 
-    // Ultra-Fast Canvas Photo Compression (<80 KB guaranteed)
+    // High-Efficiency Canvas Image Compression (<80 KB safeguard)
     document.getElementById('report-photo-input').addEventListener('change', function(e) {
       const file = e.target.files[0];
       const statusEl = document.getElementById('compression-status');
@@ -473,7 +470,6 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-          // 0.68 quality produces a sharp image between 50KB–80KB
           compressedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.68);
           const sizeKb = Math.round((compressedPhotoBase64.length * 3 / 4) / 1024);
           statusEl.innerText = `✓ Compressed to ${sizeKb} KB (Cloud Safe)`;
@@ -483,7 +479,7 @@
       reader.readAsDataURL(file);
     });
 
-    // Custom Wave Shape Toggle & Counter
+    // Custom Wave Shape Input Toggle & Counter
     const waveShapeSelect = document.getElementById('wave-shape-select');
     const customShapeContainer = document.getElementById('custom-shape-container');
     const customShapeInput = document.getElementById('custom-shape-input');
@@ -509,7 +505,7 @@
       }
     });
 
-    // Render Zones Navigation
+    // Zones Render & Selection
     function renderZones() {
       const container = document.getElementById('zones-container');
       container.innerHTML = '';
@@ -558,7 +554,7 @@
       document.getElementById('hero-photo-tag').innerText = `${zone.shortName} Live View`;
     }
 
-    // Render Community Feed
+    // Feed Render
     function renderFeed(reports) {
       const container = document.getElementById('reports-feed');
       const countEl = document.getElementById('report-count');
@@ -606,7 +602,7 @@
         container.appendChild(card);
       });
 
-      // Hook up promote buttons
+      // Attach click events to dynamic promote buttons
       document.querySelectorAll('.promote-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.getAttribute('data-id');
@@ -616,7 +612,7 @@
       });
     }
 
-    // Promote Report to Hero
+    // Promote to Hero
     async function promoteToHero(report) {
       document.getElementById('hero-zone-name').innerText = report.spot;
       document.getElementById('hero-headline').innerText = `${report.spot} — Local Dispatch`;
@@ -632,7 +628,6 @@
         document.getElementById('hero-photo-tag').innerText = `${report.spot} Local Upload`;
       }
 
-      // If Firestore is connected, sync featured hero to everyone
       if (isFirebaseActive) {
         try {
           await setDoc(doc(db, "featured", "current_hero"), report);
@@ -644,9 +639,8 @@
       window.scrollTo({ top: 120, behavior: 'smooth' });
     }
 
-    // Listen to Real-Time Updates from Firebase
+    // Real-Time Firebase Listeners
     if (isFirebaseActive) {
-      // Stream latest reports (Limit 15 to stay within free tier)
       const q = query(collection(db, "reports"), orderBy("createdAt", "desc"), limit(15));
       onSnapshot(q, (snapshot) => {
         const cloudReports = [];
@@ -663,7 +657,6 @@
         renderFeed(localReports);
       });
 
-      // Stream featured hero
       onSnapshot(doc(db, "featured", "current_hero"), (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data();
@@ -671,7 +664,6 @@
         }
       });
     } else {
-      // Local Storage Fallback
       const stored = localStorage.getItem('hb_raw_fig_reports');
       if (stored) {
         try { localReports = JSON.parse(stored); } catch (e) {}
@@ -679,7 +671,7 @@
       renderFeed(localReports);
     }
 
-    // Form Submission
+    // Submit Report Form
     document.getElementById('surf-report-form').addEventListener('submit', async function(e) {
       e.preventDefault();
 
@@ -719,19 +711,18 @@
         try {
           localStorage.setItem('hb_raw_fig_reports', JSON.stringify(localReports));
         } catch(e) {
-          console.warn("Storage full, keeping in session memory");
+          console.warn("Storage full, maintaining in-session");
         }
         renderFeed(localReports);
       }
 
-      // Reset form
       this.reset();
       compressedPhotoBase64 = null;
       document.getElementById('compression-status').innerText = "";
       customShapeContainer.classList.add('hidden');
     });
 
-    // Real Live Public Oceanographic Data API Stream (Huntington Beach Coordinates)
+    // Real Live Public Oceanographic Data API Stream
     async function fetchLiveOceanData() {
       const btn = document.getElementById('refresh-telemetry-btn');
       btn.classList.add('animate-spin');
@@ -784,7 +775,6 @@
     document.getElementById('refresh-telemetry-btn').addEventListener('click', fetchLiveOceanData);
     setInterval(fetchLiveOceanData, 180000);
 
-    // Initial Boots
     renderZones();
     fetchLiveOceanData();
   </script>
