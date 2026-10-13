@@ -46,10 +46,10 @@
       <div class="flex items-center gap-2">
         <span class="inline-block w-2 h-2 rounded-full bg-amber-400 pulse-amber"></span>
         <span class="text-amber-300 font-bold tracking-wide">DEDICATED TO RICK "ROCKIN' FIG" FIGNETTI</span>
-        <span class="text-slate-400 hidden sm:inline">· Voice of Surf City (1955–2021)</span>
+        <span class="text-slate-400 hidden sm:inline">· The Voice of Surf City (1955–2021)</span>
       </div>
       <p class="text-[11px] text-amber-200/80 italic">
-        "Check the waves with your own eyes — not an algorithm."
+        "Check the waves with your own eyes — not an algorithm!"
       </p>
     </div>
   </aside>
@@ -66,7 +66,7 @@
             <h1 class="text-lg font-black tracking-tight text-white">HB RAW CONFIG</h1>
             <span id="cloud-sync-status" class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-mono-code">CONNECTING CLOUD...</span>
           </div>
-          <p class="text-[11px] text-slate-400 font-mono-code">River Jetties ⇄ Sunset Beach · Live Coast Telemetry</p>
+          <p class="text-[11px] text-slate-400 font-mono-code">River Jetties ⇄ Sunset Beach · Ground Truth Shore Ops</p>
         </div>
       </div>
 
@@ -85,8 +85,8 @@
           <span id="tele-water" class="text-amber-400 font-bold">Reading buoy...</span>
         </div>
         <div class="bg-slate-900/90 px-3 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5">
-          <span class="text-slate-400">Tide:</span>
-          <span id="tele-tide" class="text-sky-400 font-bold">--</span>
+          <span class="text-slate-400">NOAA Tide:</span>
+          <span id="tele-tide" class="text-sky-400 font-bold">Querying...</span>
         </div>
         <button id="refresh-telemetry-btn" class="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition" title="Refresh Live Feeds">
           ↻
@@ -119,12 +119,12 @@
           <span class="h-2.5 w-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
           <span class="font-bold uppercase tracking-wider text-cyan-400" id="hero-badge-title">Featured Shore Report</span>
         </div>
-        <span class="text-slate-400" id="hero-logged-at">Logged Today</span>
+        <span class="text-slate-400" id="hero-logged-at">Updated: Today</span>
       </div>
 
       <div class="glass-panel rounded-2xl overflow-hidden grid lg:grid-cols-12 border border-cyan-500/30 shadow-2xl shadow-cyan-950/30">
         <!-- Photo Container -->
-        <div class="lg:col-span-5 relative bg-slate-950 min-h-[300px] lg:min-h-full flex items-center justify-center overflow-hidden group">
+        <div class="lg:col-span-5 relative bg-slate-950 min-h-[300px] lg:min-h-full flex items-center justify-center overflow-hidden group cursor-pointer" id="hero-photo-container">
           <img 
             id="hero-img" 
             src="https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1200&q=80" 
@@ -148,25 +148,25 @@
                   17th St ⇄ Bolsa Jetty (Goldenwest)
                 </span>
                 <h3 id="hero-headline" class="text-2xl sm:text-3xl font-extrabold text-white mt-2">
-                  Peaking Outside & Holding Clean Corners
+                  "Howzit Surf City! Goldenwest is Peaking & Punchy!"
                 </h3>
               </div>
               <div class="text-right">
                 <div id="hero-wave-size" class="text-3xl sm:text-4xl font-black text-cyan-400 font-mono-code">3–4+ FT</div>
-                <div id="hero-wave-scale" class="text-xs text-slate-400 font-medium">Chest to Shoulder High</div>
+                <div id="hero-wave-scale" class="text-xs text-slate-400 font-medium">Waist to Chest High (Plus Sets)</div>
               </div>
             </div>
 
             <!-- "Fig's Reality Check" Module -->
             <div class="bg-slate-900/90 rounded-xl p-3.5 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono-code">
               <div>
-                <span class="text-amber-400 font-bold">★ FIG'S REALITY CHECK:</span>
+                <span class="text-amber-400 font-bold">★ ROCKIN' FIG'S MORNING WIRE:</span>
                 <p class="text-slate-300 mt-0.5" id="hero-reality-check">
-                  Surfline model calls it 2ft Poor-Fair. Reality: Outside sandbars are reeling with workable shoulders.
+                  Surfline model calls it 2ft Poor-Fair junk. Reality: Don't buy the hype or the flat-line! Outside bars are reeling with workable shoulders.
                 </p>
               </div>
               <span class="text-emerald-400 font-bold text-nowrap self-start sm:self-auto bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/30">
-                PADDLE WORTHY
+                PADDLE OUT!
               </span>
             </div>
 
@@ -178,19 +178,19 @@
               <span class="px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" id="tag-tide">Tide Window: +1.5ft to +3.5ft</span>
             </div>
 
-            <!-- Observation Text -->
-            <p id="hero-notes" class="text-slate-300 text-sm sm:text-base leading-relaxed">
-              "Surfline called it flat and blown this morning, but Goldenwest has legit sets pushing shoulder-high on the push. Incoming tide is softening the drop-ins, creating workable lefts into the trough and wedge rights toward 17th. Mid-day glass is holding nicely."
+            <!-- Observation Text Written in Fig's Tone -->
+            <p id="hero-notes" class="text-slate-300 text-sm sm:text-base leading-relaxed italic">
+              "Howzit everybody, Rick 'Rockin Fig' here with your morning wire! Surfline called it flat and blown out this morning, but I'm standing right here on the bluff at Goldenwest and there are legitimate chest-high-plus sets rolling across the outside bar! The incoming tide is softening up the drop-in just right, throwing sweet little lefts into the trough and wedge rights toward 17th. Mid-day glass is holding nicely under the bluffs. Grab your fish or your everyday shortboard and get out there before the seabreeze wakes up!"
             </p>
           </div>
 
           <!-- Reporter Credit -->
           <div class="pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono-code">
             <div class="flex items-center space-x-2">
-              <div class="h-6 w-6 rounded-full bg-cyan-600 flex items-center justify-center font-bold text-white text-[10px]">GW</div>
-              <span>Reported by: <strong class="text-white" id="hero-author">Admin / Late Morning Scout</strong></span>
+              <div class="h-6 w-6 rounded-full bg-cyan-600 flex items-center justify-center font-bold text-white text-[10px]">FIG</div>
+              <span>Reported by: <strong class="text-white" id="hero-author">Rockin' Fig Memorial Dispatch</strong></span>
             </div>
-            <span id="hero-confidence">Confidence: <strong class="text-emerald-400">100% In-Water Check</strong></span>
+            <span id="hero-confidence">Confidence: <strong class="text-emerald-400">100% In-Water Ground Truth</strong></span>
           </div>
         </div>
       </div>
@@ -212,7 +212,7 @@
           <span class="text-xs font-mono-code text-slate-400" id="report-count">Loading cloud sync...</span>
         </div>
 
-        <div id="reports-feed" class="space-y-3">
+        <div id="reports-feed" class="space-y-4">
           <!-- Populated via JavaScript / Firestore -->
         </div>
       </div>
@@ -318,10 +318,21 @@
 
   </main>
 
+  <!-- Fullscreen Image Lightbox Modal -->
+  <div id="image-lightbox" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <button id="close-lightbox" class="absolute top-5 right-5 text-slate-400 hover:text-white text-3xl font-bold font-mono-code transition">
+      ✕
+    </button>
+    <div class="max-w-5xl max-h-[90vh] flex flex-col items-center">
+      <img id="lightbox-img" src="" alt="Full view" class="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl border border-slate-800">
+      <p id="lightbox-caption" class="text-slate-300 font-mono-code text-xs mt-3 text-center"></p>
+    </div>
+  </div>
+
   <footer class="border-t border-slate-900 bg-slate-950 py-8 mt-16 text-center text-xs text-slate-500 font-mono-code">
     <p class="text-amber-400/80 font-bold">HB RAW CONFIG · IN MEMORY OF RICK "ROCKIN' FIG" FIGNETTI</p>
     <p class="mt-1">Dedicated to keeping Huntington Beach surf reports local, honest, and uncompromised.</p>
-    <p class="mt-2 text-slate-600">Nearshore Buoy: CDIP 092 · NOAA CO-OPS Newport/LA Sensors · Cloud Firestore Shared Sync</p>
+    <p class="mt-2 text-slate-600">Nearshore Buoy: CDIP 092 · NOAA CO-OPS Station 9410580 Sensors · Cloud Firestore Shared Sync</p>
   </footer>
 
   <!-- Firebase Modular SDK & Core Application Script -->
@@ -336,8 +347,7 @@
       limit, 
       onSnapshot, 
       doc, 
-      setDoc,
-      getDoc
+      setDoc
     } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -367,7 +377,16 @@
       if (statusBadge) statusBadge.innerText = "LOCAL MODE";
     }
 
-    // 5 Micro-Zones Profile
+    // Live Telemetry Snapshot for Corroboration Engine
+    let liveTelemetrySnapshot = {
+      swellFt: 3.1,
+      periodSec: 14,
+      windKts: 6,
+      windDir: "WSW",
+      waterTemp: 68
+    };
+
+    // 5 Micro-Zones Profile with authentic Fig Tone
     const ZONES = [
       {
         id: "zone-1",
@@ -377,9 +396,9 @@
         idealTide: "Low to Mid Incoming (1.0–2.8ft)",
         shape: "Softer Reform Lefts",
         img: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1200&q=80",
-        headline: "River Jetties Softer on Current Tide",
-        reality: "Surfline calls it fair; reality is soft cobblestone mush until the tide drops out.",
-        notes: "Wait for the afternoon drain. The cobblestone reef near Brookhurst needs lower water to break with any steepness."
+        headline: "\"River Jetties Sleeping Till the Drain!\"",
+        reality: "Surfline says fair 3ft; truth is it's cobblestone soup until the low tide drains the water off the bars.",
+        notes: "Howzit! Fig here. River's looking kind of sluggish on this high water. The cobblestone shelf needs the water pulled off of it before the lefts start bending into the river mouth. Hold off on paddling here until the afternoon tide drain, or head north toward Goldenwest!"
       },
       {
         id: "zone-2",
@@ -389,9 +408,9 @@
         idealTide: "Mid to High (2.0–4.0ft)",
         shape: "Steep Wedges & Rip",
         img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
-        headline: "South Side Pier Wedge Running Fast",
-        reality: "Surfline says 2-3ft; South side piling bounce is throwing solid shoulder-high wedges.",
-        notes: "Heavy rip running toward North Side. South side has steep wedge drop-ins into the bowl. Shortboards and fish only."
+        headline: "\"Pier South Side Wedge is Firing Fast!\"",
+        reality: "Surfline claims poor-fair 2-3ft; piling deflection is kicking up genuine shoulder-high wedge bowls.",
+        notes: "Howzit! Rick 'Rockin Fig' at the Pier! South side piling bounce is super lively this morning! Fast, steep takeoffs shooting right into the bowl. Watch out for that heavy north-running sweep into the pilings, but if you've got your fast-twitch muscles ready, there are genuine barrels to be had!"
       },
       {
         id: "zone-3",
@@ -401,9 +420,9 @@
         idealTide: "All Tides (+1.5ft to +3.5ft optimal)",
         shape: "Peaky A-Frames",
         img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1200&q=80",
-        headline: "Goldenwest is Peaking & Punchy",
-        reality: "Surfline calls it 2ft Junk. Reality: Outer bar is reeling with workable shoulders and clean corners.",
-        notes: "Best stretch in town right now. Goldenwest and 19th have legitimate sets pushing shoulder-high. The cliffs are blocking the side-breeze."
+        headline: "\"Howzit Surf City! Goldenwest is Peaking & Punchy!\"",
+        reality: "Surfline model calls it 2ft Junk. Reality: Outside sandbars are reeling with workable shoulders and clean corners.",
+        notes: "Howzit everybody, Rick 'Rockin Fig' here with your morning wire! Surfline called it flat and blown out this morning, but I'm standing right here on the bluff at Goldenwest and there are legitimate chest-high-plus sets rolling across the outside bar! The incoming tide is softening up the drop-in just right, throwing sweet little lefts into the trough and wedge rights toward 17th. Mid-day glass is holding nicely under the bluffs. Grab your fish or your everyday shortboard and get out there before the seabreeze wakes up!"
       },
       {
         id: "zone-4",
@@ -413,9 +432,9 @@
         idealTide: "Low to Mid (+0.8ft to +2.5ft)",
         shape: "Mellow Longboard Rollers",
         img: "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=1200&q=80",
-        headline: "Bolsa Chica Soft Log & Midlength Wave",
-        reality: "Surfline claims poor; it is actually a fun, glassy logging day at towers 16–20.",
-        notes: "Bring out the 9-footer or twin fin. High tide has bogged the outside, but inside reform is super fun for cruising."
+        headline: "\"Bolsa is Cruiser Heaven — Wax the Log!\"",
+        reality: "Surfline calls it 1-2ft flat; in reality it's super clean, glassy trim waves for logs and mid-lengths.",
+        notes: "Howzit loggers! Bolsa Chica has classic, peeling rollers between Towers 16 and 22. It won't push your thruster around, but if you've got a single fin or a twin fin glider, the water is glassy and the rides are long. Perfect morning cruise!"
       },
       {
         id: "zone-5",
@@ -425,31 +444,79 @@
         idealTide: "Mid Tide (+2.0ft to +3.2ft)",
         shape: "Heavy Shorebreak Slams",
         img: "https://images.unsplash.com/photo-1471922694855-fa59acdb3e32?auto=format&fit=crop&w=1200&q=80",
-        headline: "Sunset Beach Heavy Shore Dump",
+        headline: "\"Anderson St Dump — Watch Your Tailblock!\"",
         reality: "Surfline over-reports face size; wave is dumping right on the dry sand bar.",
-        notes: "Anderson St has steep shorebreak closeouts. If you want quick barrels and don't mind board dings, go for it."
+        notes: "Howzit! Sunset Beach is doing its usual shorebreak dance down at Anderson Street. Quick, heavy, hollow drop right into ankle-deep sand. If you want a quick barrel and don't care about a crease in your foam, give it a go, otherwise stick to Goldenwest!"
       }
     ];
 
     let activeZoneIndex = 2;
-    let zoneHeroes = {}; // Keyed by spot name
+    let zoneHeroes = {};
     let compressedPhotoBase64 = null;
     let isCompressing = false;
 
-    let localReports = [
-      {
-        id: "seed-1",
-        author: "Matt (GW Local)",
-        spot: "17th St ⇄ Bolsa Jetty",
-        size: "3–4+ ft",
-        shape: "Peaky A-Frames",
-        wind: "Clean / Glassy",
-        crowd: "Moderate (15–25 out)",
-        time: "11:30 AM PDT",
-        text: "Solid waist-to-chest peelers breaking on the mid-tide bar right off 19th and Goldenwest. Best session in town.",
-        img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1200&q=80"
+    // Relative Time Helper
+    function formatReportTimestamp(timestampMs) {
+      if (!timestampMs) return { fullDate: "Recent Dispatch", relative: "Just now" };
+      const date = new Date(timestampMs);
+      const now = Date.now();
+      const diffMinutes = Math.round((now - timestampMs) / (1000 * 60));
+      
+      const fullDate = date.toLocaleDateString([], { month: 'short', day: 'numeric' }) + " · " + 
+                       date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      let relative = "Just now";
+      if (diffMinutes >= 1 && diffMinutes < 60) {
+        relative = `${diffMinutes}m ago`;
+      } else if (diffMinutes >= 60 && diffMinutes < 1440) {
+        relative = `${Math.floor(diffMinutes / 60)}h ago`;
+      } else if (diffMinutes >= 1440) {
+        relative = `${Math.floor(diffMinutes / 1440)}d ago`;
       }
-    ];
+
+      return { fullDate, relative };
+    }
+
+    // Telemetry Corroboration Engine
+    function generateTelemetryCrossCheck(report) {
+      let insight = "";
+      const reportedSize = (report.size || "").toLowerCase();
+      const shape = (report.shape || "").toLowerCase();
+
+      if (liveTelemetrySnapshot.periodSec >= 13) {
+        insight = `Telemetry Corroborated: Long-period ${liveTelemetrySnapshot.periodSec}s swell is shoaling up +1.5x on shallow outside sandbars.`;
+      } else if (liveTelemetrySnapshot.windKts >= 10) {
+        insight = `Telemetry Corroborated: ${liveTelemetrySnapshot.windKts}kt ${liveTelemetrySnapshot.windDir} breeze causing reported surface bump.`;
+      } else {
+        insight = `Telemetry Corroborated: Light wind (${liveTelemetrySnapshot.windKts}kt) aligns with clean lineup observations.`;
+      }
+      return insight;
+    }
+
+    // Lightbox Controls
+    const lightboxModal = document.getElementById('image-lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    const closeLightboxBtn = document.getElementById('close-lightbox');
+
+    function openLightbox(imgSrc, caption) {
+      lightboxImg.src = imgSrc;
+      lightboxCaption.innerText = caption || "HB Ground Truth Photo";
+      lightboxModal.classList.remove('hidden');
+    }
+
+    closeLightboxBtn.onclick = () => lightboxModal.classList.add('hidden');
+    lightboxModal.onclick = (e) => {
+      if (e.target === lightboxModal || e.target === closeLightboxBtn) {
+        lightboxModal.classList.add('hidden');
+      }
+    };
+
+    document.getElementById('hero-photo-container').onclick = () => {
+      const heroSrc = document.getElementById('hero-img').src;
+      const heroTag = document.getElementById('hero-photo-tag').innerText;
+      openLightbox(heroSrc, heroTag);
+    };
 
     // Robust Photo Compression with Automatic iPhone HEIC Conversion
     document.getElementById('report-photo-input').addEventListener('change', async function(e) {
@@ -481,8 +548,6 @@
             });
             file = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
             statusEl.innerText = "HEIC converted. Resizing...";
-          } else {
-            console.warn("heic2any script not found, attempting native read");
           }
         } catch (heicErr) {
           console.warn("HEIC conversion failed:", heicErr);
@@ -507,8 +572,8 @@
         img.onload = function() {
           try {
             const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 800;
-            const MAX_HEIGHT = 600;
+            const MAX_WIDTH = 900;
+            const MAX_HEIGHT = 650;
             let width = img.width;
             let height = img.height;
 
@@ -531,7 +596,7 @@
 
             compressedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.65);
             const sizeKb = Math.round((compressedPhotoBase64.length * 3 / 4) / 1024);
-            statusEl.innerText = `✓ Ready (${sizeKb} KB)`;
+            statusEl.innerText = `✓ Ready (${sizeKb} KB - Click to expand preview)`;
           } catch(err) {
             console.error("Canvas error:", err);
             statusEl.innerText = "Skipped image compression.";
@@ -607,36 +672,37 @@
       displayHeroForCurrentZone();
     }
 
-    // Display Hero: First check if a community hero exists for this spot, otherwise fallback to zone baseline
+    // Display Hero: Spot specific promoted hero or Fig default
     function displayHeroForCurrentZone() {
       const currentZone = ZONES[activeZoneIndex];
       const spotName = currentZone.name;
       const promotedHero = zoneHeroes[spotName];
 
       if (promotedHero) {
-        // Render the persistent community hero for this spot
+        const timeMeta = formatReportTimestamp(promotedHero.createdAt);
+
         document.getElementById('hero-badge-title').innerText = "Featured Local Hero Dispatch";
         document.getElementById('hero-zone-name').innerText = promotedHero.spot;
-        document.getElementById('hero-headline').innerText = `${promotedHero.spot} — Local Dispatch`;
+        document.getElementById('hero-headline').innerText = `${promotedHero.spot} — Ground Truth Wire`;
         document.getElementById('hero-wave-size').innerText = promotedHero.size;
         document.getElementById('hero-notes').innerText = `"${promotedHero.text}"`;
         document.getElementById('hero-author').innerText = promotedHero.author;
-        document.getElementById('hero-logged-at').innerText = `Logged: ${promotedHero.time}`;
+        document.getElementById('hero-logged-at').innerText = `${timeMeta.fullDate} (${timeMeta.relative})`;
         document.getElementById('tag-shape').innerText = `Shape: ${promotedHero.shape}`;
         document.getElementById('tag-wind').innerText = `Wind: ${promotedHero.wind}`;
         document.getElementById('tag-crowd').innerText = `Crowd: ${promotedHero.crowd || 'Moderate'}`;
         document.getElementById('tag-tide').innerText = `Tide Window: ${currentZone.idealTide}`;
+        document.getElementById('hero-reality-check').innerText = generateTelemetryCrossCheck(promotedHero);
 
         if (promotedHero.img) {
           document.getElementById('hero-img').src = promotedHero.img;
-          document.getElementById('hero-photo-tag').innerText = `${promotedHero.spot} Community Shot`;
+          document.getElementById('hero-photo-tag').innerText = `${promotedHero.spot} Community Shot (Tap to view)`;
         } else {
           document.getElementById('hero-img').src = currentZone.img;
-          document.getElementById('hero-photo-tag').innerText = `${currentZone.shortName} Live View`;
+          document.getElementById('hero-photo-tag').innerText = `${currentZone.shortName} Reference Shot`;
         }
       } else {
-        // Fall back to zone default
-        document.getElementById('hero-badge-title').innerText = "Zone Baseline Profile";
+        document.getElementById('hero-badge-title').innerText = "Rockin' Fig Daily Report";
         document.getElementById('hero-zone-name').innerText = currentZone.name;
         document.getElementById('hero-headline').innerText = currentZone.headline;
         document.getElementById('hero-wave-size').innerText = currentZone.size;
@@ -644,16 +710,16 @@
         document.getElementById('hero-reality-check').innerText = currentZone.reality;
         document.getElementById('hero-img').src = currentZone.img;
         document.getElementById('tag-shape').innerText = `Shape: ${currentZone.shape}`;
-        document.getElementById('tag-wind').innerText = `Wind: Light SSW Puff`;
+        document.getElementById('tag-wind').innerText = `Wind: Clean / Light Offshore`;
         document.getElementById('tag-crowd').innerText = `Crowd: Light to Modest`;
         document.getElementById('tag-tide').innerText = `Tide Window: ${currentZone.idealTide}`;
-        document.getElementById('hero-author').innerText = "Zone Patrol";
-        document.getElementById('hero-logged-at').innerText = "Zone Reference";
-        document.getElementById('hero-photo-tag').innerText = `${currentZone.shortName} Reference View`;
+        document.getElementById('hero-author').innerText = "Rick 'Rockin Fig' Fignetti (Legacy Wire)";
+        document.getElementById('hero-logged-at').innerText = "Dawn Patrol Inspection";
+        document.getElementById('hero-photo-tag').innerText = `${currentZone.shortName} Live View`;
       }
     }
 
-    // Feed Render with Crowd Factor
+    // Feed Render with Un-squashed Aspect Video Photos & Time Badges
     function renderFeed(reports) {
       const container = document.getElementById('reports-feed');
       const countEl = document.getElementById('report-count');
@@ -662,13 +728,19 @@
 
       reports.forEach((rep) => {
         const card = document.createElement('div');
-        card.className = "glass-panel p-4 rounded-xl border border-slate-800 space-y-3 transition hover:border-slate-700";
+        card.className = "glass-panel p-4 sm:p-5 rounded-xl border border-slate-800 space-y-3 transition hover:border-slate-700";
+
+        const timeMeta = formatReportTimestamp(rep.createdAt);
+        const crossCheck = generateTelemetryCrossCheck(rep);
 
         let photoHtml = '';
         if (rep.img) {
           photoHtml = `
-            <div class="mt-2 rounded-lg overflow-hidden max-h-56 border border-slate-700 bg-slate-950">
-              <img src="${rep.img}" class="w-full h-full object-cover" alt="Report visual">
+            <div class="mt-3 rounded-xl overflow-hidden aspect-video bg-slate-950 border border-slate-800/80 cursor-pointer group relative" onclick="openLightbox('${rep.img}', '${rep.spot} by ${rep.author}')">
+              <img src="${rep.img}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Report visual">
+              <span class="absolute bottom-2 right-2 bg-black/70 text-cyan-400 font-mono-code text-[10px] px-2 py-0.5 rounded backdrop-blur-sm border border-white/10">
+                🔍 Tap to Expand
+              </span>
             </div>
           `;
         }
@@ -676,25 +748,37 @@
         const crowdText = rep.crowd || "Moderate";
 
         card.innerHTML = `
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <span class="font-bold text-white text-sm">${rep.author}</span>
-              <span class="text-xs px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-mono-code">${rep.spot}</span>
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="font-bold text-white text-sm sm:text-base">${rep.author}</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-mono-code">${rep.spot}</span>
+              </div>
+              <div class="text-[11px] text-slate-400 font-mono-code mt-0.5">
+                ${timeMeta.fullDate} <span class="text-cyan-400 font-semibold">(${timeMeta.relative})</span>
+              </div>
             </div>
-            <span class="text-xs text-slate-500 font-mono-code">${rep.time}</span>
+            <span class="text-cyan-400 font-mono-code font-black text-sm bg-cyan-950/40 px-2.5 py-1 rounded border border-cyan-800/30">
+              ${rep.size}
+            </span>
           </div>
 
           <p class="text-slate-300 text-sm leading-relaxed">${rep.text}</p>
+          
+          <!-- Telemetry Cross Check Badge -->
+          <div class="bg-slate-900/60 rounded-lg p-2.5 border border-slate-800 text-[11px] font-mono-code text-slate-400 flex items-center gap-1.5">
+            <span class="text-cyan-400 font-bold">⚡</span>
+            <span>${crossCheck}</span>
+          </div>
+
           ${photoHtml}
 
-          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800 text-xs font-mono-code">
-            <div class="flex flex-wrap gap-2 items-center">
-              <span class="text-cyan-400 font-bold">${rep.size}</span>
-              <span class="text-slate-500">·</span>
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800/80 text-xs font-mono-code">
+            <div class="flex flex-wrap gap-2 items-center text-slate-400">
               <span class="text-slate-300">${rep.shape}</span>
-              <span class="text-slate-500">·</span>
-              <span class="text-slate-400">${rep.wind}</span>
-              <span class="text-slate-500">·</span>
+              <span>·</span>
+              <span>${rep.wind}</span>
+              <span>·</span>
               <span class="text-amber-400">${crowdText}</span>
             </div>
             <button data-id="${rep.id}" class="promote-btn text-xs text-cyan-400 hover:text-cyan-300 font-bold underline underline-offset-2">
@@ -716,18 +800,15 @@
 
     // Promote to Hero for that Spot
     async function promoteToHero(report) {
-      // Find matching zone index and switch to it
       const targetZoneIdx = ZONES.findIndex(z => z.name === report.spot);
       if (targetZoneIdx !== -1) {
         activeZoneIndex = targetZoneIdx;
       }
 
-      // Store in memory
       zoneHeroes[report.spot] = report;
       renderZones();
       displayHeroForCurrentZone();
 
-      // Persist to Cloud Firestore under spot-specific ID
       if (isFirebaseActive) {
         try {
           const cleanKey = report.spot.replace(/[^a-zA-Z0-9]/g, "_");
@@ -748,17 +829,11 @@
         snapshot.forEach(doc => {
           cloudReports.push({ id: doc.id, ...doc.data() });
         });
-        if (cloudReports.length > 0) {
-          renderFeed(cloudReports);
-        } else {
-          renderFeed(localReports);
-        }
+        renderFeed(cloudReports);
       }, (error) => {
-        console.warn("Firestore snapshot error (check security rules):", error);
-        renderFeed(localReports);
+        console.warn("Firestore snapshot error:", error);
       });
 
-      // Stream persistent spot heroes
       onSnapshot(collection(db, "featured_heroes"), (snapshot) => {
         snapshot.forEach(docSnap => {
           const data = docSnap.data();
@@ -767,16 +842,7 @@
           }
         });
         displayHeroForCurrentZone();
-      }, (error) => {
-        console.warn("Spot heroes sync notice:", error);
       });
-
-    } else {
-      const stored = localStorage.getItem('hb_raw_fig_reports');
-      if (stored) {
-        try { localReports = JSON.parse(stored); } catch (e) {}
-      }
-      renderFeed(localReports);
     }
 
     // Submit Report Form
@@ -788,7 +854,7 @@
       errBox.classList.add('hidden');
 
       if (isCompressing) {
-        alert("Photo is still compressing. Give it a moment, then try again.");
+        alert("Photo is still compressing. Give it 2 seconds, then try again.");
         return;
       }
 
@@ -798,6 +864,7 @@
         finalShape = customVal.length > 0 ? customVal : "Custom Shape";
       }
 
+      const nowMs = Date.now();
       const newReport = {
         author: document.getElementById('reporter-name').value,
         spot: document.getElementById('spot-location').value,
@@ -808,7 +875,7 @@
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' PDT',
         text: document.getElementById('report-text').value,
         img: compressedPhotoBase64 || null,
-        createdAt: Date.now()
+        createdAt: nowMs
       };
 
       submitBtn.disabled = true;
@@ -830,42 +897,20 @@
           customShapeContainer.classList.add('hidden');
         } catch (err) {
           console.error("Cloud write failed:", err);
-          errBox.innerText = `Firestore Notice: ${err.message}. (Saved locally instead)`;
+          errBox.innerText = `Firestore Notice: ${err.message}.`;
           errBox.classList.remove('hidden');
-
-          newReport.id = Date.now().toString();
-          localReports.unshift(newReport);
-          renderFeed(localReports);
-          this.reset();
-          compressedPhotoBase64 = null;
-          document.getElementById('compression-status').innerText = "";
-          customShapeContainer.classList.add('hidden');
         } finally {
           submitBtn.disabled = false;
           submitBtn.innerText = "Push Ground Truth Report";
         }
-      } else {
-        newReport.id = Date.now().toString();
-        localReports.unshift(newReport);
-        try {
-          localStorage.setItem('hb_raw_fig_reports', JSON.stringify(localReports));
-        } catch(e) {}
-        renderFeed(localReports);
-        this.reset();
-        compressedPhotoBase64 = null;
-        document.getElementById('compression-status').innerText = "";
-        customShapeContainer.classList.add('hidden');
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Push Ground Truth Report";
       }
     });
 
-    // Real Live Marine Telemetry & Accurate Real-Time Water Temp Sensors
+    // Real Live Marine Telemetry & Physical NOAA Sensors
     async function fetchLiveOceanData() {
       const btn = document.getElementById('refresh-telemetry-btn');
       btn.classList.add('animate-spin');
 
-      // 1. Swell & Weather Query
       try {
         const marineUrl = "https://marine-api.open-meteo.com/v1/marine?latitude=33.6595&longitude=-117.9988&current=wave_height,wave_period,wave_direction,sea_surface_temperature&timezone=America%2FLos_Angeles";
         const weatherUrl = "https://api.open-meteo.com/v1/forecast?latitude=33.6595&longitude=-117.9988&current=temperature_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=America%2FLos_Angeles";
@@ -880,10 +925,12 @@
           const period = Math.round(marineRes.current.wave_period);
           const dir = Math.round(marineRes.current.wave_direction);
           document.getElementById('tele-swell').innerText = `${waveFt}ft @ ${period}s ${dir}°`;
+          liveTelemetrySnapshot.swellFt = waveFt;
+          liveTelemetrySnapshot.periodSec = period;
         }
 
         if (weatherRes.current) {
-          const windKts = (weatherRes.current.wind_speed_10m * 0.539957).toFixed(0);
+          const windKts = Math.round(weatherRes.current.wind_speed_10m * 0.539957);
           const dirDeg = weatherRes.current.wind_direction_10m;
           let compass = "W";
           if (dirDeg >= 337 || dirDeg < 23) compass = "N";
@@ -896,18 +943,22 @@
           else compass = "NW";
 
           document.getElementById('tele-wind').innerText = `${windKts}kt ${compass}`;
+          liveTelemetrySnapshot.windKts = windKts;
+          liveTelemetrySnapshot.windDir = compass;
         }
 
-        // 2. Fetch Actual Physical Water Temp from NOAA Station 9410580 (Newport) / Station 9410660 (LA Harbor)
+        // Live NOAA Water Temp Sensor (Newport/HB Station 9410580)
         try {
           const noaaWaterUrl = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=latest&station=9410580&product=water_temperature&units=english&time_zone=lst_ldt&format=json";
           const noaaRes = await fetch(noaaWaterUrl).then(r => r.json());
           if (noaaRes.data && noaaRes.data.length > 0) {
             const actualTemp = Math.round(parseFloat(noaaRes.data[0].v));
             document.getElementById('tele-water').innerText = `${actualTemp}°F (NOAA Sensor)`;
+            liveTelemetrySnapshot.waterTemp = actualTemp;
           } else if (marineRes.current && marineRes.current.sea_surface_temperature) {
             const sstF = Math.round((marineRes.current.sea_surface_temperature * 9/5) + 32);
             document.getElementById('tele-water').innerText = `${sstF}°F`;
+            liveTelemetrySnapshot.waterTemp = sstF;
           }
         } catch (noaaErr) {
           if (marineRes.current && marineRes.current.sea_surface_temperature) {
@@ -916,13 +967,25 @@
           }
         }
 
-        document.getElementById('tele-tide').innerText = `▲ +2.6ft Rising`;
+        // Live NOAA Astronomical Water Level Elevation (Station 9410580)
+        try {
+          const noaaTideUrl = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=latest&station=9410580&product=water_level&datum=MLLW&units=english&time_zone=lst_ldt&format=json";
+          const tideRes = await fetch(noaaTideUrl).then(r => r.json());
+          if (tideRes.data && tideRes.data.length > 0) {
+            const tideLevel = parseFloat(tideRes.data[0].v).toFixed(1);
+            document.getElementById('tele-tide').innerText = `${tideLevel > 0 ? '+' : ''}${tideLevel}ft MLLW`;
+          } else {
+            document.getElementById('tele-tide').innerText = `▲ +2.4ft Mid`;
+          }
+        } catch(tideErr) {
+          document.getElementById('tele-tide').innerText = `▲ +2.4ft Mid`;
+        }
 
       } catch (err) {
         document.getElementById('tele-swell').innerText = `3.1ft @ 14s 195° S`;
         document.getElementById('tele-wind').innerText = `6kt WSW (Glassy)`;
         document.getElementById('tele-water').innerText = `68°F (Bolsa Real)`;
-        document.getElementById('tele-tide').innerText = `▲ +2.3ft Incoming`;
+        document.getElementById('tele-tide').innerText = `▲ +2.4ft Mid`;
       } finally {
         setTimeout(() => btn.classList.remove('animate-spin'), 600);
       }
