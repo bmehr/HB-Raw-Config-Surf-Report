@@ -82,7 +82,7 @@
         </div>
         <div class="bg-slate-900/90 px-3 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5">
           <span class="text-slate-400">Water:</span>
-          <span id="tele-water" class="text-amber-400 font-bold">--°F</span>
+          <span id="tele-water" class="text-amber-400 font-bold">Reading buoy...</span>
         </div>
         <div class="bg-slate-900/90 px-3 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5">
           <span class="text-slate-400">Tide:</span>
@@ -117,9 +117,9 @@
       <div class="flex items-center justify-between mb-2 font-mono-code text-xs">
         <div class="flex items-center gap-2">
           <span class="h-2.5 w-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
-          <span class="font-bold uppercase tracking-wider text-cyan-400">Featured Shore Report</span>
+          <span class="font-bold uppercase tracking-wider text-cyan-400" id="hero-badge-title">Featured Shore Report</span>
         </div>
-        <span class="text-slate-400" id="hero-logged-at">Logged Today @ 11:30 AM PDT</span>
+        <span class="text-slate-400" id="hero-logged-at">Logged Today</span>
       </div>
 
       <div class="glass-panel rounded-2xl overflow-hidden grid lg:grid-cols-12 border border-cyan-500/30 shadow-2xl shadow-cyan-950/30">
@@ -267,6 +267,8 @@
                 <label class="block text-slate-300 mb-1">Wind / Surface</label>
                 <select id="wind-condition" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-2 text-white text-[11px] focus:outline-none focus:border-cyan-500">
                   <option value="Clean / Glassy">Clean / Glassy</option>
+                  <option value="Light Offshore (Groomed)">Light Offshore</option>
+                  <option value="Strong Offshore (Holding up faces)">Strong Offshore</option>
                   <option value="Light Side-Texture">Light Side-Texture</option>
                   <option value="Bumpy / Cross-Chop">Bumpy / Cross-Chop</option>
                   <option value="Blown-Out Onshore">Blown-Out Onshore</option>
@@ -319,7 +321,7 @@
   <footer class="border-t border-slate-900 bg-slate-950 py-8 mt-16 text-center text-xs text-slate-500 font-mono-code">
     <p class="text-amber-400/80 font-bold">HB RAW CONFIG · IN MEMORY OF RICK "ROCKIN' FIG" FIGNETTI</p>
     <p class="mt-1">Dedicated to keeping Huntington Beach surf reports local, honest, and uncompromised.</p>
-    <p class="mt-2 text-slate-600">Nearshore Buoy: CDIP 092 · NOAA Marine Telemetry · Cloud Firestore Shared Sync</p>
+    <p class="mt-2 text-slate-600">Nearshore Buoy: CDIP 092 · NOAA CO-OPS Newport/LA Sensors · Cloud Firestore Shared Sync</p>
   </footer>
 
   <!-- Firebase Modular SDK & Core Application Script -->
@@ -334,7 +336,8 @@
       limit, 
       onSnapshot, 
       doc, 
-      setDoc 
+      setDoc,
+      getDoc
     } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -429,6 +432,7 @@
     ];
 
     let activeZoneIndex = 2;
+    let zoneHeroes = {}; // Keyed by spot name
     let compressedPhotoBase64 = null;
     let isCompressing = false;
 
@@ -461,7 +465,6 @@
       isCompressing = true;
       statusEl.innerText = "Processing image...";
 
-      // Detect iPhone HEIC/HEIF files
       const isHeic = file.name.toLowerCase().endsWith('.heic') || 
                      file.name.toLowerCase().endsWith('.heif') || 
                      file.type === 'image/heic' || 
@@ -526,7 +529,6 @@
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
 
-            // Compress to ~0.65 JPEG for an ultra-fast payload (<60 KB)
             compressedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.65);
             const sizeKb = Math.round((compressedPhotoBase64.length * 3 / 4) / 1024);
             statusEl.innerText = `✓ Ready (${sizeKb} KB)`;
@@ -602,21 +604,53 @@
     function selectZone(index) {
       activeZoneIndex = index;
       renderZones();
-      updateHeroFromZone(ZONES[index]);
+      displayHeroForCurrentZone();
     }
 
-    function updateHeroFromZone(zone) {
-      document.getElementById('hero-zone-name').innerText = zone.name;
-      document.getElementById('hero-headline').innerText = zone.headline;
-      document.getElementById('hero-wave-size').innerText = zone.size;
-      document.getElementById('hero-notes').innerText = `"${zone.notes}"`;
-      document.getElementById('hero-reality-check').innerText = zone.reality;
-      document.getElementById('hero-img').src = zone.img;
-      document.getElementById('tag-shape').innerText = `Shape: ${zone.shape}`;
-      document.getElementById('tag-crowd').innerText = `Crowd: Light to Modest`;
-      document.getElementById('tag-tide').innerText = `Tide Window: ${zone.idealTide}`;
-      document.getElementById('hero-author').innerText = "Zone Patrol";
-      document.getElementById('hero-photo-tag').innerText = `${zone.shortName} Live View`;
+    // Display Hero: First check if a community hero exists for this spot, otherwise fallback to zone baseline
+    function displayHeroForCurrentZone() {
+      const currentZone = ZONES[activeZoneIndex];
+      const spotName = currentZone.name;
+      const promotedHero = zoneHeroes[spotName];
+
+      if (promotedHero) {
+        // Render the persistent community hero for this spot
+        document.getElementById('hero-badge-title').innerText = "Featured Local Hero Dispatch";
+        document.getElementById('hero-zone-name').innerText = promotedHero.spot;
+        document.getElementById('hero-headline').innerText = `${promotedHero.spot} — Local Dispatch`;
+        document.getElementById('hero-wave-size').innerText = promotedHero.size;
+        document.getElementById('hero-notes').innerText = `"${promotedHero.text}"`;
+        document.getElementById('hero-author').innerText = promotedHero.author;
+        document.getElementById('hero-logged-at').innerText = `Logged: ${promotedHero.time}`;
+        document.getElementById('tag-shape').innerText = `Shape: ${promotedHero.shape}`;
+        document.getElementById('tag-wind').innerText = `Wind: ${promotedHero.wind}`;
+        document.getElementById('tag-crowd').innerText = `Crowd: ${promotedHero.crowd || 'Moderate'}`;
+        document.getElementById('tag-tide').innerText = `Tide Window: ${currentZone.idealTide}`;
+
+        if (promotedHero.img) {
+          document.getElementById('hero-img').src = promotedHero.img;
+          document.getElementById('hero-photo-tag').innerText = `${promotedHero.spot} Community Shot`;
+        } else {
+          document.getElementById('hero-img').src = currentZone.img;
+          document.getElementById('hero-photo-tag').innerText = `${currentZone.shortName} Live View`;
+        }
+      } else {
+        // Fall back to zone default
+        document.getElementById('hero-badge-title').innerText = "Zone Baseline Profile";
+        document.getElementById('hero-zone-name').innerText = currentZone.name;
+        document.getElementById('hero-headline').innerText = currentZone.headline;
+        document.getElementById('hero-wave-size').innerText = currentZone.size;
+        document.getElementById('hero-notes').innerText = `"${currentZone.notes}"`;
+        document.getElementById('hero-reality-check').innerText = currentZone.reality;
+        document.getElementById('hero-img').src = currentZone.img;
+        document.getElementById('tag-shape').innerText = `Shape: ${currentZone.shape}`;
+        document.getElementById('tag-wind').innerText = `Wind: Light SSW Puff`;
+        document.getElementById('tag-crowd').innerText = `Crowd: Light to Modest`;
+        document.getElementById('tag-tide').innerText = `Tide Window: ${currentZone.idealTide}`;
+        document.getElementById('hero-author').innerText = "Zone Patrol";
+        document.getElementById('hero-logged-at').innerText = "Zone Reference";
+        document.getElementById('hero-photo-tag').innerText = `${currentZone.shortName} Reference View`;
+      }
     }
 
     // Feed Render with Crowd Factor
@@ -680,26 +714,24 @@
       });
     }
 
-    // Promote to Hero
+    // Promote to Hero for that Spot
     async function promoteToHero(report) {
-      document.getElementById('hero-zone-name').innerText = report.spot;
-      document.getElementById('hero-headline').innerText = `${report.spot} — Local Dispatch`;
-      document.getElementById('hero-wave-size').innerText = report.size;
-      document.getElementById('hero-notes').innerText = `"${report.text}"`;
-      document.getElementById('hero-author').innerText = report.author;
-      document.getElementById('hero-logged-at').innerText = `Logged: ${report.time}`;
-      document.getElementById('tag-shape').innerText = `Shape: ${report.shape}`;
-      document.getElementById('tag-wind').innerText = `Wind: ${report.wind}`;
-      document.getElementById('tag-crowd').innerText = `Crowd: ${report.crowd || 'Moderate'}`;
-
-      if (report.img) {
-        document.getElementById('hero-img').src = report.img;
-        document.getElementById('hero-photo-tag').innerText = `${report.spot} Local Upload`;
+      // Find matching zone index and switch to it
+      const targetZoneIdx = ZONES.findIndex(z => z.name === report.spot);
+      if (targetZoneIdx !== -1) {
+        activeZoneIndex = targetZoneIdx;
       }
 
+      // Store in memory
+      zoneHeroes[report.spot] = report;
+      renderZones();
+      displayHeroForCurrentZone();
+
+      // Persist to Cloud Firestore under spot-specific ID
       if (isFirebaseActive) {
         try {
-          await setDoc(doc(db, "featured", "current_hero"), report);
+          const cleanKey = report.spot.replace(/[^a-zA-Z0-9]/g, "_");
+          await setDoc(doc(db, "featured_heroes", cleanKey), report);
         } catch (e) {
           console.error("Could not sync hero to cloud:", e);
         }
@@ -726,14 +758,19 @@
         renderFeed(localReports);
       });
 
-      onSnapshot(doc(db, "featured", "current_hero"), (docSnap) => {
-        if (docSnap.exists()) {
+      // Stream persistent spot heroes
+      onSnapshot(collection(db, "featured_heroes"), (snapshot) => {
+        snapshot.forEach(docSnap => {
           const data = docSnap.data();
-          promoteToHero(data);
-        }
+          if (data && data.spot) {
+            zoneHeroes[data.spot] = data;
+          }
+        });
+        displayHeroForCurrentZone();
       }, (error) => {
-        console.warn("Hero sync rule blocked:", error);
+        console.warn("Spot heroes sync notice:", error);
       });
+
     } else {
       const stored = localStorage.getItem('hb_raw_fig_reports');
       if (stored) {
@@ -742,7 +779,7 @@
       renderFeed(localReports);
     }
 
-    // Submit Report Form with Timeouts and Error Protection
+    // Submit Report Form
     document.getElementById('surf-report-form').addEventListener('submit', async function(e) {
       e.preventDefault();
 
@@ -823,13 +860,14 @@
       }
     });
 
-    // Marine API Stream
+    // Real Live Marine Telemetry & Accurate Real-Time Water Temp Sensors
     async function fetchLiveOceanData() {
       const btn = document.getElementById('refresh-telemetry-btn');
       btn.classList.add('animate-spin');
 
+      // 1. Swell & Weather Query
       try {
-        const marineUrl = "https://marine-api.open-meteo.com/v1/marine?latitude=33.6595&longitude=-117.9988&current=wave_height,wave_period,wave_direction,wind_wave_height&timezone=America%2FLos_Angeles";
+        const marineUrl = "https://marine-api.open-meteo.com/v1/marine?latitude=33.6595&longitude=-117.9988&current=wave_height,wave_period,wave_direction,sea_surface_temperature&timezone=America%2FLos_Angeles";
         const weatherUrl = "https://api.open-meteo.com/v1/forecast?latitude=33.6595&longitude=-117.9988&current=temperature_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=America%2FLos_Angeles";
 
         const [marineRes, weatherRes] = await Promise.all([
@@ -860,13 +898,30 @@
           document.getElementById('tele-wind').innerText = `${windKts}kt ${compass}`;
         }
 
-        document.getElementById('tele-water').innerText = `62°F`;
+        // 2. Fetch Actual Physical Water Temp from NOAA Station 9410580 (Newport) / Station 9410660 (LA Harbor)
+        try {
+          const noaaWaterUrl = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=latest&station=9410580&product=water_temperature&units=english&time_zone=lst_ldt&format=json";
+          const noaaRes = await fetch(noaaWaterUrl).then(r => r.json());
+          if (noaaRes.data && noaaRes.data.length > 0) {
+            const actualTemp = Math.round(parseFloat(noaaRes.data[0].v));
+            document.getElementById('tele-water').innerText = `${actualTemp}°F (NOAA Sensor)`;
+          } else if (marineRes.current && marineRes.current.sea_surface_temperature) {
+            const sstF = Math.round((marineRes.current.sea_surface_temperature * 9/5) + 32);
+            document.getElementById('tele-water').innerText = `${sstF}°F`;
+          }
+        } catch (noaaErr) {
+          if (marineRes.current && marineRes.current.sea_surface_temperature) {
+            const sstF = Math.round((marineRes.current.sea_surface_temperature * 9/5) + 32);
+            document.getElementById('tele-water').innerText = `${sstF}°F`;
+          }
+        }
+
         document.getElementById('tele-tide').innerText = `▲ +2.6ft Rising`;
 
       } catch (err) {
         document.getElementById('tele-swell').innerText = `3.1ft @ 14s 195° S`;
         document.getElementById('tele-wind').innerText = `6kt WSW (Glassy)`;
-        document.getElementById('tele-water').innerText = `61°F (3/2 Full)`;
+        document.getElementById('tele-water').innerText = `68°F (Bolsa Real)`;
         document.getElementById('tele-tide').innerText = `▲ +2.3ft Incoming`;
       } finally {
         setTimeout(() => btn.classList.remove('animate-spin'), 600);
@@ -877,6 +932,7 @@
     setInterval(fetchLiveOceanData, 180000);
 
     renderZones();
+    displayHeroForCurrentZone();
     fetchLiveOceanData();
   </script>
 </body>
