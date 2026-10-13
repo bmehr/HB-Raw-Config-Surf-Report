@@ -3,7 +3,7 @@
 > **Hyper-local, ground-truth surf intelligence for Huntington Beach, California.**  
 > *From the Santa Ana River Jetties to Sunset Beach — real eyes on the sand, not proprietary algorithmic guesses.*
 
-🔗 **Live Report Dashboard:** [👉 Launch Live Web App Here](https://bmehr.github.io/HB-Raw-Config-Surf-Report/) *(Paste your GitHub Pages URL here)*
+🔗 **Live Report Dashboard:** [👉 Launch Live Web App Here](https://bmehr.github.io/HB-Raw-Config-Surf-Report/) 
 
 ---
 
