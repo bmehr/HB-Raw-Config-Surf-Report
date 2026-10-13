@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HB Raw Config | In Memory of Rockin' Fig</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- In-browser iPhone HEIC/HEIF to JPEG converter -->
+  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -293,8 +295,8 @@
 
             <!-- Client-Side Canvas Compressed Image Upload -->
             <div>
-              <label class="block text-slate-300 mb-1">Shore Photo (Auto-Compressed)</label>
-              <input type="file" id="report-photo-input" accept="image/*" class="w-full text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-mono-code file:bg-cyan-500/20 file:text-cyan-400 hover:file:bg-cyan-500/30 file:cursor-pointer cursor-pointer">
+              <label class="block text-slate-300 mb-1">Shore Photo (Supports iPhone HEIC & JPEG)</label>
+              <input type="file" id="report-photo-input" accept="image/*,.heic,.heif" class="w-full text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-mono-code file:bg-cyan-500/20 file:text-cyan-400 hover:file:bg-cyan-500/30 file:cursor-pointer cursor-pointer">
               <p id="compression-status" class="text-[11px] text-slate-500 mt-1 italic"></p>
             </div>
 
@@ -445,9 +447,9 @@
       }
     ];
 
-    // Robust Photo Compression with Safety Fallback
-    document.getElementById('report-photo-input').addEventListener('change', function(e) {
-      const file = e.target.files[0];
+    // Robust Photo Compression with Automatic iPhone HEIC Conversion
+    document.getElementById('report-photo-input').addEventListener('change', async function(e) {
+      let file = e.target.files[0];
       const statusEl = document.getElementById('compression-status');
       if (!file) {
         compressedPhotoBase64 = null;
@@ -459,17 +461,45 @@
       isCompressing = true;
       statusEl.innerText = "Processing image...";
 
+      // Detect iPhone HEIC/HEIF files
+      const isHeic = file.name.toLowerCase().endsWith('.heic') || 
+                     file.name.toLowerCase().endsWith('.heif') || 
+                     file.type === 'image/heic' || 
+                     file.type === 'image/heif';
+
+      if (isHeic) {
+        statusEl.innerText = "Converting iPhone HEIC format...";
+        try {
+          if (window.heic2any) {
+            const convertedBlob = await heic2any({
+              blob: file,
+              toType: "image/jpeg",
+              quality: 0.8
+            });
+            file = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+            statusEl.innerText = "HEIC converted. Resizing...";
+          } else {
+            console.warn("heic2any script not found, attempting native read");
+          }
+        } catch (heicErr) {
+          console.warn("HEIC conversion failed:", heicErr);
+          statusEl.innerText = "Could not convert HEIC. Try a JPEG/PNG instead.";
+          isCompressing = false;
+          return;
+        }
+      }
+
       const reader = new FileReader();
       reader.onerror = () => {
         isCompressing = false;
-        statusEl.innerText = "Error reading file, proceeding without photo";
+        statusEl.innerText = "Error reading file. Proceeding with text only.";
       };
 
       reader.onload = function(event) {
         const img = new Image();
         img.onerror = () => {
           isCompressing = false;
-          statusEl.innerText = "Error loading image format, proceeding without photo";
+          statusEl.innerText = "Error loading image format. Proceeding with text only.";
         };
         img.onload = function() {
           try {
@@ -496,12 +526,13 @@
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
 
+            // Compress to ~0.65 JPEG for an ultra-fast payload (<60 KB)
             compressedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.65);
             const sizeKb = Math.round((compressedPhotoBase64.length * 3 / 4) / 1024);
             statusEl.innerText = `✓ Ready (${sizeKb} KB)`;
           } catch(err) {
             console.error("Canvas error:", err);
-            statusEl.innerText = "Skipped image compression (proceeding with text only)";
+            statusEl.innerText = "Skipped image compression.";
             compressedPhotoBase64 = null;
           } finally {
             isCompressing = false;
@@ -720,7 +751,7 @@
       errBox.classList.add('hidden');
 
       if (isCompressing) {
-        alert("Photo is still compressing. Give it 2 seconds, then try again.");
+        alert("Photo is still compressing. Give it a moment, then try again.");
         return;
       }
 
