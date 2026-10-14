@@ -1,0 +1,23 @@
+{
+  "name": "HB Raw Config Surf",
+  "short_name": "HB Raw Surf",
+  "description": "Ground Truth Huntington Beach Surf Reporting in Memory of Rockin' Fig",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#080d14",
+  "theme_color": "#080d14",
+  "icons": [
+    {
+      "src": "pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+          

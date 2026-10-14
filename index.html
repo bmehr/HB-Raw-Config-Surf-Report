@@ -3,7 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HB Raw Config | In Memory of Rockin' Fig</title>
+  <title>HB Raw Config Surf | In Memory of Rockin' Fig</title>
+
+  <!-- HB Raw Config Surf · PWA & Mobile Home Screen Metadata -->
+  <meta name="application-name" content="HB Raw Surf">
+  <meta name="apple-mobile-web-app-title" content="HB Raw Surf">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#080d14">
+
+  <!-- Apple Touch Icon (iPhone & iPad Home Screen) -->
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
+  <!-- Standard Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+
+  <!-- Web App Manifest (Android & Desktop PC 1-Click Install) -->
+  <link rel="manifest" href="manifest.json">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- In-browser iPhone HEIC/HEIF to JPEG converter -->
   <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
@@ -55,10 +72,10 @@
     }
     .cam-theater-frame {
       position: absolute;
-      top: -108px; /* Lift up to firmly crop top site nav */
+      top: -108px;
       left: -2px;
-      width: 135%; /* Firmly crop right ad banner */
-      height: calc(100% + 185px); /* Increased to eliminate the bottom forecast & white bar */
+      width: 135%;
+      height: calc(100% + 185px);
       border: 0;
       transform: scale(1.08);
       transform-origin: top left;
@@ -87,12 +104,12 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center justify-between w-full sm:w-auto">
         <div class="flex items-center space-x-3">
-          <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-black text-slate-950 text-sm shadow-lg shadow-cyan-500/20">
-            FIG
+          <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-black text-slate-950 text-sm shadow-lg shadow-cyan-500/20 overflow-hidden">
+            <img src="apple-touch-icon.png" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerText='FIG'">
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <h1 class="text-lg font-black tracking-tight text-white">HB RAW CONFIG</h1>
+              <h1 class="text-lg font-black tracking-tight text-white">HB RAW CONFIG SURF</h1>
               <span id="cloud-sync-status" class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-mono-code">CONNECTING CLOUD...</span>
             </div>
             <p class="text-[11px] text-slate-400 font-mono-code">South HB ⇄ Bolsa Chica · Ground Truth Shore Ops</p>
@@ -510,7 +527,7 @@
   </div>
 
   <footer class="border-t border-slate-900 bg-slate-950 py-8 mt-16 text-center text-xs text-slate-500 font-mono-code">
-    <p class="text-amber-400/80 font-bold">HB RAW CONFIG · IN MEMORY OF RICK "ROCKIN' FIG" FIGNETTI</p>
+    <p class="text-amber-400/80 font-bold">HB RAW CONFIG SURF · IN MEMORY OF RICK "ROCKIN' FIG" FIGNETTI</p>
     <p class="mt-1">Dedicated to keeping Huntington Beach surf reports local, honest, and uncompromised.</p>
     <p class="mt-2 text-slate-600">Nearshore Buoy: CDIP 092 · NOAA CO-OPS Station 9410660/9410580 Sensors · Cloud Firestore Shared Sync</p>
   </footer>
@@ -1025,7 +1042,6 @@
           document.getElementById('hero-img').src = latestTodayDispatch.img;
           document.getElementById('hero-type-indicator').innerText = "Community Photo";
         } else {
-          // Has text report from today, but no photo -> Show Fig CTA card with updated status
           photoWrapper.classList.add('hidden');
           figCtaWrapper.classList.remove('hidden');
           figCtaSpotLabel.innerText = currentZone.name;
@@ -1134,7 +1150,7 @@
         });
         allCurrentReports = cloudReports;
         renderFeed(cloudReports);
-        displayHeroForCurrentZone(); // Automatically recalculates latest post for the active zone
+        displayHeroForCurrentZone();
       }, (error) => {
         console.warn("Firestore snapshot error:", error);
       });
