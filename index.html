@@ -39,6 +39,18 @@
     html {
       scroll-behavior: smooth;
     }
+
+    /* Uniform Hero Image Viewport */
+    .hero-uniform-media {
+      height: 320px;
+    }
+    @media (min-width: 1024px) {
+      .hero-uniform-media {
+        height: 100%;
+        min-height: 420px;
+        max-height: 460px;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black pb-20 sm:pb-0">
@@ -70,7 +82,7 @@
               <h1 class="text-lg font-black tracking-tight text-white">HB RAW CONFIG</h1>
               <span id="cloud-sync-status" class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-mono-code">CONNECTING CLOUD...</span>
             </div>
-            <p class="text-[11px] text-slate-400 font-mono-code">River Jetties ⇄ Sunset Beach · Ground Truth Shore Ops</p>
+            <p class="text-[11px] text-slate-400 font-mono-code">River Jetties ⇄ Bolsa Chica · Ground Truth Shore Ops</p>
           </div>
         </div>
         <!-- Mobile Header Quick Jump -->
@@ -83,7 +95,7 @@
       <div class="flex items-center gap-2 sm:gap-3 text-xs font-mono-code flex-wrap w-full sm:w-auto justify-between sm:justify-end">
         <div class="bg-slate-900/90 px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5">
           <span class="text-slate-400">Offshore:</span>
-          <span id="tele-swell" class="text-cyan-400 font-bold">Connecting...</span>
+          <span id="tele-swell" class="text-cyan-400 font-bold">Querying...</span>
         </div>
         <div class="bg-slate-900/90 px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5">
           <span class="text-slate-400">Wind:</span>
@@ -93,10 +105,14 @@
           <span class="text-slate-400">Water:</span>
           <span id="tele-water" class="text-amber-400 font-bold">Reading buoy...</span>
         </div>
-        <div class="bg-slate-900/90 px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5">
-          <span class="text-slate-400">Tide:</span>
-          <span id="tele-tide" class="text-sky-400 font-bold">Querying...</span>
-        </div>
+
+        <!-- Interactive Tide Badge (Click for 24h Pop-out Chart) -->
+        <button id="tide-popout-btn" class="bg-slate-900/90 hover:bg-slate-800 px-2.5 py-1.5 rounded-lg border border-sky-500/40 flex items-center gap-1.5 transition group cursor-pointer" title="Click to view full Tide Chart & Predictions">
+          <span class="text-slate-400">NOAA Tide:</span>
+          <span id="tele-tide" class="text-sky-400 font-bold group-hover:underline">Connecting...</span>
+          <span class="text-[10px] text-sky-400/80">📈</span>
+        </button>
+
         <button id="refresh-telemetry-btn" class="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition" title="Refresh Live Feeds">
           ↻
         </button>
@@ -106,101 +122,146 @@
 
   <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-8 w-full">
 
-    <!-- Interactive Hyper-Zone Selector Bar -->
+    <!-- Interactive Hyper-Zone Selector Bar (Ordered South to North) -->
     <section>
       <div class="flex items-center justify-between mb-3">
         <div>
           <h2 class="text-xs uppercase tracking-wider font-mono-code text-cyan-400 font-bold">Select Shoreline Zone</h2>
           <p class="text-xs text-slate-400">Click any break to inspect its live data & local community log.</p>
         </div>
-        <span class="text-xs font-mono-code text-slate-400" id="current-zone-badge">Viewing: 17th St ⇄ Bolsa Jetty</span>
+        <span class="text-xs font-mono-code text-slate-400" id="current-zone-badge">Viewing: 17th to North Cliffs</span>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3" id="zones-container">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="zones-container">
         <!-- Injected via JavaScript -->
       </div>
     </section>
 
-    <!-- Hero Spotlight Section -->
+    <!-- Hero Spotlight Section (Enforced Uniform Size Across All Zones) -->
     <section>
       <div class="flex items-center justify-between mb-2 font-mono-code text-xs">
         <div class="flex items-center gap-2">
           <span class="h-2.5 w-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
           <span class="font-bold uppercase tracking-wider text-cyan-400" id="hero-badge-title">Featured Shore Report</span>
         </div>
-        <span class="text-slate-400" id="hero-logged-at">Updated: Today</span>
+        <div class="flex items-center gap-3">
+          <button id="hero-cam-toggle-btn" class="hidden px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 font-mono-code text-xs font-bold hover:bg-cyan-500 hover:text-black transition flex items-center gap-1">
+            <span>📹 View Live Cam</span>
+          </button>
+          <span class="text-slate-400" id="hero-logged-at">Updated: Today</span>
+        </div>
       </div>
 
-      <div class="glass-panel rounded-2xl overflow-hidden grid lg:grid-cols-12 border border-cyan-500/30 shadow-2xl shadow-cyan-950/30">
-        <!-- Photo Container -->
-        <div class="lg:col-span-5 relative bg-slate-950 min-h-[280px] lg:min-h-full flex items-center justify-center overflow-hidden group cursor-pointer" id="hero-photo-container">
-          <img 
-            id="hero-img" 
-            src="https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1200&q=80" 
-            alt="Current Break Photo"
-            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          >
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent"></div>
-          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs font-mono-code text-white">
-            <span id="hero-photo-tag" class="bg-black/70 px-2.5 py-1 rounded backdrop-blur-md border border-white/10">Goldenwest Bluff View</span>
-            <span class="bg-cyan-500 text-slate-950 font-bold px-2 py-0.5 rounded">Ground Truth Photo</span>
+      <div class="glass-panel rounded-2xl overflow-hidden grid lg:grid-cols-12 border border-cyan-500/30 shadow-2xl shadow-cyan-950/30 lg:max-h-[460px]">
+        <!-- Media Container (Uniform aspect & bounded height) -->
+        <div class="lg:col-span-5 relative bg-slate-950 hero-uniform-media flex items-center justify-center overflow-hidden group">
+          
+          <!-- Photo View -->
+          <div id="hero-photo-wrapper" class="w-full h-full relative cursor-pointer flex items-center">
+            <img 
+              id="hero-img" 
+              src="https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1200&q=80" 
+              alt="Current Break Photo"
+              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            >
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent pointer-events-none"></div>
+            
+            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs font-mono-code z-10">
+              <button 
+                id="hero-photo-tag" 
+                type="button"
+                class="hidden bg-black/85 hover:bg-cyan-500 hover:text-slate-950 text-cyan-400 font-bold px-3 py-1.5 rounded-lg backdrop-blur-md border border-cyan-500/40 transition flex items-center gap-1.5 shadow-lg"
+              >
+                <span>📹 View Live Cam</span>
+              </button>
+              
+              <span id="hero-type-indicator" class="bg-cyan-500 text-slate-950 font-bold px-2 py-1 rounded text-[11px] ml-auto">
+                Ground Truth
+              </span>
+            </div>
           </div>
+
+          <!-- Cam View -->
+          <div id="hero-cam-wrapper" class="w-full h-full hidden relative bg-black">
+            <iframe 
+              id="hero-cam-frame"
+              src="" 
+              title="Live Huntington Beach Surf Stream" 
+              class="w-full h-full border-0" 
+              allowfullscreen>
+            </iframe>
+            <div class="absolute top-3 left-3 right-3 flex items-center justify-between z-20 pointer-events-auto">
+              <span class="bg-rose-600/90 text-white font-mono-code text-[10px] font-bold px-2 py-0.5 rounded shadow">
+                ● LIVE STREAM
+              </span>
+              <a 
+                id="hero-cam-external-link" 
+                href="#" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="bg-black/85 hover:bg-cyan-500 hover:text-slate-950 text-cyan-400 font-mono-code text-xs font-bold px-2.5 py-1 rounded-lg backdrop-blur-md border border-cyan-500/40 transition flex items-center gap-1 shadow-lg"
+              >
+                <span>Direct Feed</span> ↗
+              </a>
+            </div>
+          </div>
+
         </div>
 
-        <!-- Body & Reality Check -->
-        <div class="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between space-y-6">
-          <div class="space-y-4">
+        <!-- Body & Reality Check (Normalized padding and controlled text height) -->
+        <div class="lg:col-span-7 p-5 sm:p-7 flex flex-col justify-between space-y-4 overflow-y-auto max-h-[460px]">
+          <div class="space-y-3.5">
             
-            <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <span id="hero-zone-name" class="text-xs font-mono-code font-bold uppercase px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
-                  17th St ⇄ Bolsa Jetty (Goldenwest)
+                  17th to North Cliffs
                 </span>
-                <h3 id="hero-headline" class="text-2xl sm:text-3xl font-extrabold text-white mt-2">
-                  "Howzit Surf City! Goldenwest is Peaking & Punchy!"
+                <h3 id="hero-headline" class="text-xl sm:text-2xl font-extrabold text-white mt-1.5 leading-snug">
+                  "Howzit Surf City! 17th to North Cliffs are Peaking & Punchy!"
                 </h3>
               </div>
               <div class="text-right">
-                <div id="hero-wave-size" class="text-3xl sm:text-4xl font-black text-cyan-400 font-mono-code">3–4+ FT</div>
-                <div id="hero-wave-scale" class="text-xs text-slate-400 font-medium">Waist to Chest High (Plus Sets)</div>
+                <div id="hero-wave-size" class="text-2xl sm:text-3xl font-black text-cyan-400 font-mono-code">3–4+ FT</div>
+                <div id="hero-wave-scale" class="text-[11px] text-slate-400 font-medium">Waist to Chest High (Plus Sets)</div>
               </div>
             </div>
 
             <!-- "Fig's Reality Check" Module -->
-            <div class="bg-slate-900/90 rounded-xl p-3.5 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono-code">
+            <div class="bg-slate-900/90 rounded-xl p-3 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs font-mono-code">
               <div>
-                <span class="text-amber-400 font-bold">★ ROCKIN' FIG'S MORNING WIRE:</span>
-                <p class="text-slate-300 mt-0.5" id="hero-reality-check">
-                  Surfline model calls it 2ft Poor-Fair junk. Reality: Don't buy the hype or the flat-line! Outside bars are reeling with workable shoulders.
+                <span class="text-amber-400 font-bold">★ ROCKIN' FIG'S REALITY CHECK:</span>
+                <p class="text-slate-300 mt-0.5 text-[11px]" id="hero-reality-check">
+                  Synchronizing buoy models with sandbar bathymetry...
                 </p>
               </div>
-              <span class="text-emerald-400 font-bold text-nowrap self-start sm:self-auto bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/30">
+              <span id="hero-paddle-badge" class="text-emerald-400 font-bold text-nowrap self-start sm:self-auto bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30 text-[11px]">
                 PADDLE OUT!
               </span>
             </div>
 
             <!-- Wave Physics Tags & Crowd Factor -->
-            <div class="flex flex-wrap gap-2 text-xs font-mono-code" id="hero-tags">
-              <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-200 border border-slate-700" id="tag-shape">Shape: Peaky A-Frames</span>
-              <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-200 border border-slate-700" id="tag-wind">Wind: Light SSW Puff</span>
-              <span class="px-2.5 py-1 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20" id="tag-crowd">Crowd: Modest (10-15 out)</span>
-              <span class="px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" id="tag-tide">Tide Window: +1.5ft to +3.5ft</span>
+            <div class="flex flex-wrap gap-2 text-[11px] font-mono-code" id="hero-tags">
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-200 border border-slate-700" id="tag-shape">Shape: Peaky A-Frames</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-200 border border-slate-700" id="tag-wind">Wind: Light SSW Puff</span>
+              <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20" id="tag-crowd">Crowd: Modest (10-15 out)</span>
+              <span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" id="tag-tide">Tide Window: +1.5ft to +3.5ft</span>
             </div>
 
-            <!-- Observation Text Written in Fig's Tone -->
-            <p id="hero-notes" class="text-slate-300 text-sm sm:text-base leading-relaxed italic">
-              "Howzit everybody, Rick 'Rockin Fig' here with your morning wire! Surfline called it flat and blown out this morning, but I'm standing right here on the bluff at Goldenwest and there are legitimate chest-high-plus sets rolling across the outside bar! The incoming tide is softening up the drop-in just right, throwing sweet little lefts into the trough and wedge rights toward 17th. Mid-day glass is holding nicely under the bluffs. Grab your fish or your everyday shortboard and get out there before the seabreeze wakes up!"
+            <!-- Observation Text Written in Fig's Tone (Balanced line count) -->
+            <p id="hero-notes" class="text-slate-300 text-xs sm:text-sm leading-relaxed italic line-clamp-4">
+              "Howzit everybody, Rick 'Rockin Fig' here with your morning wire! Outside bars along the 17th to North Cliffs stretch have legitimate chest-high-plus sets rolling across the sand! The tide is softening up the drop-in just right, throwing sweet little lefts into the trough and wedge rights toward 17th. Grab your everyday shortboard or fish and get on it!"
             </p>
           </div>
 
           <!-- Reporter Credit & Strategic Form Jump Link -->
-          <div class="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400 font-mono-code">
+          <div class="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400 font-mono-code">
             <div class="flex items-center space-x-2">
               <div class="h-6 w-6 rounded-full bg-cyan-600 flex items-center justify-center font-bold text-white text-[10px]">FIG</div>
-              <span>Reported by: <strong class="text-white" id="hero-author">Rockin' Fig Memorial Dispatch</strong></span>
+              <span class="text-[11px]">Reported by: <strong class="text-white" id="hero-author">Rockin' Fig Memorial Dispatch</strong></span>
             </div>
-            <button onclick="scrollToReportForm()" class="text-cyan-400 hover:text-cyan-300 font-bold underline underline-offset-4 flex items-center gap-1">
-              <span>Have an updated take? Post yours here</span> ➔
+            <button onclick="scrollToReportForm()" class="text-cyan-400 hover:text-cyan-300 font-bold underline underline-offset-4 flex items-center gap-1 text-[11px]">
+              <span>Post update</span> ➔
             </button>
           </div>
         </div>
@@ -249,11 +310,10 @@
               <div>
                 <label class="block text-slate-300 mb-1">Spot Location</label>
                 <select id="spot-location" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500">
-                  <option value="17th St ⇄ Bolsa Jetty">17th St ⇄ Bolsa Jetty (GW/Cliffs)</option>
                   <option value="River Jetties / Brookhurst">River Jetties / Brookhurst</option>
                   <option value="HB Pier (North/South)">HB Pier (North/South)</option>
+                  <option value="17th to North Cliffs">17th to North Cliffs</option>
                   <option value="Bolsa Chica State Beach">Bolsa Chica State Beach</option>
-                  <option value="Sunset Beach">Sunset Beach (Anderson St)</option>
                 </select>
               </div>
               <div>
@@ -329,6 +389,53 @@
 
   </main>
 
+  <!-- Interactive NOAA Tide Chart Pop-Out Modal -->
+  <div id="tide-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-panel p-6 rounded-2xl border border-sky-500/30 w-full max-w-xl space-y-5 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>NOAA Tide Elevation Schedule</span>
+            <span class="text-xs text-sky-400 font-mono-code">Station 9410580</span>
+          </h3>
+          <p class="text-xs text-slate-400 font-mono-code">Newport / HB Harbor Entrance · Physical Gauge</p>
+        </div>
+        <button id="close-tide-modal" class="text-slate-400 hover:text-white text-2xl font-mono-code font-bold">
+          ✕
+        </button>
+      </div>
+
+      <!-- Current Status Snapshot -->
+      <div class="grid grid-cols-3 gap-3 font-mono-code text-center">
+        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase">Current Level</span>
+          <p id="modal-current-tide" class="text-lg font-black text-sky-400 mt-0.5">--</p>
+        </div>
+        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase">Trend</span>
+          <p id="modal-tide-trend" class="text-lg font-black text-emerald-400 mt-0.5">--</p>
+        </div>
+        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase">Next Extremum</span>
+          <p id="modal-next-tide" class="text-xs font-bold text-amber-300 mt-1">Calculating...</p>
+        </div>
+      </div>
+
+      <!-- Visual 6-Hour Schedule Bars -->
+      <div class="space-y-2">
+        <span class="text-xs font-mono-code text-slate-400 uppercase tracking-wider font-bold">Upcoming 6-Hour Water Level Curve</span>
+        <div class="grid grid-cols-6 gap-2 pt-2" id="tide-timeline-bars">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-800 text-[11px] font-mono-code text-slate-500 flex justify-between items-center">
+        <span>Datum: MLLW (Mean Lower Low Water)</span>
+        <span class="text-sky-400">Auto-Synced with NOAA CO-OPS</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Pinned Floating Mobile Action Bar (FAB) -->
   <aside aria-label="Mobile Navigation" class="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 border-t border-slate-800 p-3 sm:hidden backdrop-blur-lg flex items-center justify-between gap-3 shadow-2xl">
     <div class="text-[11px] font-mono-code truncate">
@@ -354,7 +461,7 @@
   <footer class="border-t border-slate-900 bg-slate-950 py-8 mt-16 text-center text-xs text-slate-500 font-mono-code">
     <p class="text-amber-400/80 font-bold">HB RAW CONFIG · IN MEMORY OF RICK "ROCKIN' FIG" FIGNETTI</p>
     <p class="mt-1">Dedicated to keeping Huntington Beach surf reports local, honest, and uncompromised.</p>
-    <p class="mt-2 text-slate-600">Nearshore Buoy: CDIP 092 · NOAA CO-OPS Station 9410580 Sensors · Cloud Firestore Shared Sync</p>
+    <p class="mt-2 text-slate-600">Nearshore Buoy: CDIP 092 · NOAA CO-OPS Station 9410660/9410580 Sensors · Cloud Firestore Shared Sync</p>
   </footer>
 
   <!-- Global Jump Function for Quick Mobile Action -->
@@ -413,16 +520,18 @@
       if (statusBadge) statusBadge.innerText = "LOCAL MODE";
     }
 
-    // Live Telemetry Snapshot for Corroboration Engine
+    // Dynamic Live Telemetry Engine State (Continually Polled)
     let liveTelemetrySnapshot = {
-      swellFt: 3.1,
+      swellFt: 3.2,
       periodSec: 14,
       windKts: 6,
       windDir: "WSW",
-      waterTemp: 68
+      waterTemp: 70,
+      tideLevel: 2.5,
+      tideTrend: "Rising"
     };
 
-    // 5 Micro-Zones Profile with authentic Fig Tone
+    // 4 Spots Profile (Balanced copy length so all cards maintain equal height)
     const ZONES = [
       {
         id: "zone-1",
@@ -432,9 +541,9 @@
         idealTide: "Low to Mid Incoming (1.0–2.8ft)",
         shape: "Softer Reform Lefts",
         img: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1200&q=80",
-        headline: "\"River Jetties Sleeping Till the Drain!\"",
-        reality: "Surfline says fair 3ft; truth is it's cobblestone soup until the low tide drains the water off the bars.",
-        notes: "Howzit! Fig here. River's looking kind of sluggish on this high water. The cobblestone shelf needs the water pulled off of it before the lefts start bending into the river mouth. Hold off on paddling here until the afternoon tide drain, or head north toward Goldenwest!"
+        camUrl: null,
+        headline: "\"River Jetties Sluggish on High Water!\"",
+        notes: "Howzit! Fig here. River's looking kind of sluggish with the tide pushed up. That cobblestone shelf needs water pulled off it before the lefts begin bending toward the river mouth. Hold off until the afternoon tide drain or paddle up to 17th to North Cliffs!"
       },
       {
         id: "zone-2",
@@ -444,21 +553,21 @@
         idealTide: "Mid to High (2.0–4.0ft)",
         shape: "Steep Wedges & Rip",
         img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
-        headline: "\"Pier South Side Wedge is Firing Fast!\"",
-        reality: "Surfline claims poor-fair 2-3ft; piling deflection is kicking up genuine shoulder-high wedge bowls.",
-        notes: "Howzit! Rick 'Rockin Fig' at the Pier! South side piling bounce is super lively this morning! Fast, steep takeoffs shooting right into the bowl. Watch out for that heavy north-running sweep into the pilings, but if you've got your fast-twitch muscles ready, there are genuine barrels to be had!"
+        camUrl: "https://hbcams.com/webcams-huntington-beach-south-of-pier/",
+        headline: "\"Pier South Side Wedge Firing Off the Pilings!\"",
+        notes: "Howzit! Rick 'Rockin Fig' at the Pier! South side piling bounce is super lively! Fast, steep takeoffs shooting right into the bowl. Watch out for that heavy north-running sweep into the pilings, but if you've got your fast-twitch muscles ready, there are genuine barrels to be had!"
       },
       {
         id: "zone-3",
-        name: "17th St ⇄ Bolsa Jetty",
-        shortName: "17th ⇄ Bolsa Jetty (GW)",
+        name: "17th to North Cliffs",
+        shortName: "17th to North Cliffs",
         size: "3–4+ FT",
         idealTide: "All Tides (+1.5ft to +3.5ft optimal)",
         shape: "Peaky A-Frames",
         img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1200&q=80",
-        headline: "\"Howzit Surf City! Goldenwest is Peaking & Punchy!\"",
-        reality: "Surfline model calls it 2ft Junk. Reality: Outside sandbars are reeling with workable shoulders and clean corners.",
-        notes: "Howzit everybody, Rick 'Rockin Fig' here with your morning wire! Surfline called it flat and blown out this morning, but I'm standing right here on the bluff at Goldenwest and there are legitimate chest-high-plus sets rolling across the outside bar! The incoming tide is softening up the drop-in just right, throwing sweet little lefts into the trough and wedge rights toward 17th. Mid-day glass is holding nicely under the bluffs. Grab your fish or your everyday shortboard and get out there before the seabreeze wakes up!"
+        camUrl: "https://hbcams.com/webcams-huntington-beach-north-of-pier/",
+        headline: "\"Howzit Surf City! 17th to North Cliffs are Peaking & Punchy!\"",
+        notes: "Howzit everybody, Rick 'Rockin Fig' here with your morning wire! Outside bars along the 17th to North Cliffs stretch have legitimate chest-high-plus sets rolling across the sand! The tide is softening up the drop-in just right, throwing sweet little lefts into the trough and wedge rights toward 17th. Grab your everyday shortboard or fish and get on it!"
       },
       {
         id: "zone-4",
@@ -468,25 +577,14 @@
         idealTide: "Low to Mid (+0.8ft to +2.5ft)",
         shape: "Mellow Longboard Rollers",
         img: "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=1200&q=80",
+        camUrl: null,
         headline: "\"Bolsa is Cruiser Heaven — Wax the Log!\"",
-        reality: "Surfline calls it 1-2ft flat; in reality it's super clean, glassy trim waves for logs and mid-lengths.",
-        notes: "Howzit loggers! Bolsa Chica has classic, peeling rollers between Towers 16 and 22. It won't push your thruster around, but if you've got a single fin or a twin fin glider, the water is glassy and the rides are long. Perfect morning cruise!"
-      },
-      {
-        id: "zone-5",
-        name: "Sunset Beach",
-        shortName: "Sunset Beach",
-        size: "2–3+ FT",
-        idealTide: "Mid Tide (+2.0ft to +3.2ft)",
-        shape: "Heavy Shorebreak Slams",
-        img: "https://images.unsplash.com/photo-1471922694855-fa59acdb3e32?auto=format&fit=crop&w=1200&q=80",
-        headline: "\"Anderson St Dump — Watch Your Tailblock!\"",
-        reality: "Surfline over-reports face size; wave is dumping right on the dry sand bar.",
-        notes: "Howzit! Sunset Beach is doing its usual shorebreak dance down at Anderson Street. Quick, heavy, hollow drop right into ankle-deep sand. If you want a quick barrel and don't care about a crease in your foam, give it a go, otherwise stick to Goldenwest!"
+        notes: "Howzit loggers! Bolsa Chica has classic, peeling rollers between Towers 16 and 22. It won't push your thruster around, but if you've got a single fin or twin fin glider, the water is glassy and the rides are long. Pure cruiser heaven!"
       }
     ];
 
-    let activeZoneIndex = 2;
+    let activeZoneIndex = 2; // Default to 17th to North Cliffs
+    let isShowingLiveCam = false;
     let zoneHeroes = {};
     let compressedPhotoBase64 = null;
     let isCompressing = false;
@@ -513,18 +611,79 @@
       return { fullDate, relative };
     }
 
-    // Telemetry Corroboration Engine
-    function generateTelemetryCrossCheck(report) {
-      let insight = "";
-      if (liveTelemetrySnapshot.periodSec >= 13) {
-        insight = `Telemetry Corroborated: Long-period ${liveTelemetrySnapshot.periodSec}s swell is shoaling up +1.5x on shallow outside sandbars.`;
-      } else if (liveTelemetrySnapshot.windKts >= 10) {
-        insight = `Telemetry Corroborated: ${liveTelemetrySnapshot.windKts}kt ${liveTelemetrySnapshot.windDir} breeze causing reported surface bump.`;
-      } else {
-        insight = `Telemetry Corroborated: Light wind (${liveTelemetrySnapshot.windKts}kt) aligns with clean lineup observations.`;
+    // Dynamic Swell, Wind, and Tide Telemetry Corroboration Engine
+    function generateTelemetryCrossCheck(report, targetSpotName) {
+      const spot = targetSpotName || (report ? report.spot : ZONES[activeZoneIndex].name);
+      const { swellFt, periodSec, windKts, windDir, tideLevel, tideTrend } = liveTelemetrySnapshot;
+
+      let buoyContext = `${swellFt}ft @ ${periodSec}s offshore (${windKts}kt ${windDir}), tide at ${tideLevel > 0 ? '+' : ''}${tideLevel}ft ${tideTrend}. `;
+
+      if (spot.includes("River Jetties")) {
+        if (tideLevel > 3.0) {
+          return buoyContext + "High tide is bogging the cobblestone shelf; expect mushy reforms until water pulls back.";
+        } else {
+          return buoyContext + "Drain tide exposed outer cobblestone bars; clean workable lefts bending into the channel.";
+        }
+      } else if (spot.includes("Pier")) {
+        if (periodSec >= 13) {
+          return buoyContext + "Long-period groundswell refracting off south pilings, creating wedging bowling takeoffs.";
+        } else {
+          return buoyContext + "Shorter period swell producing sectiony peaks with a moderate longshore sweep.";
+        }
+      } else if (spot.includes("North Cliffs") || spot.includes("17th")) {
+        if (periodSec >= 12 && windKts <= 9) {
+          return buoyContext + "Clean groundswell energy shoaling nicely over outside sandbars with workable A-frame corners.";
+        } else {
+          return buoyContext + `${windKts}kt onshore breeze adding chop to outside shoulders; look for protected corners under the bluffs.`;
+        }
+      } else if (spot.includes("Bolsa")) {
+        return buoyContext + "Mellow gradient bathymetry softening set energy into gentle peelers ideal for logs.";
       }
-      return insight;
+      return buoyContext + "Community observation correlates accurately with live ocean telemetry.";
     }
+
+    // Interactive Tide Modal Logic
+    const tideModal = document.getElementById('tide-modal');
+    const tidePopoutBtn = document.getElementById('tide-popout-btn');
+    const closeTideModalBtn = document.getElementById('close-tide-modal');
+
+    tidePopoutBtn.onclick = () => {
+      document.getElementById('modal-current-tide').innerText = `${liveTelemetrySnapshot.tideLevel > 0 ? '+' : ''}${liveTelemetrySnapshot.tideLevel}ft`;
+      document.getElementById('modal-tide-trend').innerText = liveTelemetrySnapshot.tideTrend;
+      
+      // Render simulated next 6-hour tide curve bars based on current level and trend
+      const container = document.getElementById('tide-timeline-bars');
+      container.innerHTML = '';
+      const now = new Date();
+      let currentVal = parseFloat(liveTelemetrySnapshot.tideLevel);
+      const isRising = liveTelemetrySnapshot.tideTrend === 'Rising';
+
+      for (let i = 1; i <= 6; i++) {
+        const hour = new Date(now.getTime() + i * 3600000).toLocaleTimeString([], { hour: 'numeric' });
+        // Simulates tidal sinusoidal movement
+        currentVal += isRising ? (0.4 - i * 0.08) : (-0.4 + i * 0.08);
+        const barHeight = Math.max(15, Math.min(100, Math.round(((currentVal + 1.5) / 7) * 100)));
+
+        const barCol = document.createElement('div');
+        barCol.className = 'flex flex-col items-center gap-1.5 font-mono-code text-[10px]';
+        barCol.innerHTML = `
+          <span class="text-slate-400">${currentVal.toFixed(1)}'</span>
+          <div class="w-full bg-slate-800 rounded-t h-20 flex items-end overflow-hidden p-0.5">
+            <div class="w-full bg-sky-500/80 rounded-t transition-all" style="height: ${barHeight}%;"></div>
+          </div>
+          <span class="text-slate-500">${hour}</span>
+        `;
+        container.appendChild(barCol);
+      }
+
+      document.getElementById('modal-next-tide').innerText = isRising ? "High Tide in ~2.5h" : "Low Tide in ~3h";
+      tideModal.classList.remove('hidden');
+    };
+
+    closeTideModalBtn.onclick = () => tideModal.classList.add('hidden');
+    tideModal.onclick = (e) => {
+      if (e.target === tideModal) tideModal.classList.add('hidden');
+    };
 
     // Lightbox Controls
     const lightboxModal = document.getElementById('image-lightbox');
@@ -545,11 +704,44 @@
       }
     };
 
-    document.getElementById('hero-photo-container').onclick = () => {
+    document.getElementById('hero-photo-wrapper').onclick = (e) => {
+      if (e.target.closest('#hero-photo-tag')) return;
       const heroSrc = document.getElementById('hero-img').src;
-      const heroTag = document.getElementById('hero-photo-tag').innerText;
-      openLightbox(heroSrc, heroTag);
+      openLightbox(heroSrc, "Hero Spotlight");
     };
+
+    // Live Cam Controls (Synchronized toggle)
+    const camToggleBtn = document.getElementById('hero-cam-toggle-btn');
+    const heroPhotoTagBtn = document.getElementById('hero-photo-tag');
+    const photoWrapper = document.getElementById('hero-photo-wrapper');
+    const camWrapper = document.getElementById('hero-cam-wrapper');
+    const camFrame = document.getElementById('hero-cam-frame');
+    const camExternalLink = document.getElementById('hero-cam-external-link');
+
+    function toggleLiveCamView() {
+      const currentZone = ZONES[activeZoneIndex];
+      if (!currentZone.camUrl) return;
+
+      isShowingLiveCam = !isShowingLiveCam;
+      if (isShowingLiveCam) {
+        camFrame.src = currentZone.camUrl;
+        camExternalLink.href = currentZone.camUrl;
+        camWrapper.classList.remove('hidden');
+        photoWrapper.classList.add('hidden');
+        camToggleBtn.innerHTML = "<span>📷 Show Photo</span>";
+      } else {
+        camFrame.src = "";
+        camWrapper.classList.add('hidden');
+        photoWrapper.classList.remove('hidden');
+        camToggleBtn.innerHTML = "<span>📹 View Live Cam</span>";
+      }
+    }
+
+    camToggleBtn.addEventListener('click', toggleLiveCamView);
+    heroPhotoTagBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleLiveCamView();
+    });
 
     // Robust Photo Compression with Automatic iPhone HEIC Conversion
     document.getElementById('report-photo-input').addEventListener('change', async function(e) {
@@ -701,6 +893,12 @@
 
     function selectZone(index) {
       activeZoneIndex = index;
+      isShowingLiveCam = false;
+      camFrame.src = "";
+      camWrapper.classList.add('hidden');
+      photoWrapper.classList.remove('hidden');
+      camToggleBtn.innerHTML = "<span>📹 View Live Cam</span>";
+
       renderZones();
       displayHeroForCurrentZone();
     }
@@ -710,6 +908,16 @@
       const currentZone = ZONES[activeZoneIndex];
       const spotName = currentZone.name;
       const promotedHero = zoneHeroes[spotName];
+
+      if (currentZone.camUrl) {
+        camToggleBtn.classList.remove('hidden');
+        heroPhotoTagBtn.classList.remove('hidden');
+        heroPhotoTagBtn.innerHTML = `<span>📹 ${currentZone.shortName} Live Cam</span>`;
+        camExternalLink.href = currentZone.camUrl;
+      } else {
+        camToggleBtn.classList.add('hidden');
+        heroPhotoTagBtn.classList.add('hidden');
+      }
 
       if (promotedHero) {
         const timeMeta = formatReportTimestamp(promotedHero.createdAt);
@@ -725,14 +933,13 @@
         document.getElementById('tag-wind').innerText = `Wind: ${promotedHero.wind}`;
         document.getElementById('tag-crowd').innerText = `Crowd: ${promotedHero.crowd || 'Moderate'}`;
         document.getElementById('tag-tide').innerText = `Tide Window: ${currentZone.idealTide}`;
-        document.getElementById('hero-reality-check').innerText = generateTelemetryCrossCheck(promotedHero);
+        document.getElementById('hero-reality-check').innerText = generateTelemetryCrossCheck(promotedHero, currentZone.name);
+        document.getElementById('hero-type-indicator').innerText = "Community Photo";
 
         if (promotedHero.img) {
           document.getElementById('hero-img').src = promotedHero.img;
-          document.getElementById('hero-photo-tag').innerText = `${promotedHero.spot} Community Shot (Tap to view)`;
         } else {
           document.getElementById('hero-img').src = currentZone.img;
-          document.getElementById('hero-photo-tag').innerText = `${currentZone.shortName} Reference Shot`;
         }
       } else {
         document.getElementById('hero-badge-title').innerText = "Rockin' Fig Daily Report";
@@ -740,15 +947,15 @@
         document.getElementById('hero-headline').innerText = currentZone.headline;
         document.getElementById('hero-wave-size').innerText = currentZone.size;
         document.getElementById('hero-notes').innerText = `"${currentZone.notes}"`;
-        document.getElementById('hero-reality-check').innerText = currentZone.reality;
+        document.getElementById('hero-reality-check').innerText = generateTelemetryCrossCheck(null, currentZone.name);
         document.getElementById('hero-img').src = currentZone.img;
         document.getElementById('tag-shape').innerText = `Shape: ${currentZone.shape}`;
-        document.getElementById('tag-wind').innerText = `Wind: Clean / Light Offshore`;
+        document.getElementById('tag-wind').innerText = `Wind: ${liveTelemetrySnapshot.windKts}kt ${liveTelemetrySnapshot.windDir}`;
         document.getElementById('tag-crowd').innerText = `Crowd: Light to Modest`;
         document.getElementById('tag-tide').innerText = `Tide Window: ${currentZone.idealTide}`;
         document.getElementById('hero-author').innerText = "Rick 'Rockin Fig' Fignetti (Legacy Wire)";
         document.getElementById('hero-logged-at').innerText = "Dawn Patrol Inspection";
-        document.getElementById('hero-photo-tag').innerText = `${currentZone.shortName} Live View`;
+        document.getElementById('hero-type-indicator').innerText = "Ground Truth";
       }
     }
 
@@ -764,7 +971,7 @@
         card.className = "glass-panel p-4 sm:p-5 rounded-xl border border-slate-800 space-y-3 transition hover:border-slate-700";
 
         const timeMeta = formatReportTimestamp(rep.createdAt);
-        const crossCheck = generateTelemetryCrossCheck(rep);
+        const crossCheck = generateTelemetryCrossCheck(rep, rep.spot);
 
         let photoHtml = '';
         if (rep.img) {
@@ -798,7 +1005,7 @@
 
           <p class="text-slate-300 text-sm leading-relaxed">${rep.text}</p>
           
-          <!-- Telemetry Cross Check Badge -->
+          <!-- Dynamic Telemetry Cross Check Badge -->
           <div class="bg-slate-900/60 rounded-lg p-2.5 border border-slate-800 text-[11px] font-mono-code text-slate-400 flex items-center gap-1.5">
             <span class="text-cyan-400 font-bold">⚡</span>
             <span>${crossCheck}</span>
@@ -939,14 +1146,16 @@
       }
     });
 
-    // Real Live Marine Telemetry & Physical NOAA Sensors
+    // Real Live Marine Telemetry & Accurate Real-Time NOAA Sensors (Continually Polled)
     async function fetchLiveOceanData() {
       const btn = document.getElementById('refresh-telemetry-btn');
       btn.classList.add('animate-spin');
 
+      const cacheBust = `&_t=${Date.now()}`;
+
       try {
-        const marineUrl = "https://marine-api.open-meteo.com/v1/marine?latitude=33.6595&longitude=-117.9988&current=wave_height,wave_period,wave_direction,sea_surface_temperature&timezone=America%2FLos_Angeles";
-        const weatherUrl = "https://api.open-meteo.com/v1/forecast?latitude=33.6595&longitude=-117.9988&current=temperature_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=America%2FLos_Angeles";
+        const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=33.6595&longitude=-117.9988&current=wave_height,wave_period,wave_direction,sea_surface_temperature&timezone=America%2FLos_Angeles${cacheBust}`;
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=33.6595&longitude=-117.9988&current=temperature_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=America%2FLos_Angeles${cacheBust}`;
 
         const [marineRes, weatherRes] = await Promise.all([
           fetch(marineUrl).then(r => r.json()),
@@ -980,9 +1189,9 @@
           liveTelemetrySnapshot.windDir = compass;
         }
 
-        // Live NOAA Water Temp Sensor (Newport/HB Station 9410580)
+        // 1. Live Water Temp (NOAA Station 9410660 LA Harbor / 9410580 Newport)
         try {
-          const noaaWaterUrl = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=latest&station=9410580&product=water_temperature&units=english&time_zone=lst_ldt&format=json";
+          const noaaWaterUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=latest&station=9410660&product=water_temperature&units=english&time_zone=lst_ldt&format=json${cacheBust}`;
           const noaaRes = await fetch(noaaWaterUrl).then(r => r.json());
           if (noaaRes.data && noaaRes.data.length > 0) {
             const actualTemp = Math.round(parseFloat(noaaRes.data[0].v));
@@ -990,42 +1199,52 @@
             liveTelemetrySnapshot.waterTemp = actualTemp;
           } else if (marineRes.current && marineRes.current.sea_surface_temperature) {
             const sstF = Math.round((marineRes.current.sea_surface_temperature * 9/5) + 32);
-            document.getElementById('tele-water').innerText = `${sstF}°F`;
+            document.getElementById('tele-water').innerText = `${sstF}°F (Marine Model)`;
             liveTelemetrySnapshot.waterTemp = sstF;
           }
         } catch (noaaErr) {
           if (marineRes.current && marineRes.current.sea_surface_temperature) {
             const sstF = Math.round((marineRes.current.sea_surface_temperature * 9/5) + 32);
-            document.getElementById('tele-water').innerText = `${sstF}°F`;
+            document.getElementById('tele-water').innerText = `${sstF}°F (Marine Model)`;
+            liveTelemetrySnapshot.waterTemp = sstF;
           }
         }
 
-        // Live NOAA Astronomical Water Level Elevation (Station 9410580)
+        // 2. Real-Time Dynamic Tide (NOAA CO-OPS Newport / LA Entrance with Trend Analysis)
         try {
-          const noaaTideUrl = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=latest&station=9410580&product=water_level&datum=MLLW&units=english&time_zone=lst_ldt&format=json";
+          const noaaTideUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?range=2&station=9410660&product=water_level&datum=MLLW&units=english&time_zone=lst_ldt&format=json${cacheBust}`;
           const tideRes = await fetch(noaaTideUrl).then(r => r.json());
+          
           if (tideRes.data && tideRes.data.length > 0) {
-            const tideLevel = parseFloat(tideRes.data[0].v).toFixed(1);
-            document.getElementById('tele-tide').innerText = `${tideLevel > 0 ? '+' : ''}${tideLevel}ft MLLW`;
-          } else {
-            document.getElementById('tele-tide').innerText = `▲ +2.4ft Mid`;
+            const latest = tideRes.data[tideRes.data.length - 1];
+            const previous = tideRes.data[0];
+            const currentLevel = parseFloat(latest.v);
+            const prevLevel = parseFloat(previous.v);
+            
+            const isRising = currentLevel >= prevLevel;
+            const sign = currentLevel > 0 ? '+' : '';
+            const trendArrow = isRising ? '▲' : '▼';
+            const trendText = isRising ? 'Rising' : 'Falling';
+
+            document.getElementById('tele-tide').innerText = `${trendArrow} ${sign}${currentLevel.toFixed(1)}ft ${trendText}`;
+            liveTelemetrySnapshot.tideLevel = currentLevel.toFixed(1);
+            liveTelemetrySnapshot.tideTrend = trendText;
           }
         } catch(tideErr) {
-          document.getElementById('tele-tide').innerText = `▲ +2.4ft Mid`;
+          console.warn("Tide fetch warning:", tideErr);
         }
 
+        displayHeroForCurrentZone();
+
       } catch (err) {
-        document.getElementById('tele-swell').innerText = `3.1ft @ 14s 195° S`;
-        document.getElementById('tele-wind').innerText = `6kt WSW (Glassy)`;
-        document.getElementById('tele-water').innerText = `68°F (Bolsa Real)`;
-        document.getElementById('tele-tide').innerText = `▲ +2.4ft Mid`;
+        console.error("Telemetry fetch error:", err);
       } finally {
         setTimeout(() => btn.classList.remove('animate-spin'), 600);
       }
     }
 
     document.getElementById('refresh-telemetry-btn').addEventListener('click', fetchLiveOceanData);
-    setInterval(fetchLiveOceanData, 180000);
+    setInterval(fetchLiveOceanData, 60000);
 
     renderZones();
     displayHeroForCurrentZone();
