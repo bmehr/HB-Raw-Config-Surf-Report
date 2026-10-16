@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HB Raw Config Surf | In Memory of Rockin' Fig</title>
 
   <!-- HB Raw Config Surf · PWA & Mobile Home Screen Metadata -->
@@ -39,6 +39,7 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
       background-color: #080d14;
       color: #e2e8f0;
+      touch-action: pan-x pan-y pinch-zoom;
     }
     .font-mono-code {
       font-family: 'JetBrains Mono', monospace;
@@ -97,7 +98,7 @@
       scrollbar-width: none;
     }
 
-    /* Clean Styled Scrollbar for Modals (Eliminates standard browser gray bars) */
+    /* Clean Styled Scrollbar for Modals */
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
     }
@@ -321,7 +322,7 @@
               <h4 class="text-lg sm:text-2xl font-black text-white tracking-tight mt-1">
                 "No eyes on the sand yet for this stretch today!"
               </h4>
-              <p class="text-slate-300 text-xs sm:text-sm font-sans leading-relaxed italic">
+              <p class="text-slate-300 text-xs sm:text-sm font-sans leading-relaxed italic" id="fig-cta-quote">
                 "Don't let computer models fool you. If you're on the beach or just surfed, post a quick dispatch — the latest local update automatically becomes the featured Hero report!"
               </p>
             </div>
@@ -379,9 +380,9 @@
               <span class="px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" id="tag-tide">Tide Window: +2.0ft to +4.0ft</span>
             </div>
 
-            <!-- Observation Text Written in Fig's Tone -->
+            <!-- Observation Text Written in Fig's Dynamic Voice -->
             <p id="hero-notes" class="text-slate-300 text-xs sm:text-sm leading-relaxed italic">
-              "Howzit everybody, Rick 'Rockin Fig' here at the Pier! South side piling bounce is lively this morning with fast, steep wedge takeoffs into the bowl. North side is holding peaky lefts toward 6th St. Watch out for the current heading north through the pilings!"
+              "Howzit everybody, Rick 'Rockin Fig' here with your Surf City wire!"
             </p>
           </div>
 
@@ -425,7 +426,7 @@
   </main>
 
   <!-- ======================================================== -->
-  <!-- MODAL 1: OPTIMIZED DISPATCH DESK (DESKTOP & MOBILE NO-SCROLL) -->
+  <!-- MODAL 1: OPTIMIZED DISPATCH DESK -->
   <!-- ======================================================== -->
   <div id="dispatch-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto custom-scrollbar">
     <div class="glass-panel p-5 sm:p-6 rounded-t-3xl sm:rounded-2xl border border-cyan-500/50 w-full max-w-xl space-y-3.5 shadow-2xl relative my-auto">
@@ -443,7 +444,7 @@
       </div>
 
       <form id="surf-report-form" class="space-y-3">
-        <!-- 2-Column Responsive Layout to fit perfectly without desktop scroll -->
+        <!-- 2-Column Responsive Layout -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-slate-200 text-xs font-bold mb-1">Your Name / Handle</label>
@@ -477,13 +478,13 @@
             </select>
           </div>
           <div>
-            <label class="block text-slate-300 font-bold mb-1">Wind</label>
+            <label class="block text-slate-300 font-bold mb-1">Wind / Surface</label>
             <select id="wind-condition" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-[11px]">
               <option value="Clean / Glassy">Clean / Glassy</option>
               <option value="Light Offshore (Groomed)">Light Offshore</option>
-              <option value="Side-Texture">Side-Texture</option>
-              <option value="Bumpy / Cross-Chop">Bumpy / Chop</option>
-              <option value="Blown-Out Onshore">Blown-Out</option>
+              <option value="Strong Offshore">Strong Offshore</option>
+              <option value="Light Onshore">Light Onshore</option>
+              <option value="White Caps">White Caps</option>
             </select>
           </div>
           <div>
@@ -511,7 +512,7 @@
         <button type="submit" id="submit-btn" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black py-3 px-4 rounded-xl text-xs sm:text-sm uppercase tracking-wider shadow-xl shadow-cyan-500/25 active:scale-95 transition">
           Push Ground Truth Report ➔
         </button>
-        <p id="submit-error" class="text-rose-400 text-xs text-center hidden"></p>
+        <div id="submit-error" class="bg-rose-950/80 border border-rose-500 text-rose-200 p-2.5 rounded-lg text-xs font-mono-code text-center hidden"></div>
       </form>
     </div>
   </div>
@@ -706,14 +707,14 @@
       const el = document.getElementById(id);
       if (el) {
         el.classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // Prevents background dual-scrolling
+        document.body.style.overflow = 'hidden';
       }
     }
     function closeModal(id) {
       const el = document.getElementById(id);
       if (el) {
         el.classList.add('hidden');
-        document.body.style.overflow = ''; // Restores normal scrolling
+        document.body.style.overflow = '';
       }
     }
     function openDispatchModal(defaultSpot) {
@@ -797,9 +798,7 @@
         size: "3–5 FT",
         idealTide: "Low to Mid Incoming (1.0–3.0ft)",
         shape: "Steep Wedges & Dredging Peaks",
-        camUrl: null,
-        headline: "\"South HB & River Wedging on the South Pulse!\"",
-        notes: "Howzit! Fig here with your South HB wire! Don't sleep on South State Beach down through Brookhurst and the River Jetties — with this south swell running, it's pulling in solid chest-to-head-high sets! The outer bars are throwing steep, punchy wedges and dredging lefts into the river channel. It's got way more juice than the computer models give it credit for. Watch that rip along the jetty, wax up your everyday shortboard, and get out there on the incoming push!"
+        camUrl: null
       },
       {
         id: "zone-2",
@@ -809,9 +808,7 @@
         size: "3–4 FT",
         idealTide: "Mid to High (2.0–4.0ft)",
         shape: "Steep Wedges & Rip",
-        camUrl: "https://hbcams.com/webcams-huntington-beach-south-of-pier/",
-        headline: "\"South Side Wedge Firing Off the Pilings!\"",
-        notes: "Howzit! Rick 'Rockin Fig' at the Pier! South side piling bounce is super lively! Fast, steep takeoffs shooting right into the bowl. North side is holding peaky lefts toward 6th St. Watch out for that heavy north-running sweep into the pilings!"
+        camUrl: "https://hbcams.com/webcams-huntington-beach-south-of-pier/"
       },
       {
         id: "zone-3",
@@ -821,9 +818,7 @@
         size: "3–4+ FT",
         idealTide: "All Tides (+1.5ft to +3.5ft optimal)",
         shape: "Peaky A-Frames",
-        camUrl: "https://hbcams.com/webcams-huntington-beach-north-of-pier/",
-        headline: "\"North HB & The Cliffs are Peaking & Punchy!\"",
-        notes: "Howzit everybody, Rick 'Rockin Fig' here with your morning wire! Outside bars along the North HB stretch through Goldenwest and the Cliffs have legitimate chest-high-plus sets rolling across the sand! Sweet little lefts into the trough and wedge rights toward 17th. Mid-day glass is holding nicely under the bluffs!"
+        camUrl: "https://hbcams.com/webcams-huntington-beach-north-of-pier/"
       },
       {
         id: "zone-4",
@@ -833,9 +828,7 @@
         size: "2–3 FT",
         idealTide: "Low to Mid (+0.8ft to +2.5ft)",
         shape: "Mellow Longboard Rollers",
-        camUrl: null,
-        headline: "\"Bolsa is Cruiser Heaven — Wax the Log!\"",
-        notes: "Howzit loggers! Bolsa Chica has classic, peeling rollers between Seapoint and the North Lot towers. It won't push your shortboard around, but if you've got a single fin or twin fin glider, the water is glassy and the rides are long. Pure cruiser heaven!"
+        camUrl: null
       }
     ];
 
@@ -843,8 +836,9 @@
     let allCurrentReports = [];
     let compressedPhotoBase64 = null;
     let isCompressing = false;
+    let hasAutoSelectedFreshestZone = false;
 
-    // Helper: Checks if a post timestamp is from the current calendar day
+    // Helper: Checks if a post timestamp is from current calendar day
     function isPostedToday(timestampMs) {
       if (!timestampMs) return false;
       const postDate = new Date(timestampMs);
@@ -903,6 +897,78 @@
         return buoyContext + "Mellow gradient bathymetry softening set energy into gentle peelers ideal for logs.";
       }
       return buoyContext + "Community observation correlates accurately with live ocean telemetry.";
+    }
+
+    // ========================================================
+    // DYNAMIC "ROCKIN' FIG" TELEMETRY-SYNTHESIZED COMMENTARY ENGINE
+    // ========================================================
+    function generateDynamicFigReport(spotName) {
+      const { windKts, windDir, deepSwellFt, periodSec, tideLevel, tideTrend } = liveTelemetrySnapshot;
+
+      // 1. Wind commentary
+      let windText = "";
+      const isOffshore = (windDir === "E" || windDir === "NE" || windDir === "ENE" || windDir === "SE" || (windDir === "N" && windKts > 8));
+      const isOnshore = (windDir === "W" || windDir === "WSW" || windDir === "SW" || windDir === "NW");
+
+      if (isOffshore && windKts >= 14) {
+        windText = `Man, those Santanas are howling offshore right now at ${windKts} knots out of the ${windDir}! It's grooming the swell clean but you'll want some extra foam under your chest so you don't get blown off the back of the wave on takeoff.`;
+      } else if (isOffshore && windKts >= 6) {
+        windText = `Sweet light offshore breeze at ${windKts} knots holding up the faces and keeping things groomed like a racetrack.`;
+      } else if (windKts <= 5) {
+        windText = `Grease-calm sheet glass on the water right now with just a whisper of ${windKts}kt air.`;
+      } else if (isOnshore && windKts >= 14) {
+        windText = `Onshore breeze is up to ${windKts} knots bringing in white caps and side-chop. You gotta hunt for corners in the soup.`;
+      } else {
+        windText = `A light ${windKts}kt ${windDir} bump on the outside shoulders, but workable sandbar corners are still rolling through.`;
+      }
+
+      // 2. Swell & Period commentary
+      let swellText = "";
+      if (periodSec >= 14) {
+        swellText = `We've got legit long-period groundswell energy showing ${periodSec} seconds on the buoy, meaning those outside sandbars are shoaling up set waves well overhead of generic computer forecasts!`;
+      } else if (periodSec <= 10) {
+        swellText = `It's mostly shorter-period windswell at ${periodSec}s, so peaks are coming in rapid-fire without much lull between sets.`;
+      } else {
+        swellText = `A solid mid-period ${periodSec}s pulse is spacing out the sets nicely with good recovery time between waves.`;
+      }
+
+      // 3. Tide commentary
+      let tideText = "";
+      const numTide = parseFloat(tideLevel);
+      if (numTide >= 4.0) {
+        tideText = `Tide is pushed way up at ${tideLevel}ft, so expect some deep-water bogging until the tide begins to drain.`;
+      } else if (numTide <= 1.5) {
+        tideText = `Tide is pulled right off the bars at a low ${tideLevel}ft, so watch out for fast pitching closeouts and shallow sandbars!`;
+      } else {
+        tideText = `Tide is in the sweet spot at ${tideLevel}ft ${tideTrend}, cushioning the drop without drowning out the shape.`;
+      }
+
+      // 4. Spot-Specific Wrap
+      let spotWrap = "";
+      let headline = "";
+      let waveRange = "";
+
+      if (spotName.includes("South HB")) {
+        headline = `"South HB: ${isOffshore ? 'Offshores Firing the Jetties!' : 'Punchy Wedges on the Push!'}"`;
+        waveRange = periodSec >= 13 ? "3–5+ FT" : "2–4 FT";
+        spotWrap = `Down here past Brookhurst toward the River, the south angle is bending hard into the sandbars. Grab your fish or everyday shortboard and paddle out before conditions shift!`;
+      } else if (spotName.includes("Pier")) {
+        headline = `"The Pier: ${isOffshore ? 'Piling Wedges Reeling in the Wind!' : 'Fast Bowling Peaks North & South!'}"`;
+        waveRange = periodSec >= 13 ? "3–5 FT" : "3–4 FT";
+        spotWrap = `South side piling bounce has that lively bowl if you're fast off the bottom, and north side is throwing workable rights toward the pier and lefts into the 6th St trough. Watch the north current!`;
+      } else if (spotName.includes("North HB") || spotName.includes("Cliffs")) {
+        headline = `"North HB: ${isOffshore ? 'Bluff-Groomed A-Frames!' : 'Peak Action Through 17th & Cliffs!'}"`;
+        waveRange = periodSec >= 13 ? "3–4+ FT" : "2–4 FT";
+        spotWrap = `The 17th to Goldenwest stretch is holding peaky shapes, and the bluffs are providing great protection. Sweet little lefts running into the trough and rights wedging toward 17th!`;
+      } else {
+        headline = `"Bolsa Chica: ${isOffshore ? 'Glider Heaven in the Offshores!' : 'Wax the Log for Mellow Peelers!'}"`;
+        waveRange = "2–3+ FT";
+        spotWrap = `Classic peeling rollers between Seapoint and the North Lot. It won't push your shortboard around, but if you've got a single fin or twin fin glider, conditions are righteous.`;
+      }
+
+      const fullDispatch = `"Howzit Surf City! Rick 'Rockin Fig' here with your live wire! ${windText} ${swellText} ${tideText} ${spotWrap}"`;
+
+      return { headline, waveRange, fullDispatch };
     }
 
     // Full-Bleed Theater Live Cam Mode Controls
@@ -1074,7 +1140,18 @@
       });
     }
 
-    // Display Hero: Automatically populates latest post for that zone if posted today
+    // Finds the zone index that has the freshest report logged TODAY
+    function findFreshestTodayZoneIndex() {
+      const todayReports = allCurrentReports.filter(r => isPostedToday(r.createdAt));
+      if (todayReports.length === 0) return -1;
+
+      // Most recent today report is first because reports are ordered desc
+      const freshest = todayReports[0];
+      const matchIdx = ZONES.findIndex(z => freshest.spot === z.name || freshest.spot.includes(z.name) || z.name.includes(freshest.spot));
+      return matchIdx;
+    }
+
+    // Display Hero: Populates latest community post OR Fig's dynamically synthesized voice
     function displayHeroForCurrentZone() {
       const currentZone = ZONES[activeZoneIndex];
       const spotName = currentZone.name;
@@ -1123,22 +1200,25 @@
         }
 
       } else {
+        // Mode B: Dynamic Telemetry-Synthesized Voice of Rockin' Fig
         photoWrapper.classList.add('hidden');
         figCtaWrapper.classList.remove('hidden');
         figCtaSpotLabel.innerText = currentZone.name;
 
+        const figReport = generateDynamicFigReport(currentZone.name);
+
         document.getElementById('hero-badge-title').innerText = "Rockin' Fig Daily Report";
         document.getElementById('hero-zone-name').innerText = currentZone.name;
-        document.getElementById('hero-headline').innerText = currentZone.headline;
-        document.getElementById('hero-wave-size').innerText = currentZone.size;
-        document.getElementById('hero-notes').innerText = `"${currentZone.notes}"`;
+        document.getElementById('hero-headline').innerText = figReport.headline;
+        document.getElementById('hero-wave-size').innerText = figReport.waveRange;
+        document.getElementById('hero-notes').innerText = figReport.fullDispatch;
         document.getElementById('hero-reality-check').innerText = generateTelemetryCrossCheck(null, currentZone.name);
         document.getElementById('tag-shape').innerText = `Shape: ${currentZone.shape}`;
         document.getElementById('tag-wind').innerText = `Wind: ${liveTelemetrySnapshot.windKts}kt ${liveTelemetrySnapshot.windDir}`;
         document.getElementById('tag-crowd').innerText = `Crowd: Moderate`;
         document.getElementById('tag-tide').innerText = `Tide Window: ${currentZone.idealTide}`;
-        document.getElementById('hero-author').innerText = "Rick 'Rockin Fig' Fignetti (Legacy Wire)";
-        document.getElementById('hero-logged-at').innerText = "Dawn Patrol Inspection";
+        document.getElementById('hero-author').innerText = "Rick 'Rockin Fig' Fignetti (Voice Engine)";
+        document.getElementById('hero-logged-at').innerText = "Telemetry Synthesized Wire";
         heroAvatar.innerText = "FIG";
       }
     }
@@ -1213,7 +1293,7 @@
       });
     }
 
-    // Real-Time Firebase Listeners
+    // Real-Time Firebase Listeners: Auto-focuses to the freshest spot on launch
     if (isFirebaseActive) {
       const q = query(collection(db, "reports"), orderBy("createdAt", "desc"), limit(25));
       onSnapshot(q, (snapshot) => {
@@ -1223,11 +1303,83 @@
         });
         allCurrentReports = cloudReports;
         renderFeed(cloudReports);
+
+        // Auto-focus to the break with the freshest report from today on initial load
+        if (!hasAutoSelectedFreshestZone) {
+          const freshestIdx = findFreshestTodayZoneIndex();
+          if (freshestIdx !== -1) {
+            activeZoneIndex = freshestIdx;
+          }
+          hasAutoSelectedFreshestZone = true;
+          renderZones();
+        }
+
         displayHeroForCurrentZone();
       }, (error) => {
         console.warn("Firestore snapshot error:", error);
       });
     }
+
+    // Submit Report Form Inside Modal with Clear Error Messaging
+    document.getElementById('surf-report-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submit-btn');
+      const errBox = document.getElementById('submit-error');
+      errBox.classList.add('hidden');
+      errBox.innerText = '';
+
+      if (isCompressing) {
+        alert("Photo is still compressing. Give it 2 seconds, then try again.");
+        return;
+      }
+
+      const nowMs = Date.now();
+      const newReport = {
+        author: document.getElementById('reporter-name').value.trim(),
+        spot: document.getElementById('spot-location').value,
+        size: document.getElementById('wave-height').value.trim(),
+        shape: document.getElementById('wave-shape-select').value,
+        wind: document.getElementById('wind-condition').value,
+        crowd: document.getElementById('crowd-factor').value,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' PDT',
+        text: document.getElementById('report-text').value.trim(),
+        img: compressedPhotoBase64 || null,
+        createdAt: nowMs
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Syncing to Cloud...";
+
+      if (isFirebaseActive) {
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error("Weak beach signal or Firestore timeout. Check cellular connection.")), 10000)
+        );
+
+        try {
+          await Promise.race([
+            addDoc(collection(db, "reports"), newReport),
+            timeoutPromise
+          ]);
+          this.reset();
+          compressedPhotoBase64 = null;
+          document.getElementById('compression-status').innerText = "";
+          closeModal('dispatch-modal');
+        } catch (err) {
+          console.error("Cloud write failed:", err);
+          errBox.innerText = `Post Error: ${err.message}. If this persists, verify Firestore rules allow writes.`;
+          errBox.classList.remove('hidden');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Push Ground Truth Report ➔";
+        }
+      } else {
+        errBox.innerText = "Firebase not initialized. Check internet connection.";
+        errBox.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Push Ground Truth Report ➔";
+      }
+    });
 
     // High-Accuracy Marine Telemetry & Harmonic NOAA Sensors
     async function fetchLiveOceanData() {
@@ -1288,8 +1440,8 @@
           document.getElementById('modal-wind-heading').innerText = `${compass} (${dirDeg}°)`;
 
           let surfaceCondition = "Clean / Glassy";
-          if (windKts > 12) surfaceCondition = "Blown Out";
-          else if (windKts > 7) surfaceCondition = "Textured / Bumpy";
+          if (windKts > 14) surfaceCondition = "White Caps / Blown";
+          else if (windKts > 7) surfaceCondition = "Light Onshore Texture";
           else if (windKts <= 4) surfaceCondition = "Sheet Glass";
           document.getElementById('modal-wind-state').innerText = surfaceCondition;
         }
