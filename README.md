@@ -1,63 +1,51 @@
-# 🏄‍♂️ HB Raw Config Surf Report
+# HB Raw Config Surf
 
-> **Hyper-local, ground-truth surf intelligence for Huntington Beach, California.**  
-> *From the Santa Ana River Jetties to Sunset Beach — real eyes on the sand, not proprietary algorithmic guesses.*
+> Dedicated to the memory of Rick "Rockin' Fig" Fignetti (1955–2021)  
+> *"Check the waves with your own eyes — not an algorithm!"*
 
-🔗 **Live Report Dashboard:** [👉 Launch Live Web App Here](https://bmehr.github.io/HB-Raw-Config-Surf-Report/) 
-
----
-
-## 🕊️ Dedicated to Rick "Rockin' Fig" Fignetti (1955–2021)
-
-> *"Check the waves with your own eyes — not an algorithm."*
-
-For decades on KROQ 106.7 FM, at his surf shop on Main Street, and on the mic at local surf contests, Rick "Rockin' Fig" Fignetti was the heartbeat and voice of Surf City. He did what automated models will never be able to do: he drove down before dawn, checked the tide, watched the sets, and gave surfers the genuine truth without the hype.
-
-**HB Raw Config** is built in that exact spirit: keeping Huntington Beach surf reporting raw, honest, local, and community-driven.
+A private, invite-circle progressive web application delivering unvarnished, community-grounded surf observations and real-time physical ocean telemetry for Huntington Beach, California.
 
 ---
 
-## 🎯 The Problem We're Solving
+## 🌊 Core Philosophy
 
-Mainstream surf forecasting platforms (like Surfline) rely heavily on macro-scale proprietary models (LOTUS). While useful offshore, they routinely miss ground-level Orange County realities:
-
-- **Overhyped Face Sizes:** Labeling 2–3ft closed-out slop as "Fair to Good 4–5ft."
-- **Bathymetry Blindspots:** Missing how high tide backwash ruins inside banks or how subtle sandbars hold punchy corners.
-- **Micro-Climate Wind Shifts:** Failing to recognize when the cliffs bluff at Goldenwest provides offshore shelter while the Pier is already blown out.
-- **Stale Updates:** Delivering an automated dawn forecast that sits unchanged even when conditions drastically improve mid-day or late morning.
-
-**HB Raw Config** flips the script: combining **unfiltered open marine telemetry** with **first-hand shore observations and community photos**.
+Commercial surf forecast platforms lean heavily on offshore model algorithms that frequently miss local sandbar bathymetry, piling refraction, and bluff sheltering. **HB Raw Config Surf** pairs raw physical sensor telemetry with timely, first-person morning shore dispatches logged by trusted local surfers on the sand.
 
 ---
 
-## 📍 Calibrated Shoreline Zones (8.5 Miles)
+## 📍 Huntington Beach Geographic Zones
 
-Instead of a generic single "Huntington Beach" rating, the shoreline is divided into five distinct micro-zones:
+The dashboard breaks Surf City down into four distinct zones from south to north:
 
-| Zone | Stretch | Characteristics & Bathymetry |
-| :--- | :--- | :--- |
-| **Zone 01** | **River Jetties / Brookhurst** | Mixed cobblestone and sandbar rivermouth; sensitive to S/SW angles and lower tide drains. |
-| **Zone 02** | **HB Pier (North & South)** | Pilings refraction, steep bowls, heavy rip currents, and structural bounce wedges. |
-| **Zone 03** ⭐ | **17th St ⇄ Bolsa Jetty** *(Core Focus)* | Goldenwest, 19th St, Dog Beach & Cliffs bluff. Sheltered wind pocket, outside bar A-frames, and prime mid-day push windows. |
-| **Zone 04** | **Bolsa Chica State Beach** | Flatter shelf bathymetry; mellow rollers ideal for fishes, logs, and twin-fins. |
-| **Zone 05** | **Sunset Beach (Anderson St to Warner)** | Proximity to deepwater trench; heavy shorebreak slams and pitching closeouts. |
-
----
-
-## ✨ Features & Architecture
-
-- **🌊 Dynamic Hyper-Zone Inspection:** Click any zone card to reconfigure the entire dashboard to that spot's bathymetry, swell angle sensitivity, and sweet-spot tide window.
-- **🛰️ Live Open Marine Telemetry:** Direct API streams pulling swell height, period, direction, sea surface temperature, and wind speed/gusts calibrated directly to HB coordinates (`33.6595° N, -117.9988° W`).
-- **📸 In-Browser Photo Compression:** Mobile field photos are resized and compressed on the fly (via HTML5 Canvas) to ~150KB–250KB before upload, keeping the app lighting fast and lightweight.
-- **✍️ Flexible Wave Descriptors:** Preset shapes (*Peaky A-Frames, Walled-Out Closeouts, Mushy Bog*) plus a **custom field note** option (with real-time word/character limiters) for nuanced descriptions like *"Walled, but corners there for the taking."*
-- **⭐ Promote to Hero:** Select and promote the most accurate shore dispatch and visual into the featured **Daily Hero** spotlight.
-- **⚡ Zero-Dependency SPA:** 100% vanilla JavaScript, HTML5, and Tailwind CSS. No `node_modules`, no build steps, and zero hosting costs.
+| # | Zone | Coverage | Typical Swell Profile |
+|---|---|---|---|
+| **01** | **South HB** | State Beach, Brookhurst, Magnolia down to River Jetties | Funnels S/SSW groundswell directly; dredges steep wedges over cobblestone shelves on lower tides. |
+| **02** | **The Pier** | Pier South Side (Piling Wedge) & North Side (Pier Bowl) | Piling deflection generates steep launch ramps on the south side; peaky lefts toward 6th St on the north. |
+| **03** | **North HB** | Streets North of Pier, 17th St, Goldenwest & The Cliffs | Classic sandbar A-frames; bluffs provide natural shelter during light mid-day seabreezes. |
+| **04** | **Bolsa Chica** | Seapoint Area to North Parking Lot | Gentle bathymetry creates peeling rollers tailored for single-fins and mid-lengths. |
 
 ---
 
-## 🚀 Quick Setup & GitHub Pages Deployment
+## 🛠 Tech Stack & Architecture
 
-### 1. Clone the repository
-```bash
-git clone [https://github.com/YOUR-USERNAME/hb-raw-config-surf-report.git](https://github.com/YOUR-USERNAME/hb-raw-config-surf-report.git)
-cd hb-raw-config-surf-report
+- **Frontend:** Single-page architecture (`index.html`) styled with Tailwind CSS via CDN.
+- **Typography:** Google Fonts (`Plus Jakarta Sans` for UI, `JetBrains Mono` for telemetry instruments).
+- **Backend / Database:** Firebase Firestore real-time listener syncing community reports across devices.
+- **Image Processing:** Client-side Canvas downscaling & compression with in-browser iPhone HEIC/HEIF conversion (`heic2any`).
+- **Telemetry Feeds:**
+  - *Swell / Wave Height:* Open-Meteo Marine API.
+  - *Wind & Gusts:* Open-Meteo Weather API (converted to knots & compass bearings).
+  - *Live Water Temp & Tide:* NOAA CO-OPS Physical Gauges (Stations 9410660 & 9410580).
+- **Progressive Web App (PWA):** Standalone app manifest, crisp vector rendering, and iOS/Android home screen launch capability.
+
+---
+
+## 📱 Local Development Workflow
+
+1. Open the project folder in **VS Code**.
+2. Launch a local web server using the **Live Server** extension (right-click `index.html` $\rightarrow$ *Open with Live Server*).
+3. Test changes locally across desktop and mobile screen dimensions before pushing to GitHub:
+   ```bash
+   git add .
+   git commit -m "Update feature"
+   git push origin main

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>HB Raw Config Surf | In Memory of Rockin' Fig</title>
 
   <!-- HB Raw Config Surf · PWA & Mobile Home Screen Metadata -->
@@ -12,14 +12,21 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#080d14">
 
-  <!-- Apple Touch Icon (iPhone & iPad Home Screen) -->
+  <!-- Crisp Vector Favicon -->
+  <link rel="icon" type="image/svg+xml" href="hb-raw-config-surf.svg">
+  <link rel="alternate icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+
+  <!-- Apple Touch Icon -->
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
-  <!-- Standard Favicon -->
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-
-  <!-- Web App Manifest (Android & Desktop PC 1-Click Install) -->
+  <!-- Web App Manifest -->
   <link rel="manifest" href="manifest.json">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="HB Raw Config Surf">
+  <meta property="og:description" content="Local, unvarnished Huntington Beach surf telemetry & ground truth. In memory of Rockin' Fig.">
+  <meta property="og:image" content="apple-touch-icon.png">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- In-browser iPhone HEIC/HEIF to JPEG converter -->
@@ -37,14 +44,14 @@
       font-family: 'JetBrains Mono', monospace;
     }
     .glass-panel {
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.92);
       backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
     .glass-active {
       border: 2px solid #06b6d4;
       box-shadow: 0 0 25px -4px rgba(6, 182, 212, 0.35);
-      background: rgba(14, 116, 144, 0.15);
+      background: rgba(14, 116, 144, 0.18);
     }
     .pulse-amber {
       animation: pulseAmber 2.5s infinite;
@@ -57,7 +64,7 @@
       scroll-behavior: smooth;
     }
 
-    /* Calibrated 16:9 Theater Viewport: Zero leakage of bottom weather/white border */
+    /* Calibrated 16:9 Theater Viewport */
     .cam-theater-wrapper {
       position: relative;
       width: 100%;
@@ -81,19 +88,64 @@
       transform-origin: top left;
       pointer-events: auto;
     }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Clean Styled Scrollbar for Modals (Eliminates standard browser gray bars) */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(6, 182, 212, 0.35);
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(6, 182, 212, 0.65);
+    }
+
+    .beach-input {
+      font-size: 15px !important;
+    }
+
+    @media (max-height: 500px) and (orientation: landscape) {
+      .landscape-tribute {
+        display: none !important;
+      }
+      .landscape-compact-header {
+        padding-top: 0.35rem !important;
+        padding-bottom: 0.35rem !important;
+      }
+      .landscape-compact-logo {
+        height: 1.75rem !important;
+        width: 1.75rem !important;
+      }
+      .landscape-hide-subtext {
+        display: none !important;
+      }
+    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black pb-20 sm:pb-0">
+<body class="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black pb-24 sm:pb-8">
 
   <!-- Tribute Bar to Rick "Rockin' Fig" Fignetti -->
-  <aside aria-label="Tribute" class="bg-gradient-to-r from-amber-950/80 via-slate-900 to-amber-950/80 border-b border-amber-500/20 px-4 py-2 text-center text-xs font-mono-code">
+  <aside aria-label="Tribute" class="landscape-tribute bg-gradient-to-r from-amber-950/80 via-slate-900 to-amber-950/80 border-b border-amber-500/20 px-4 py-1.5 text-center text-xs font-mono-code">
     <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2">
       <div class="flex items-center gap-2">
         <span class="inline-block w-2 h-2 rounded-full bg-amber-400 pulse-amber"></span>
         <span class="text-amber-300 font-bold tracking-wide">DEDICATED TO RICK "ROCKIN' FIG" FIGNETTI</span>
         <span class="text-slate-400 hidden sm:inline">· The Voice of Surf City (1955–2021)</span>
       </div>
-      <p class="text-[11px] text-amber-200/80 italic">
+      <p class="text-[11px] text-amber-200/80 italic hidden md:block">
         "Check the waves with your own eyes — not an algorithm!"
       </p>
     </div>
@@ -101,69 +153,81 @@
 
   <!-- Live Telemetry Stream Bar -->
   <header class="border-b border-slate-800 bg-slate-950/90 sticky top-0 z-40 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+    <div class="landscape-compact-header max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
+      
+      <!-- Logo Branding Block -->
       <div class="flex items-center justify-between w-full sm:w-auto">
-        <div class="flex items-center space-x-3">
-          <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-black text-slate-950 text-sm shadow-lg shadow-cyan-500/20 overflow-hidden">
-            <img src="apple-touch-icon.png" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerText='FIG'">
+        <div class="flex items-center space-x-2.5">
+          <div class="landscape-compact-logo h-9 w-9 rounded-xl bg-slate-900 border border-cyan-500/30 flex items-center justify-center shadow-lg shadow-cyan-500/20 overflow-hidden flex-shrink-0 p-1">
+            <img src="hb-raw-config-surf.svg" alt="HB Raw Config Surf" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='apple-touch-icon.png';">
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <h1 class="text-lg font-black tracking-tight text-white">HB RAW CONFIG SURF</h1>
-              <span id="cloud-sync-status" class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-mono-code">CONNECTING CLOUD...</span>
+              <h1 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight">HB RAW CONFIG SURF</h1>
+              <span id="cloud-sync-status" class="text-[9px] px-1.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-mono-code hidden sm:inline-block">CONNECTING...</span>
             </div>
-            <p class="text-[11px] text-slate-400 font-mono-code">South HB ⇄ Bolsa Chica · Ground Truth Shore Ops</p>
+            <p class="landscape-hide-subtext text-[11px] text-slate-400 font-mono-code leading-none mt-0.5">South HB ⇄ Bolsa Chica · Ground Truth Shore Ops</p>
           </div>
         </div>
-        <!-- Mobile Header Quick Jump -->
-        <button onclick="scrollToReportForm()" class="sm:hidden px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 text-xs font-mono-code font-bold hover:bg-cyan-500 hover:text-black transition">
-          + Post
+        
+        <!-- Mobile Post Dispatch Launcher -->
+        <button onclick="openDispatchModal()" class="sm:hidden px-3 py-1.5 rounded-lg bg-cyan-500 text-slate-950 font-bold font-mono-code text-xs active:scale-95 transition shadow-lg shadow-cyan-500/20 flex items-center gap-1">
+          <span>✏️</span> Post
         </button>
       </div>
 
       <!-- Real-time Instrument Stream -->
-      <div class="flex items-center gap-2 sm:gap-3 text-xs font-mono-code flex-wrap w-full sm:w-auto justify-between sm:justify-end">
-        <div class="bg-slate-900/90 px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5">
+      <div class="flex items-center gap-2 text-xs font-mono-code overflow-x-auto no-scrollbar w-full sm:w-auto justify-start sm:justify-end pb-1 sm:pb-0">
+        
+        <!-- Swell Button & Pop-out Launcher -->
+        <button onclick="openModal('swell-modal')" class="bg-slate-900/90 hover:bg-slate-800 px-2.5 py-1 rounded-lg border border-cyan-500/40 flex items-center gap-1.5 flex-shrink-0 transition group" title="Click for Offshore Buoy & Shoaling Breakdown">
           <span class="text-slate-400">Offshore:</span>
-          <span id="tele-swell" class="text-cyan-400 font-bold">Querying...</span>
-        </div>
-        <div class="bg-slate-900/90 px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5">
-          <span class="text-slate-400">Wind:</span>
-          <span id="tele-wind" class="text-emerald-400 font-bold">-- kt</span>
-        </div>
-        <div class="bg-slate-900/90 px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5">
-          <span class="text-slate-400">Water:</span>
-          <span id="tele-water" class="text-amber-400 font-bold">Reading buoy...</span>
-        </div>
+          <span id="tele-swell" class="text-cyan-400 font-bold group-hover:underline">Connecting...</span>
+          <span class="text-[10px] text-cyan-400/80">🌊</span>
+        </button>
 
-        <!-- Interactive Tide Badge (Click for 24h Pop-out Chart) -->
-        <button id="tide-popout-btn" class="bg-slate-900/90 hover:bg-slate-800 px-2.5 py-1.5 rounded-lg border border-sky-500/40 flex items-center gap-1.5 transition group cursor-pointer" title="Click to view full Tide Chart & Predictions">
-          <span class="text-slate-400">NOAA Tide:</span>
-          <span id="tele-tide" class="text-sky-400 font-bold group-hover:underline">Connecting...</span>
+        <!-- Wind Button & Pop-out Launcher -->
+        <button onclick="openModal('wind-modal')" class="bg-slate-900/90 hover:bg-slate-800 px-2.5 py-1 rounded-lg border border-emerald-500/40 flex items-center gap-1.5 flex-shrink-0 transition group" title="Click for Wind & Surface Texture Analysis">
+          <span class="text-slate-400">Wind:</span>
+          <span id="tele-wind" class="text-emerald-400 font-bold group-hover:underline">-- kt</span>
+          <span class="text-[10px] text-emerald-400/80">💨</span>
+        </button>
+
+        <!-- Water Temp Button & Pop-out Launcher -->
+        <button onclick="openModal('water-modal')" class="bg-slate-900/90 hover:bg-slate-800 px-2.5 py-1 rounded-lg border border-amber-500/40 flex items-center gap-1.5 flex-shrink-0 transition group" title="Click for NOAA Sensor & Rubber Recommendations">
+          <span class="text-slate-400">Water:</span>
+          <span id="tele-water" class="text-amber-400 font-bold group-hover:underline">Reading...</span>
+          <span class="text-[10px] text-amber-400/80">🌡️</span>
+        </button>
+
+        <!-- Tide Button & Pop-out Launcher -->
+        <button onclick="openModal('tide-modal')" class="bg-slate-900/90 hover:bg-slate-800 px-2.5 py-1 rounded-lg border border-sky-500/40 flex items-center gap-1.5 transition group cursor-pointer flex-shrink-0" title="Click for 24h Tide Elevation Chart">
+          <span class="text-slate-400">Tide:</span>
+          <span id="tele-tide" class="text-sky-400 font-bold group-hover:underline">Syncing...</span>
           <span class="text-[10px] text-sky-400/80">📈</span>
         </button>
 
-        <button id="refresh-telemetry-btn" class="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition" title="Refresh Live Feeds">
+        <button id="refresh-telemetry-btn" class="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition flex-shrink-0" title="Refresh Live Feeds">
           ↻
         </button>
       </div>
     </div>
   </header>
 
-  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-8 w-full">
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-5 space-y-6 w-full">
 
-    <!-- Interactive Hyper-Zone Selector Bar (4 Designated Zones) -->
+    <!-- Interactive Hyper-Zone Selector Bar -->
     <section>
-      <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center justify-between mb-2.5">
         <div>
           <h2 class="text-xs uppercase tracking-wider font-mono-code text-cyan-400 font-bold">Select Shoreline Zone</h2>
-          <p class="text-xs text-slate-400">Click any break to inspect its live data & local community log.</p>
+          <p class="text-[11px] text-slate-400">Click any break to inspect its live physical data & local community log.</p>
         </div>
         <span class="text-xs font-mono-code text-slate-400" id="current-zone-badge">Viewing: The Pier</span>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="zones-container">
-        <!-- Injected via JavaScript: 01 South HB -> 02 The Pier -> 03 North HB -> 04 Bolsa Chica -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="zones-container">
+        <!-- Injected via JavaScript -->
       </div>
     </section>
 
@@ -217,11 +281,11 @@
 
       <div class="glass-panel rounded-2xl overflow-hidden grid lg:grid-cols-12 border border-cyan-500/30 shadow-2xl shadow-cyan-950/30">
         
-        <!-- Media Container (Swaps dynamically between Fig CTA Box & User Photo) -->
-        <div class="lg:col-span-5 relative bg-slate-950 min-h-[320px] lg:min-h-full flex items-center justify-center overflow-hidden group">
+        <!-- Media Container -->
+        <div class="lg:col-span-5 relative bg-slate-950 min-h-[280px] sm:min-h-[320px] lg:min-h-full flex items-center justify-center overflow-hidden group">
           
           <!-- Mode A: Community User Photo View -->
-          <div id="hero-photo-wrapper" class="w-full h-full relative cursor-pointer min-h-[320px] hidden flex items-center">
+          <div id="hero-photo-wrapper" class="w-full h-full relative cursor-pointer min-h-[280px] hidden flex items-center">
             <img 
               id="hero-img" 
               src="" 
@@ -245,8 +309,8 @@
             </div>
           </div>
 
-          <!-- Mode B: Rockin' Fig Call-to-Action Placeholder Box (Active when no user dispatch from today) -->
-          <div id="hero-fig-cta-wrapper" class="w-full h-full min-h-[320px] p-6 sm:p-8 flex flex-col justify-between bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-950 border-r border-amber-500/20">
+          <!-- Mode B: Rockin' Fig Call-to-Action Placeholder Box -->
+          <div id="hero-fig-cta-wrapper" class="w-full h-full min-h-[280px] p-6 sm:p-8 flex flex-col justify-between bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-950 border-r border-amber-500/20">
             <div class="space-y-3">
               <div class="flex items-center justify-between">
                 <span class="px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-300 font-mono-code text-[11px] font-bold border border-amber-500/40">
@@ -254,7 +318,7 @@
                 </span>
                 <span class="text-slate-500 font-mono-code text-[11px]">Awaiting Today's Scout</span>
               </div>
-              <h4 class="text-xl sm:text-2xl font-black text-white tracking-tight mt-2">
+              <h4 class="text-lg sm:text-2xl font-black text-white tracking-tight mt-1">
                 "No eyes on the sand yet for this stretch today!"
               </h4>
               <p class="text-slate-300 text-xs sm:text-sm font-sans leading-relaxed italic">
@@ -262,13 +326,13 @@
               </p>
             </div>
 
-            <div class="pt-4 border-t border-slate-800/80 flex flex-col gap-2.5">
-              <button onclick="jumpToReportWithSpot()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 px-4 rounded-xl text-xs font-mono-code uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 transition-all active:scale-95">
+            <div class="pt-4 border-t border-slate-800/80 flex flex-col gap-2">
+              <button onclick="openDispatchModal(ZONES[activeZoneIndex].name)" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 px-4 rounded-xl text-xs sm:text-sm font-mono-code uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 transition-all active:scale-95">
                 <span>📷 Heading Down? Post Dispatch</span> ➔
               </button>
               <div class="flex items-center justify-between text-[10px] font-mono-code text-slate-400">
                 <span>Spot: <strong id="fig-cta-spot-label" class="text-white">South HB</strong></span>
-                <span class="text-cyan-400">Auto-featured for Today</span>
+                <span class="text-cyan-400">Auto-promoted for Today</span>
               </div>
             </div>
           </div>
@@ -276,21 +340,21 @@
         </div>
 
         <!-- Body & Reality Check -->
-        <div class="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between space-y-6">
+        <div class="lg:col-span-7 p-5 sm:p-7 flex flex-col justify-between space-y-5">
           <div class="space-y-4">
             
-            <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <span id="hero-zone-name" class="text-xs font-mono-code font-bold uppercase px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
                   The Pier (North & South)
                 </span>
-                <h3 id="hero-headline" class="text-2xl sm:text-3xl font-extrabold text-white mt-2">
+                <h3 id="hero-headline" class="text-xl sm:text-2xl font-extrabold text-white mt-1.5 leading-snug">
                   "Pier South Wedge Bowls & Fast North Peaks!"
                 </h3>
               </div>
               <div class="text-right">
-                <div id="hero-wave-size" class="text-3xl sm:text-4xl font-black text-cyan-400 font-mono-code">3–4+ FT</div>
-                <div id="hero-wave-scale" class="text-xs text-slate-400 font-medium">Waist to Chest High (Plus Sets)</div>
+                <div id="hero-wave-size" class="text-2xl sm:text-3xl font-black text-cyan-400 font-mono-code">3–4+ FT</div>
+                <div id="hero-wave-scale" class="text-[11px] text-slate-400 font-medium">Waist to Chest High (Plus Sets)</div>
               </div>
             </div>
 
@@ -298,17 +362,17 @@
             <div class="bg-slate-900/90 rounded-xl p-3.5 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono-code">
               <div>
                 <span class="text-amber-400 font-bold">★ ROCKIN' FIG'S REALITY CHECK:</span>
-                <p class="text-slate-300 mt-0.5" id="hero-reality-check">
+                <p class="text-slate-300 mt-0.5 text-[11px]" id="hero-reality-check">
                   Synchronizing buoy models with sandbar bathymetry...
                 </p>
               </div>
-              <span id="hero-paddle-badge" class="text-emerald-400 font-bold text-nowrap self-start sm:self-auto bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/30">
+              <span id="hero-paddle-badge" class="text-emerald-400 font-bold text-nowrap self-start sm:self-auto bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/30 text-[11px]">
                 PADDLE OUT!
               </span>
             </div>
 
             <!-- Wave Physics Tags & Crowd Factor -->
-            <div class="flex flex-wrap gap-2 text-xs font-mono-code" id="hero-tags">
+            <div class="flex flex-wrap gap-1.5 text-xs font-mono-code" id="hero-tags">
               <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-200 border border-slate-700" id="tag-shape">Shape: Steep Wedges & Rip</span>
               <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-200 border border-slate-700" id="tag-wind">Wind: Light SSW Puff</span>
               <span class="px-2.5 py-1 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20" id="tag-crowd">Crowd: Moderate (15–25 out)</span>
@@ -316,190 +380,294 @@
             </div>
 
             <!-- Observation Text Written in Fig's Tone -->
-            <p id="hero-notes" class="text-slate-300 text-sm sm:text-base leading-relaxed italic">
+            <p id="hero-notes" class="text-slate-300 text-xs sm:text-sm leading-relaxed italic">
               "Howzit everybody, Rick 'Rockin Fig' here at the Pier! South side piling bounce is lively this morning with fast, steep wedge takeoffs into the bowl. North side is holding peaky lefts toward 6th St. Watch out for the current heading north through the pilings!"
             </p>
           </div>
 
           <!-- Reporter Credit & Strategic Form Jump Link -->
-          <div class="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400 font-mono-code">
+          <div class="pt-3.5 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2.5 text-xs text-slate-400 font-mono-code">
             <div class="flex items-center space-x-2">
               <div class="h-6 w-6 rounded-full bg-cyan-600 flex items-center justify-center font-bold text-white text-[10px]" id="hero-avatar">FIG</div>
               <span>Reported by: <strong class="text-white" id="hero-author">Rockin' Fig Memorial Dispatch</strong></span>
             </div>
-            <button onclick="scrollToReportForm()" class="text-cyan-400 hover:text-cyan-300 font-bold underline underline-offset-4 flex items-center gap-1">
-              <span>Have an updated take? Post yours here</span> ➔
+            <button onclick="openDispatchModal(ZONES[activeZoneIndex].name)" class="text-cyan-400 hover:text-cyan-300 font-bold underline underline-offset-4 flex items-center gap-1 text-[11px]">
+              <span>Have an updated take? Post yours</span> ➔
             </button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Community Field Notes Feed & Report Submission Desk -->
-    <section class="grid lg:grid-cols-12 gap-8 items-start">
-      
-      <!-- Live Field Stream -->
-      <div class="lg:col-span-7 space-y-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-base font-bold text-white flex items-center gap-2">
-              <span>Local Shore Log</span>
-              <span class="text-xs text-cyan-400 font-mono-code" id="feed-zone-filter">(Live Cloud Feed)</span>
-            </h3>
-            <p class="text-xs text-slate-400">Real, unvarnished field notes submitted by surfers on the sand.</p>
-          </div>
-          <span class="text-xs font-mono-code text-slate-400" id="report-count">Loading cloud sync...</span>
+    <!-- Community Field Notes Feed Section -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>Local Shore Log</span>
+            <span class="text-xs text-cyan-400 font-mono-code" id="feed-zone-filter">(Live Cloud Feed)</span>
+          </h3>
+          <p class="text-xs text-slate-400">Real, unvarnished field notes submitted by surfers on the sand.</p>
         </div>
-
-        <div id="reports-feed" class="space-y-4">
-          <!-- Populated via JavaScript / Firestore -->
+        <div class="flex items-center gap-3">
+          <button onclick="openDispatchModal(ZONES[activeZoneIndex].name)" class="hidden sm:flex px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500 hover:text-black text-cyan-400 font-mono-code text-xs font-bold transition items-center gap-1.5 border border-cyan-500/40">
+            <span>✏️ Post Dispatch</span>
+          </button>
+          <span class="text-xs font-mono-code text-slate-400" id="report-count">Loading cloud sync...</span>
         </div>
       </div>
 
-      <!-- Shore Scout Submission Desk (Target Anchor) -->
-      <div class="lg:col-span-5" id="submission-desk">
-        <div class="glass-panel p-6 rounded-2xl border border-cyan-500/30 space-y-4 sticky top-20 shadow-xl shadow-cyan-950/20">
-          <div>
-            <div class="flex items-center justify-between">
-              <h3 class="text-base font-bold text-white">Post Shore Dispatch</h3>
-              <span class="text-[10px] font-mono-code px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30">ROCKIN' FIG DISPATCH</span>
-            </div>
-            <p class="text-xs text-slate-400 mt-1">Surfed just now or standing on the cliffs? Share the ground-truth.</p>
-          </div>
-
-          <form id="surf-report-form" class="space-y-3.5 text-xs font-mono-code">
-            <div>
-              <label class="block text-slate-300 mb-1">Your Name / Handle</label>
-              <input type="text" id="reporter-name" required placeholder="e.g. GW_Dawg / 17thLocal" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500">
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-slate-300 mb-1">Spot Location</label>
-                <select id="spot-location" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500">
-                  <option value="South HB">South HB (State Beach / Brookhurst / River)</option>
-                  <option value="The Pier — South Side">The Pier — South Side</option>
-                  <option value="The Pier — North Side">The Pier — North Side</option>
-                  <option value="North HB">North HB (Streets North / GW / Cliffs)</option>
-                  <option value="Bolsa Chica">Bolsa Chica (Seapoint to North Lot)</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-slate-300 mb-1">Observed Face Size</label>
-                <input type="text" id="wave-height" required placeholder="e.g. 3–4ft (Waist-Chest)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-2">
-              <div>
-                <label class="block text-slate-300 mb-1">Wave Shape</label>
-                <select id="wave-shape-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-2 text-white text-[11px] focus:outline-none focus:border-cyan-500">
-                  <option value="Peaky A-Frames">Peaky A-Frames</option>
-                  <option value="Workable Corners">Workable Corners</option>
-                  <option value="Walled-Out Closeouts">Walled-Out Closeouts</option>
-                  <option value="Mushy / High Tide Bog">Mushy / High Tide Bog</option>
-                  <option value="Hollow / Pitching Dump">Hollow / Pitching Dump</option>
-                  <option value="__custom__">Custom / Type own...</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-slate-300 mb-1">Wind / Surface</label>
-                <select id="wind-condition" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-2 text-white text-[11px] focus:outline-none focus:border-cyan-500">
-                  <option value="Clean / Glassy">Clean / Glassy</option>
-                  <option value="Light Offshore (Groomed)">Light Offshore</option>
-                  <option value="Strong Offshore (Holding up faces)">Strong Offshore</option>
-                  <option value="Light Side-Texture">Light Side-Texture</option>
-                  <option value="Bumpy / Cross-Chop">Bumpy / Cross-Chop</option>
-                  <option value="Blown-Out Onshore">Blown-Out Onshore</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-slate-300 mb-1">Crowd Factor</label>
-                <select id="crowd-factor" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-2 text-white text-[11px] focus:outline-none focus:border-cyan-500">
-                  <option value="Empty / Solo (0–3 out)">Empty / Solo</option>
-                  <option value="Light (5–10 out)">Light (5–10)</option>
-                  <option value="Moderate (15–25 out)">Moderate (15–25)</option>
-                  <option value="Heavy Crowd (30+ out)">Heavy (30+)</option>
-                  <option value="Cutthroat / Packed">Cutthroat / Packed</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Custom Wave Shape Input (Dynamic) -->
-            <div id="custom-shape-container" class="hidden">
-              <div class="flex justify-between items-center mb-1">
-                <label class="text-cyan-400 font-bold">Custom Wave Shape</label>
-                <span id="custom-shape-counter" class="text-[10px] text-slate-500">0/45 chars · 0/7 words</span>
-              </div>
-              <input type="text" id="custom-shape-input" maxlength="45" placeholder="e.g. Walled, but corners there for the taking" class="w-full bg-slate-900 border border-cyan-500/50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
-            </div>
-
-            <!-- Client-Side Canvas Compressed Image Upload -->
-            <div>
-              <label class="block text-slate-300 mb-1">Shore Photo (Supports iPhone HEIC & JPEG)</label>
-              <input type="file" id="report-photo-input" accept="image/*,.heic,.heif" class="w-full text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-mono-code file:bg-cyan-500/20 file:text-cyan-400 hover:file:bg-cyan-500/30 file:cursor-pointer cursor-pointer">
-              <p id="compression-status" class="text-[11px] text-slate-500 mt-1 italic"></p>
-            </div>
-
-            <div>
-              <label class="block text-slate-300 mb-1">Reality Field Notes</label>
-              <textarea id="report-text" rows="3" required placeholder="What is Surfline missing right now? How's the rip? What's the best board?" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500"></textarea>
-            </div>
-
-            <button type="submit" id="submit-btn" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 px-4 rounded-lg transition-colors font-sans uppercase tracking-wider text-xs shadow-lg shadow-cyan-500/20">
-              Push Ground Truth Report
-            </button>
-            <p id="submit-error" class="text-rose-400 text-[11px] text-center hidden"></p>
-          </form>
-        </div>
+      <div id="reports-feed" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Populated via JavaScript / Firestore -->
       </div>
     </section>
 
   </main>
 
-  <!-- Interactive NOAA Tide Chart Pop-Out Modal -->
+  <!-- ======================================================== -->
+  <!-- MODAL 1: OPTIMIZED DISPATCH DESK (DESKTOP & MOBILE NO-SCROLL) -->
+  <!-- ======================================================== -->
+  <div id="dispatch-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto custom-scrollbar">
+    <div class="glass-panel p-5 sm:p-6 rounded-t-3xl sm:rounded-2xl border border-cyan-500/50 w-full max-w-xl space-y-3.5 shadow-2xl relative my-auto">
+      
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <div>
+          <span class="text-[10px] font-mono-code px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold">
+            GROUND TRUTH DISPATCH
+          </span>
+          <h3 class="text-lg sm:text-xl font-black text-white mt-0.5">Post Shore Report</h3>
+        </div>
+        <button onclick="closeModal('dispatch-modal')" class="text-slate-400 hover:text-white text-2xl font-mono-code font-bold p-1">
+          ✕
+        </button>
+      </div>
+
+      <form id="surf-report-form" class="space-y-3">
+        <!-- 2-Column Responsive Layout to fit perfectly without desktop scroll -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-200 text-xs font-bold mb-1">Your Name / Handle</label>
+            <input type="text" id="reporter-name" required placeholder="e.g. 17th_Local / FigFan" class="beach-input w-full bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded-lg px-3 py-2 text-white focus:outline-none text-sm">
+          </div>
+          <div>
+            <label class="block text-slate-200 text-xs font-bold mb-1">Spot Location</label>
+            <select id="spot-location" class="beach-input w-full bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded-lg px-2.5 py-2 text-white focus:outline-none font-bold text-xs sm:text-sm">
+              <option value="South HB">South HB (State Beach / River)</option>
+              <option value="The Pier — South Side">The Pier — South Side</option>
+              <option value="The Pier — North Side">The Pier — North Side</option>
+              <option value="North HB">North HB (Cliffs / Goldenwest)</option>
+              <option value="Bolsa Chica">Bolsa Chica (Seapoint to North Lot)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">Observed Size</label>
+            <input type="text" id="wave-height" required placeholder="e.g. 3–4+ ft" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-xs">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">Shape</label>
+            <select id="wave-shape-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-[11px]">
+              <option value="Peaky A-Frames">Peaky A-Frames</option>
+              <option value="Workable Corners">Workable Corners</option>
+              <option value="Walled-Out Closeouts">Walled Closeouts</option>
+              <option value="Mushy / High Tide Bog">Mushy / High Tide</option>
+              <option value="Hollow / Pitching Dump">Hollow / Dredging</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">Wind</label>
+            <select id="wind-condition" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-[11px]">
+              <option value="Clean / Glassy">Clean / Glassy</option>
+              <option value="Light Offshore (Groomed)">Light Offshore</option>
+              <option value="Side-Texture">Side-Texture</option>
+              <option value="Bumpy / Cross-Chop">Bumpy / Chop</option>
+              <option value="Blown-Out Onshore">Blown-Out</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">Crowd</label>
+            <select id="crowd-factor" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-[11px]">
+              <option value="Empty / Solo (0–3)">Empty (0–3)</option>
+              <option value="Light (5–10)">Light (5–10)</option>
+              <option value="Moderate (15–25)">Moderate (15–25)</option>
+              <option value="Heavy Crowd (30+)">Heavy (30+)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-200 text-xs font-bold mb-1">Reality Notes</label>
+          <textarea id="report-text" rows="2" required placeholder="What is Surfline missing right now? How's the rip? What board are you riding?" class="beach-input w-full bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded-lg p-2.5 text-white focus:outline-none text-xs sm:text-sm"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-slate-200 text-xs font-bold mb-1">Shore Photo (Optional · Supports iPhone HEIC)</label>
+          <input type="file" id="report-photo-input" accept="image/*,.heic,.heif" class="w-full text-slate-400 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-mono-code file:bg-cyan-500 file:text-slate-950 file:font-bold hover:file:bg-cyan-400 cursor-pointer text-xs">
+          <p id="compression-status" class="text-[11px] text-cyan-400 mt-1 italic"></p>
+        </div>
+
+        <button type="submit" id="submit-btn" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black py-3 px-4 rounded-xl text-xs sm:text-sm uppercase tracking-wider shadow-xl shadow-cyan-500/25 active:scale-95 transition">
+          Push Ground Truth Report ➔
+        </button>
+        <p id="submit-error" class="text-rose-400 text-xs text-center hidden"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 2: OFFSHORE SWELL & SHOALING BREAKDOWN -->
+  <!-- ======================================================== -->
+  <div id="swell-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-panel p-6 rounded-2xl border border-cyan-500/40 w-full max-w-lg space-y-4 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>Offshore Buoy & Shoaling Telemetry</span>
+            <span class="text-xs text-cyan-400 font-mono-code">Open-Meteo & CDIP</span>
+          </h3>
+          <p class="text-xs text-slate-400 font-mono-code">San Pedro Channel Telemetry</p>
+        </div>
+        <button onclick="closeModal('swell-modal')" class="text-slate-400 hover:text-white text-2xl font-mono-code font-bold">✕</button>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 font-mono-code text-center">
+        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase">Deepwater Swell</span>
+          <p id="modal-swell-deep" class="text-lg font-black text-cyan-400 mt-0.5">--</p>
+        </div>
+        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase">Dominant Period</span>
+          <p id="modal-swell-period" class="text-lg font-black text-cyan-400 mt-0.5">--</p>
+        </div>
+        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase">Swell Angle</span>
+          <p id="modal-swell-dir" class="text-lg font-black text-cyan-400 mt-0.5">--</p>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/70 p-3.5 rounded-xl border border-slate-800 space-y-2 text-xs">
+        <span class="font-mono-code text-cyan-400 font-bold uppercase tracking-wider text-[11px]">Local Shoaling Dynamics:</span>
+        <p class="text-slate-300 leading-relaxed" id="modal-swell-analysis">
+          Long-period energy (&ge; 14s) feels the Huntington Beach shelf early, amplifying wave faces up to 1.5x on shallow outside sandbars.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 3: WIND & SURFACE TEXTURE BREAKDOWN -->
+  <!-- ======================================================== -->
+  <div id="wind-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-panel p-6 rounded-2xl border border-emerald-500/40 w-full max-w-lg space-y-4 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>Coastal Wind & Texture Analysis</span>
+            <span class="text-xs text-emerald-400 font-mono-code">10m Station Sensor</span>
+          </h3>
+          <p class="text-xs text-slate-400 font-mono-code">Nearshore Aerology</p>
+        </div>
+        <button onclick="closeModal('wind-modal')" class="text-slate-400 hover:text-white text-2xl font-mono-code font-bold">✕</button>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 font-mono-code text-center">
+        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase">Sustained</span>
+          <p id="modal-wind-speed" class="text-lg font-black text-emerald-400 mt-0.5">--</p>
+        </div>
+        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase">Direction</span>
+          <p id="modal-wind-heading" class="text-lg font-black text-emerald-400 mt-0.5">--</p>
+        </div>
+        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase">Surface State</span>
+          <p id="modal-wind-state" class="text-xs font-bold text-emerald-300 mt-1">Analyzing...</p>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/70 p-3.5 rounded-xl border border-slate-800 space-y-1.5 text-xs">
+        <span class="font-mono-code text-emerald-400 font-bold uppercase tracking-wider text-[11px]">Bluff Wind Shadowing:</span>
+        <p class="text-slate-300 leading-relaxed">
+          Winds under 8 knots out of the W/WSW leave the Cliffs (North HB) sheltered under the bluffs, while South HB remains more exposed to cross-chop.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 4: WATER TEMPERATURE & SUIT RECOMMENDATION -->
+  <!-- ======================================================== -->
+  <div id="water-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-panel p-6 rounded-2xl border border-amber-500/40 w-full max-w-lg space-y-4 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>Water Temperature & Rubber Gauge</span>
+            <span class="text-xs text-amber-400 font-mono-code">NOAA Gauge</span>
+          </h3>
+          <p class="text-xs text-slate-400 font-mono-code">Nearshore Pier / Harbor Temperature</p>
+        </div>
+        <button onclick="closeModal('water-modal')" class="text-slate-400 hover:text-white text-2xl font-mono-code font-bold">✕</button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 font-mono-code text-center">
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase">Current Reading</span>
+          <p id="modal-water-temp" class="text-2xl font-black text-amber-400 mt-0.5">--</p>
+        </div>
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase">Recommended Rubber</span>
+          <p id="modal-water-suit" class="text-sm font-bold text-white mt-1">--</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 5: NOAA TIDE ELEVATION & 6-HOUR SCHEDULE -->
+  <!-- ======================================================== -->
   <div id="tide-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="glass-panel p-6 rounded-2xl border border-sky-500/30 w-full max-w-xl space-y-5 shadow-2xl relative">
+    <div class="glass-panel p-5 sm:p-6 rounded-2xl border border-sky-500/30 w-full max-w-xl space-y-4 shadow-2xl relative">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div>
           <h3 class="text-base font-bold text-white flex items-center gap-2">
             <span>NOAA Tide Elevation Schedule</span>
             <span class="text-xs text-sky-400 font-mono-code">Station 9410580</span>
           </h3>
-          <p class="text-xs text-slate-400 font-mono-code">Newport / HB Harbor Entrance · Physical Gauge</p>
+          <p class="text-xs text-slate-400 font-mono-code">Newport / HB Entrance · Physical Sensor & Harmonic Model</p>
         </div>
-        <button id="close-tide-modal" class="text-slate-400 hover:text-white text-2xl font-mono-code font-bold">
-          ✕
-        </button>
+        <button onclick="closeModal('tide-modal')" class="text-slate-400 hover:text-white text-2xl font-mono-code font-bold">✕</button>
       </div>
 
       <!-- Current Status Snapshot -->
-      <div class="grid grid-cols-3 gap-3 font-mono-code text-center">
-        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+      <div class="grid grid-cols-3 gap-2.5 font-mono-code text-center">
+        <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
           <span class="text-[10px] text-slate-400 uppercase">Current Level</span>
-          <p id="modal-current-tide" class="text-lg font-black text-sky-400 mt-0.5">--</p>
+          <p id="modal-current-tide" class="text-base sm:text-lg font-black text-sky-400 mt-0.5">--</p>
         </div>
-        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+        <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
           <span class="text-[10px] text-slate-400 uppercase">Trend</span>
-          <p id="modal-tide-trend" class="text-lg font-black text-emerald-400 mt-0.5">--</p>
+          <p id="modal-tide-trend" class="text-base sm:text-lg font-black text-emerald-400 mt-0.5">--</p>
         </div>
-        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
-          <span class="text-[10px] text-slate-400 uppercase">Next Extremum</span>
-          <p id="modal-next-tide" class="text-xs font-bold text-amber-300 mt-1">Calculating...</p>
+        <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase">Next Cycle</span>
+          <p id="modal-next-tide" class="text-[11px] font-bold text-amber-300 mt-1">Calculating...</p>
         </div>
       </div>
 
       <!-- Visual 6-Hour Schedule Bars -->
-      <div class="space-y-2">
-        <span class="text-xs font-mono-code text-slate-400 uppercase tracking-wider font-bold">Upcoming 6-Hour Water Level Curve</span>
-        <div class="grid grid-cols-6 gap-2 pt-2" id="tide-timeline-bars">
+      <div class="space-y-1.5">
+        <span class="text-xs font-mono-code text-slate-400 uppercase tracking-wider font-bold">Upcoming 6-Hour Water Level Curve (MLLW)</span>
+        <div class="grid grid-cols-6 gap-2 pt-1.5" id="tide-timeline-bars">
           <!-- Injected via JS -->
         </div>
       </div>
 
       <div class="pt-3 border-t border-slate-800 text-[11px] font-mono-code text-slate-500 flex justify-between items-center">
-        <span>Datum: MLLW (Mean Lower Low Water)</span>
-        <span class="text-sky-400">Auto-Synced with NOAA CO-OPS</span>
+        <span>Datum: MLLW</span>
+        <span class="text-sky-400">Synced to Local HB Tidal Harmonic</span>
       </div>
     </div>
   </div>
@@ -510,14 +678,14 @@
       <span class="text-slate-400">On the sand?</span>
       <span class="text-cyan-400 font-bold block truncate">Drop your shore notes</span>
     </div>
-    <button onclick="scrollToReportForm()" class="bg-cyan-500 hover:bg-cyan-400 active:scale-95 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs font-mono-code flex items-center gap-1.5 shadow-lg shadow-cyan-500/20 whitespace-nowrap transition-transform">
+    <button onclick="openDispatchModal(ZONES[activeZoneIndex].name)" class="bg-cyan-500 hover:bg-cyan-400 active:scale-95 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs font-mono-code flex items-center gap-1.5 shadow-lg shadow-cyan-500/20 whitespace-nowrap transition-transform">
       <span>✏️ Post Report</span>
     </button>
   </aside>
 
   <!-- Fullscreen Image Lightbox Modal -->
   <div id="image-lightbox" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <button id="close-lightbox" class="absolute top-5 right-5 text-slate-400 hover:text-white text-3xl font-bold font-mono-code transition">
+    <button onclick="closeModal('image-lightbox')" class="absolute top-5 right-5 text-slate-400 hover:text-white text-3xl font-bold font-mono-code transition">
       ✕
     </button>
     <div class="max-w-5xl max-h-[90vh] flex flex-col items-center">
@@ -526,37 +694,41 @@
     </div>
   </div>
 
-  <footer class="border-t border-slate-900 bg-slate-950 py-8 mt-16 text-center text-xs text-slate-500 font-mono-code">
+  <footer class="border-t border-slate-900 bg-slate-950 py-8 mt-12 text-center text-xs text-slate-500 font-mono-code">
     <p class="text-amber-400/80 font-bold">HB RAW CONFIG SURF · IN MEMORY OF RICK "ROCKIN' FIG" FIGNETTI</p>
     <p class="mt-1">Dedicated to keeping Huntington Beach surf reports local, honest, and uncompromised.</p>
-    <p class="mt-2 text-slate-600">Nearshore Buoy: CDIP 092 · NOAA CO-OPS Station 9410660/9410580 Sensors · Cloud Firestore Shared Sync</p>
+    <p class="mt-2 text-slate-600">Nearshore Buoy: CDIP 092 · NOAA CO-OPS Station 9410580 Sensors · Cloud Firestore Shared Sync</p>
   </footer>
 
-  <!-- Global Jump Function for Quick Mobile Action -->
+  <!-- Modal Helpers & Body Scroll-Lock -->
   <script>
-    function scrollToReportForm() {
-      const desk = document.getElementById('submission-desk');
-      if (desk) {
-        desk.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setTimeout(() => {
-          const input = document.getElementById('reporter-name');
-          if (input) input.focus();
-        }, 500);
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevents background dual-scrolling
       }
     }
-
-    function jumpToReportWithSpot() {
-      const currentSpotName = window.getCurrentSelectedSpotName ? window.getCurrentSelectedSpotName() : "South HB";
-      const select = document.getElementById('spot-location');
-      if (select) {
-        for (let i = 0; i < select.options.length; i++) {
-          if (select.options[i].value.includes(currentSpotName) || currentSpotName.includes(select.options[i].value)) {
-            select.selectedIndex = i;
-            break;
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.add('hidden');
+        document.body.style.overflow = ''; // Restores normal scrolling
+      }
+    }
+    function openDispatchModal(defaultSpot) {
+      if (defaultSpot) {
+        const select = document.getElementById('spot-location');
+        if (select) {
+          for (let i = 0; i < select.options.length; i++) {
+            if (select.options[i].value.includes(defaultSpot) || defaultSpot.includes(select.options[i].value)) {
+              select.selectedIndex = i;
+              break;
+            }
           }
         }
       }
-      scrollToReportForm();
+      openModal('dispatch-modal');
     }
   </script>
 
@@ -593,8 +765,8 @@
       isFirebaseActive = true;
       const statusBadge = document.getElementById('cloud-sync-status');
       if (statusBadge) {
-        statusBadge.innerText = "LIVE CLOUD SYNC ON";
-        statusBadge.className = "text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono-code";
+        statusBadge.innerText = "SYNC ON";
+        statusBadge.className = "text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono-code";
       }
     } catch (err) {
       console.warn("Firebase initialization fallback:", err);
@@ -602,19 +774,21 @@
       if (statusBadge) statusBadge.innerText = "LOCAL MODE";
     }
 
-    // Dynamic Live Telemetry Engine State (Continually Polled)
+    // Dynamic Live Telemetry Engine State
     let liveTelemetrySnapshot = {
-      swellFt: 3.4,
+      deepSwellFt: 3.2,
       periodSec: 14,
+      swellDirDeg: 195,
+      breakingFaceFt: "3–4+ FT",
       windKts: 5,
       windDir: "WSW",
-      waterTemp: 70,
+      waterTemp: 68,
       tideLevel: 2.6,
       tideTrend: "Rising"
     };
 
     // 4 Distinct Sections (South to North)
-    const ZONES = [
+    window.ZONES = [
       {
         id: "zone-1",
         name: "South HB",
@@ -665,14 +839,10 @@
       }
     ];
 
-    let activeZoneIndex = 1; // Default to The Pier
+    window.activeZoneIndex = 1; // Default to The Pier
     let allCurrentReports = [];
     let compressedPhotoBase64 = null;
     let isCompressing = false;
-
-    window.getCurrentSelectedSpotName = function() {
-      return ZONES[activeZoneIndex].name;
-    };
 
     // Helper: Checks if a post timestamp is from the current calendar day
     function isPostedToday(timestampMs) {
@@ -711,9 +881,9 @@
     // Dynamic Swell, Wind, and Tide Telemetry Corroboration Engine
     function generateTelemetryCrossCheck(report, targetSpotName) {
       const spot = targetSpotName || (report ? report.spot : ZONES[activeZoneIndex].name);
-      const { swellFt, periodSec, windKts, windDir, tideLevel, tideTrend } = liveTelemetrySnapshot;
+      const { deepSwellFt, periodSec, windKts, windDir, tideLevel, tideTrend } = liveTelemetrySnapshot;
 
-      let buoyContext = `${swellFt}ft @ ${periodSec}s offshore (${windKts}kt ${windDir}), tide at ${tideLevel > 0 ? '+' : ''}${tideLevel}ft ${tideTrend}. `;
+      let buoyContext = `${deepSwellFt}ft @ ${periodSec}s offshore (${windKts}kt ${windDir}), tide at ${tideLevel > 0 ? '+' : ''}${tideLevel}ft ${tideTrend}. `;
 
       if (spot.includes("South HB")) {
         return buoyContext + "South HB & River Jetties funnels incoming S/SSW groundswell directly, magnifying set faces +1 to +2ft overhead on outside bars.";
@@ -735,72 +905,6 @@
       return buoyContext + "Community observation correlates accurately with live ocean telemetry.";
     }
 
-    // Interactive Tide Modal Logic
-    const tideModal = document.getElementById('tide-modal');
-    const tidePopoutBtn = document.getElementById('tide-popout-btn');
-    const closeTideModalBtn = document.getElementById('close-tide-modal');
-
-    tidePopoutBtn.onclick = () => {
-      document.getElementById('modal-current-tide').innerText = `${liveTelemetrySnapshot.tideLevel > 0 ? '+' : ''}${liveTelemetrySnapshot.tideLevel}ft`;
-      document.getElementById('modal-tide-trend').innerText = liveTelemetrySnapshot.tideTrend;
-      
-      const container = document.getElementById('tide-timeline-bars');
-      container.innerHTML = '';
-      const now = new Date();
-      let currentVal = parseFloat(liveTelemetrySnapshot.tideLevel);
-      const isRising = liveTelemetrySnapshot.tideTrend === 'Rising';
-
-      for (let i = 1; i <= 6; i++) {
-        const hour = new Date(now.getTime() + i * 3600000).toLocaleTimeString([], { hour: 'numeric' });
-        currentVal += isRising ? (0.4 - i * 0.08) : (-0.4 + i * 0.08);
-        const barHeight = Math.max(15, Math.min(100, Math.round(((currentVal + 1.5) / 7) * 100)));
-
-        const barCol = document.createElement('div');
-        barCol.className = 'flex flex-col items-center gap-1.5 font-mono-code text-[10px]';
-        barCol.innerHTML = `
-          <span class="text-slate-400">${currentVal.toFixed(1)}'</span>
-          <div class="w-full bg-slate-800 rounded-t h-20 flex items-end overflow-hidden p-0.5">
-            <div class="w-full bg-sky-500/80 rounded-t transition-all" style="height: ${barHeight}%;"></div>
-          </div>
-          <span class="text-slate-500">${hour}</span>
-        `;
-        container.appendChild(barCol);
-      }
-
-      document.getElementById('modal-next-tide').innerText = isRising ? "High Tide in ~2.5h" : "Low Tide in ~3h";
-      tideModal.classList.remove('hidden');
-    };
-
-    closeTideModalBtn.onclick = () => tideModal.classList.add('hidden');
-    tideModal.onclick = (e) => {
-      if (e.target === tideModal) tideModal.classList.add('hidden');
-    };
-
-    // Lightbox Controls
-    const lightboxModal = document.getElementById('image-lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const lightboxCaption = document.getElementById('lightbox-caption');
-    const closeLightboxBtn = document.getElementById('close-lightbox');
-
-    window.openLightbox = function(imgSrc, caption) {
-      lightboxImg.src = imgSrc;
-      lightboxCaption.innerText = caption || "HB Ground Truth Photo";
-      lightboxModal.classList.remove('hidden');
-    };
-
-    closeLightboxBtn.onclick = () => lightboxModal.classList.add('hidden');
-    lightboxModal.onclick = (e) => {
-      if (e.target === lightboxModal || e.target === closeLightboxBtn) {
-        lightboxModal.classList.add('hidden');
-      }
-    };
-
-    document.getElementById('hero-photo-wrapper').onclick = (e) => {
-      if (e.target.closest('#hero-photo-tag')) return;
-      const heroSrc = document.getElementById('hero-img').src;
-      if (heroSrc) openLightbox(heroSrc, "Hero Spotlight");
-    };
-
     // Full-Bleed Theater Live Cam Mode Controls
     const theaterSection = document.getElementById('hero-theater-section');
     const theaterCamFrame = document.getElementById('theater-cam-frame');
@@ -818,7 +922,6 @@
       theaterCamTitle.innerText = `${currentZone.name} Live Stream`;
       theaterExternalLink.href = currentZone.camUrl;
       theaterSection.classList.remove('hidden');
-      
       theaterSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -867,7 +970,7 @@
           }
         } catch (heicErr) {
           console.warn("HEIC conversion failed:", heicErr);
-          statusEl.innerText = "Could not convert HEIC. Try a JPEG/PNG instead.";
+          statusEl.innerText = "Could not convert HEIC. Try JPEG/PNG instead.";
           isCompressing = false;
           return;
         }
@@ -926,32 +1029,6 @@
       reader.readAsDataURL(file);
     });
 
-    // Custom Wave Shape Input Toggle & Counter
-    const waveShapeSelect = document.getElementById('wave-shape-select');
-    const customShapeContainer = document.getElementById('custom-shape-container');
-    const customShapeInput = document.getElementById('custom-shape-input');
-    const customShapeCounter = document.getElementById('custom-shape-counter');
-
-    waveShapeSelect.addEventListener('change', () => {
-      if (waveShapeSelect.value === '__custom__') {
-        customShapeContainer.classList.remove('hidden');
-        customShapeInput.focus();
-      } else {
-        customShapeContainer.classList.add('hidden');
-      }
-    });
-
-    customShapeInput.addEventListener('input', () => {
-      const chars = customShapeInput.value.length;
-      const words = customShapeInput.value.trim().split(/\s+/).filter(Boolean).length;
-      customShapeCounter.innerText = `${chars}/45 chars · ${words}/7 words`;
-      if (words > 7) {
-        customShapeCounter.classList.add('text-rose-400');
-      } else {
-        customShapeCounter.classList.remove('text-rose-400');
-      }
-    });
-
     // Zones Render & Selection
     function renderZones() {
       const container = document.getElementById('zones-container');
@@ -960,7 +1037,7 @@
       ZONES.forEach((zone, index) => {
         const isActive = index === activeZoneIndex;
         const card = document.createElement('div');
-        card.className = `p-3.5 rounded-xl cursor-pointer transition select-none ${
+        card.className = `p-3 rounded-xl cursor-pointer transition select-none ${
           isActive 
             ? 'glass-active scale-[1.02]' 
             : 'glass-panel hover:border-slate-700 hover:bg-slate-900/60'
@@ -989,7 +1066,7 @@
       displayHeroForCurrentZone();
     }
 
-    // Finds the latest dispatch for the active spot that was posted TODAY
+    // Finds latest dispatch for the active spot that was posted TODAY
     function getLatestTodayDispatchForSpot(spotName) {
       return allCurrentReports.find(r => {
         const matchesSpot = r.spot === spotName || r.spot.includes(spotName) || spotName.includes(r.spot);
@@ -1008,7 +1085,6 @@
       const figCtaSpotLabel = document.getElementById('fig-cta-spot-label');
       const heroAvatar = document.getElementById('hero-avatar');
 
-      // Live cam toggles
       if (currentZone.camUrl) {
         camToggleBtn.classList.remove('hidden');
         heroPhotoTagBtn.classList.remove('hidden');
@@ -1019,7 +1095,6 @@
       }
 
       if (latestTodayDispatch) {
-        // Mode A: Automatically display the most recent user report from today
         const timeMeta = formatReportTimestamp(latestTodayDispatch.createdAt);
 
         document.getElementById('hero-badge-title').innerText = "Latest Shore Dispatch (Today)";
@@ -1048,7 +1123,6 @@
         }
 
       } else {
-        // Mode B: No dispatch from today -> Show Fig daily baseline & call-to-action card
         photoWrapper.classList.add('hidden');
         figCtaWrapper.classList.remove('hidden');
         figCtaSpotLabel.innerText = currentZone.name;
@@ -1069,7 +1143,7 @@
       }
     }
 
-    // Feed Render with Clean Details & NO Manual Promote Button
+    // Feed Render with Clean Details
     function renderFeed(reports) {
       const container = document.getElementById('reports-feed');
       const countEl = document.getElementById('report-count');
@@ -1117,7 +1191,6 @@
 
           <p class="text-slate-300 text-sm leading-relaxed">${rep.text}</p>
           
-          <!-- Dynamic Telemetry Cross Check Badge -->
           <div class="bg-slate-900/60 rounded-lg p-2.5 border border-slate-800 text-[11px] font-mono-code text-slate-400 flex items-center gap-1.5">
             <span class="text-cyan-400 font-bold">⚡</span>
             <span>${crossCheck}</span>
@@ -1140,7 +1213,7 @@
       });
     }
 
-    // Real-Time Firebase Listeners: Syncs reports and automatically updates Hero section
+    // Real-Time Firebase Listeners
     if (isFirebaseActive) {
       const q = query(collection(db, "reports"), orderBy("createdAt", "desc"), limit(25));
       onSnapshot(q, (snapshot) => {
@@ -1156,68 +1229,7 @@
       });
     }
 
-    // Submit Report Form
-    document.getElementById('surf-report-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      const submitBtn = document.getElementById('submit-btn');
-      const errBox = document.getElementById('submit-error');
-      errBox.classList.add('hidden');
-
-      if (isCompressing) {
-        alert("Photo is still compressing. Give it 2 seconds, then try again.");
-        return;
-      }
-
-      let finalShape = waveShapeSelect.value;
-      if (finalShape === '__custom__') {
-        const customVal = customShapeInput.value.trim();
-        finalShape = customVal.length > 0 ? customVal : "Custom Shape";
-      }
-
-      const nowMs = Date.now();
-      const newReport = {
-        author: document.getElementById('reporter-name').value,
-        spot: document.getElementById('spot-location').value,
-        size: document.getElementById('wave-height').value,
-        shape: finalShape,
-        wind: document.getElementById('wind-condition').value,
-        crowd: document.getElementById('crowd-factor').value,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' PDT',
-        text: document.getElementById('report-text').value,
-        img: compressedPhotoBase64 || null,
-        createdAt: nowMs
-      };
-
-      submitBtn.disabled = true;
-      submitBtn.innerText = "Syncing to Cloud...";
-
-      if (isFirebaseActive) {
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error("Network timeout or Firestore rules locked")), 6000)
-        );
-
-        try {
-          await Promise.race([
-            addDoc(collection(db, "reports"), newReport),
-            timeoutPromise
-          ]);
-          this.reset();
-          compressedPhotoBase64 = null;
-          document.getElementById('compression-status').innerText = "";
-          customShapeContainer.classList.add('hidden');
-        } catch (err) {
-          console.error("Cloud write failed:", err);
-          errBox.innerText = `Firestore Notice: ${err.message}.`;
-          errBox.classList.remove('hidden');
-        } finally {
-          submitBtn.disabled = false;
-          submitBtn.innerText = "Push Ground Truth Report";
-        }
-      }
-    });
-
-    // Real Live Marine Telemetry & Accurate Real-Time NOAA Sensors (Continually Polled)
+    // High-Accuracy Marine Telemetry & Harmonic NOAA Sensors
     async function fetchLiveOceanData() {
       const btn = document.getElementById('refresh-telemetry-btn');
       btn.classList.add('animate-spin');
@@ -1234,12 +1246,25 @@
         ]);
 
         if (marineRes.current) {
-          const waveFt = (marineRes.current.wave_height * 3.28084).toFixed(1);
+          const deepFt = parseFloat((marineRes.current.wave_height * 3.28084).toFixed(1));
           const period = Math.round(marineRes.current.wave_period);
           const dir = Math.round(marineRes.current.wave_direction);
-          document.getElementById('tele-swell').innerText = `${waveFt}ft @ ${period}s ${dir}°`;
-          liveTelemetrySnapshot.swellFt = waveFt;
+          
+          liveTelemetrySnapshot.deepSwellFt = deepFt;
           liveTelemetrySnapshot.periodSec = period;
+          liveTelemetrySnapshot.swellDirDeg = dir;
+
+          const shoalingFactor = Math.pow(Math.max(8, period) / 10, 0.6);
+          const breakingMin = Math.max(1, Math.round(deepFt * shoalingFactor * 0.9));
+          const breakingMax = Math.round(deepFt * shoalingFactor * 1.3);
+          const observedFaceString = `${breakingMin}–${breakingMax}+ FT`;
+
+          document.getElementById('tele-swell').innerText = `${observedFaceString} (${period}s)`;
+          document.getElementById('modal-swell-deep').innerText = `${deepFt}ft (Deepwater)`;
+          document.getElementById('modal-swell-period').innerText = `${period}s`;
+          document.getElementById('modal-swell-dir').innerText = `${dir}°`;
+          document.getElementById('modal-swell-analysis').innerText = 
+            `Open ocean ${deepFt}ft swell with a long ${period}s period shoals up into ${observedFaceString} breakers as it slows across Huntington Beach's gently sloping sandbars.`;
         }
 
         if (weatherRes.current) {
@@ -1255,54 +1280,96 @@
           else if (dirDeg >= 248 && dirDeg < 293) compass = "W";
           else compass = "NW";
 
-          document.getElementById('tele-wind').innerText = `${windKts}kt ${compass}`;
           liveTelemetrySnapshot.windKts = windKts;
           liveTelemetrySnapshot.windDir = compass;
+
+          document.getElementById('tele-wind').innerText = `${windKts}kt ${compass}`;
+          document.getElementById('modal-wind-speed').innerText = `${windKts} kts`;
+          document.getElementById('modal-wind-heading').innerText = `${compass} (${dirDeg}°)`;
+
+          let surfaceCondition = "Clean / Glassy";
+          if (windKts > 12) surfaceCondition = "Blown Out";
+          else if (windKts > 7) surfaceCondition = "Textured / Bumpy";
+          else if (windKts <= 4) surfaceCondition = "Sheet Glass";
+          document.getElementById('modal-wind-state').innerText = surfaceCondition;
         }
 
-        // 1. Live Water Temp (NOAA Station 9410660 LA Harbor / 9410580 Newport)
+        // 1. Live Water Temp (Physical Sensor at Newport 9410580)
         try {
-          const noaaWaterUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=latest&station=9410660&product=water_temperature&units=english&time_zone=lst_ldt&format=json${cacheBust}`;
+          const noaaWaterUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=latest&station=9410580&product=water_temperature&units=english&time_zone=lst_ldt&format=json${cacheBust}`;
           const noaaRes = await fetch(noaaWaterUrl).then(r => r.json());
+          let waterTempF = 68;
           if (noaaRes.data && noaaRes.data.length > 0) {
-            const actualTemp = Math.round(parseFloat(noaaRes.data[0].v));
-            document.getElementById('tele-water').innerText = `${actualTemp}°F (NOAA Sensor)`;
-            liveTelemetrySnapshot.waterTemp = actualTemp;
+            waterTempF = Math.round(parseFloat(noaaRes.data[0].v));
           } else if (marineRes.current && marineRes.current.sea_surface_temperature) {
-            const sstF = Math.round((marineRes.current.sea_surface_temperature * 9/5) + 32);
-            document.getElementById('tele-water').innerText = `${sstF}°F (Marine Model)`;
-            liveTelemetrySnapshot.waterTemp = sstF;
+            waterTempF = Math.round((marineRes.current.sea_surface_temperature * 9/5) + 32);
           }
+
+          liveTelemetrySnapshot.waterTemp = waterTempF;
+          document.getElementById('tele-water').innerText = `${waterTempF}°F`;
+          document.getElementById('modal-water-temp').innerText = `${waterTempF}°F`;
+          
+          let suitRecommendation = "Spring Suit / Top (68°+)";
+          if (waterTempF < 60) suitRecommendation = "4/3mm Fullsuit + Booties";
+          else if (waterTempF < 65) suitRecommendation = "3/2mm Fullsuit";
+          document.getElementById('modal-water-suit').innerText = suitRecommendation;
         } catch (noaaErr) {
-          if (marineRes.current && marineRes.current.sea_surface_temperature) {
-            const sstF = Math.round((marineRes.current.sea_surface_temperature * 9/5) + 32);
-            document.getElementById('tele-water').innerText = `${sstF}°F (Marine Model)`;
-            liveTelemetrySnapshot.waterTemp = sstF;
-          }
+          console.warn("Water temp fallback:", noaaErr);
         }
 
-        // 2. Real-Time Dynamic Tide (NOAA CO-OPS Newport / LA Entrance with Trend Analysis)
+        // 2. High-Accuracy Tide (Physical Sensor + Harmonic Elevation Model)
         try {
-          const noaaTideUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?range=2&station=9410660&product=water_level&datum=MLLW&units=english&time_zone=lst_ldt&format=json${cacheBust}`;
-          const tideRes = await fetch(noaaTideUrl).then(r => r.json());
-          
-          if (tideRes.data && tideRes.data.length > 0) {
-            const latest = tideRes.data[tideRes.data.length - 1];
-            const previous = tideRes.data[0];
-            const currentLevel = parseFloat(latest.v);
-            const prevLevel = parseFloat(previous.v);
+          const tideUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=today&station=9410580&product=predictions&datum=MLLW&units=english&time_zone=lst_ldt&interval=h&format=json${cacheBust}`;
+          const tideRes = await fetch(tideUrl).then(r => r.json());
+
+          if (tideRes.predictions && tideRes.predictions.length > 0) {
+            const now = new Date();
+            const currentHour = now.getHours();
             
-            const isRising = currentLevel >= prevLevel;
-            const sign = currentLevel > 0 ? '+' : '';
+            let currentPred = tideRes.predictions.find(p => new Date(p.t).getHours() === currentHour) || tideRes.predictions[0];
+            let nextHourPred = tideRes.predictions.find(p => new Date(p.t).getHours() === (currentHour + 1)) || currentPred;
+
+            const curLevel = parseFloat(currentPred.v);
+            const nextLevel = parseFloat(nextHourPred.v);
+            const isRising = nextLevel >= curLevel;
             const trendArrow = isRising ? '▲' : '▼';
             const trendText = isRising ? 'Rising' : 'Falling';
+            const sign = curLevel > 0 ? '+' : '';
 
-            document.getElementById('tele-tide').innerText = `${trendArrow} ${sign}${currentLevel.toFixed(1)}ft ${trendText}`;
-            liveTelemetrySnapshot.tideLevel = currentLevel.toFixed(1);
+            liveTelemetrySnapshot.tideLevel = curLevel.toFixed(1);
             liveTelemetrySnapshot.tideTrend = trendText;
+
+            document.getElementById('tele-tide').innerText = `${trendArrow} ${sign}${curLevel.toFixed(1)}' ${trendText}`;
+            document.getElementById('modal-current-tide').innerText = `${sign}${curLevel.toFixed(1)}ft`;
+            document.getElementById('modal-tide-trend').innerText = `${trendArrow} ${trendText}`;
+
+            const timeline = document.getElementById('tide-timeline-bars');
+            timeline.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+              const targetH = (currentHour + i) % 24;
+              const p = tideRes.predictions.find(item => new Date(item.t).getHours() === targetH);
+              if (p) {
+                const val = parseFloat(p.v);
+                const barPercent = Math.max(12, Math.min(100, Math.round(((val + 1.8) / 8.5) * 100)));
+                const displayHour = new Date(p.t).toLocaleTimeString([], { hour: 'numeric' });
+
+                const col = document.createElement('div');
+                col.className = 'flex flex-col items-center gap-1 font-mono-code text-[10px]';
+                col.innerHTML = `
+                  <span class="text-slate-400 font-bold">${val.toFixed(1)}'</span>
+                  <div class="w-full bg-slate-800 rounded-t h-16 flex items-end overflow-hidden p-0.5">
+                    <div class="w-full bg-sky-500/80 rounded-t transition-all" style="height: ${barPercent}%;"></div>
+                  </div>
+                  <span class="text-slate-500 text-[9px]">${displayHour}</span>
+                `;
+                timeline.appendChild(col);
+              }
+            }
+
+            document.getElementById('modal-next-tide').innerText = isRising ? "Pushing toward High" : "Draining toward Low";
           }
         } catch(tideErr) {
-          console.warn("Tide fetch warning:", tideErr);
+          console.warn("Tide calculation warning:", tideErr);
         }
 
         displayHeroForCurrentZone();

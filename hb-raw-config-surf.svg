@@ -1,0 +1,29 @@
+
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="512" height="512">
+          <defs>
+            <linearGradient id="c2-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#111827"/>
+              <stop offset="100%" stop-color="#030712"/>
+            </linearGradient>
+            <linearGradient id="c2-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fbbf24"/>
+              <stop offset="100%" stop-color="#06b6d4"/>
+            </linearGradient>
+          </defs>
+          <rect width="160" height="160" rx="36" fill="url(#c2-bg)"/>
+          
+          <!-- Outer Diamond Badge -->
+          <polygon points="80,14 146,80 80,146 14,80" stroke="url(#c2-gold)" stroke-width="3" fill="none"/>
+          <polygon points="80,22 138,80 80,138 22,80" stroke="#334155" stroke-width="1" fill="#090e17"/>
+
+          <!-- Sunburst Horizon Rays -->
+          <path d="M 80 80 L 45 45 M 80 80 L 60 35 M 80 80 L 80 28 M 80 80 L 100 35 M 80 80 L 115 45" stroke="#f59e0b" stroke-width="1.5" stroke-opacity="0.4"/>
+          
+          <!-- Retro Peaking Wave Inside Diamond -->
+          <path d="M 32 94 C 50 94 62 82 72 70 C 82 58 88 56 94 62 C 86 64 84 72 90 76 C 100 82 110 88 128 94 Z" fill="#06b6d4"/>
+          <path d="M 28 98 L 132 98" stroke="#475569" stroke-width="2"/>
+
+          <!-- Center Block Monogram -->
+          <text x="80" y="118" font-family="'Bebas Neue', sans-serif" font-size="28" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="2">HB SURF</text>
+          <text x="80" y="130" font-family="'JetBrains Mono', monospace" font-size="7.5" font-weight="700" fill="#f59e0b" text-anchor="middle" letter-spacing="1.5">RAW CONFIG</text>
+        </svg>
