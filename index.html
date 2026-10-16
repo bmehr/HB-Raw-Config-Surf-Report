@@ -265,7 +265,7 @@
       </div>
     </section>
 
-    <!-- Standard Hero Spotlight Card Section -->
+    <!-- Standard Hero Spotlight Card Section (Cleaned: "Fig's Call" Removed) -->
     <section id="hero-card-section">
       <div class="flex items-center justify-between mb-2 font-mono-code text-xs">
         <div class="flex items-center gap-2">
@@ -340,7 +340,7 @@
 
         </div>
 
-        <!-- Body & Reality Check -->
+        <!-- Body: Clean, Focused Layout -->
         <div class="lg:col-span-7 p-5 sm:p-7 flex flex-col justify-between space-y-5">
           <div class="space-y-4">
             
@@ -359,19 +359,6 @@
               </div>
             </div>
 
-            <!-- "Fig's Reality Check" Module -->
-            <div class="bg-slate-900/90 rounded-xl p-3.5 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono-code">
-              <div>
-                <span class="text-amber-400 font-bold">★ ROCKIN' FIG'S REALITY CHECK:</span>
-                <p class="text-slate-300 mt-0.5 text-[11px]" id="hero-reality-check">
-                  Synchronizing buoy models with sandbar bathymetry...
-                </p>
-              </div>
-              <span id="hero-paddle-badge" class="text-emerald-400 font-bold text-nowrap self-start sm:self-auto bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/30 text-[11px]">
-                PADDLE OUT!
-              </span>
-            </div>
-
             <!-- Wave Physics Tags & Crowd Factor -->
             <div class="flex flex-wrap gap-1.5 text-xs font-mono-code" id="hero-tags">
               <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-200 border border-slate-700" id="tag-shape">Shape: Steep Wedges & Rip</span>
@@ -381,12 +368,12 @@
             </div>
 
             <!-- Observation Text Written in Fig's Dynamic Voice -->
-            <p id="hero-notes" class="text-slate-300 text-xs sm:text-sm leading-relaxed italic">
+            <p id="hero-notes" class="text-slate-300 text-xs sm:text-sm leading-relaxed italic bg-slate-900/60 p-3.5 rounded-xl border border-slate-800/80">
               "Howzit everybody, Rick 'Rockin Fig' here with your Surf City wire!"
             </p>
           </div>
 
-          <!-- Reporter Credit & Strategic Form Jump Link -->
+          <!-- Reporter Credit & Form Trigger Link -->
           <div class="pt-3.5 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2.5 text-xs text-slate-400 font-mono-code">
             <div class="flex items-center space-x-2">
               <div class="h-6 w-6 rounded-full bg-cyan-600 flex items-center justify-center font-bold text-white text-[10px]" id="hero-avatar">FIG</div>
@@ -406,7 +393,7 @@
         <div>
           <h3 class="text-base font-bold text-white flex items-center gap-2">
             <span>Local Shore Log</span>
-            <span class="text-xs text-cyan-400 font-mono-code" id="feed-zone-filter">(Live Cloud Feed)</span>
+            <span class="text-xs text-cyan-400 font-mono-code" id="feed-zone-filter">(Active Break First)</span>
           </h3>
           <p class="text-xs text-slate-400">Real, unvarnished field notes submitted by surfers on the sand.</p>
         </div>
@@ -568,7 +555,7 @@
             <span>Coastal Wind & Texture Analysis</span>
             <span class="text-xs text-emerald-400 font-mono-code">10m Station Sensor</span>
           </h3>
-          <p class="text-xs text-slate-400 font-mono-code">Nearshore Aerology</p>
+          <p class="text-xs text-slate-400 font-mono-code">Nearshore Aerology (Calculated to HB Shoreline Angle)</p>
         </div>
         <button onclick="closeModal('wind-modal')" class="text-slate-400 hover:text-white text-2xl font-mono-code font-bold">✕</button>
       </div>
@@ -589,9 +576,9 @@
       </div>
 
       <div class="bg-slate-900/70 p-3.5 rounded-xl border border-slate-800 space-y-1.5 text-xs">
-        <span class="font-mono-code text-emerald-400 font-bold uppercase tracking-wider text-[11px]">Bluff Wind Shadowing:</span>
+        <span class="font-mono-code text-emerald-400 font-bold uppercase tracking-wider text-[11px]">Coastline Alignment:</span>
         <p class="text-slate-300 leading-relaxed">
-          Winds under 8 knots out of the W/WSW leave the Cliffs (North HB) sheltered under the bluffs, while South HB remains more exposed to cross-chop.
+          HB coastline faces 215° (SW). Winds from the NE/E/ESE are true offshore grooming winds. Winds from the S/SW/W are onshore.
         </p>
       </div>
     </div>
@@ -701,23 +688,37 @@
     <p class="mt-2 text-slate-600">Nearshore Buoy: CDIP 092 · NOAA CO-OPS Station 9410580 Sensors · Cloud Firestore Shared Sync</p>
   </footer>
 
-  <!-- Modal Helpers & Body Scroll-Lock -->
+  <!-- Modal Helpers & Global Lightbox Setup -->
   <script>
-    function openModal(id) {
+    window.openModal = function(id) {
       const el = document.getElementById(id);
       if (el) {
         el.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
       }
-    }
-    function closeModal(id) {
+    };
+
+    window.closeModal = function(id) {
       const el = document.getElementById(id);
       if (el) {
         el.classList.add('hidden');
         document.body.style.overflow = '';
       }
-    }
-    function openDispatchModal(defaultSpot) {
+    };
+
+    window.openLightbox = function(imgSrc, caption) {
+      const lightboxModal = document.getElementById('image-lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxCaption = document.getElementById('lightbox-caption');
+      if (lightboxModal && lightboxImg) {
+        lightboxImg.src = imgSrc;
+        lightboxCaption.innerText = caption || "HB Ground Truth Photo";
+        lightboxModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+    };
+
+    window.openDispatchModal = function(defaultSpot) {
       if (defaultSpot) {
         const select = document.getElementById('spot-location');
         if (select) {
@@ -730,7 +731,7 @@
         }
       }
       openModal('dispatch-modal');
-    }
+    };
   </script>
 
   <!-- Firebase Modular SDK & Core Application Script -->
@@ -783,6 +784,7 @@
       breakingFaceFt: "3–4+ FT",
       windKts: 5,
       windDir: "WSW",
+      windDeg: 245,
       waterTemp: 68,
       tideLevel: 2.6,
       tideTrend: "Rising"
@@ -872,29 +874,32 @@
       return { fullDate, relative };
     }
 
+    // Mathematical Shoreline Angle Calculation: Detects true Offshore vs Onshore
+    function getWindClassification(dirDeg, kts) {
+      if (kts <= 4) return { type: "glass", desc: "Sheet Glass / Dead Calm" };
+      if (dirDeg >= 0 && dirDeg <= 115) return { type: "offshore", desc: `${kts}kt Offshore Grooming` };
+      if (dirDeg >= 190 && dirDeg <= 300) {
+        return kts > 13 ? { type: "blown", desc: `${kts}kt Strong Onshore Chop` } : { type: "onshore", desc: `${kts}kt Light Onshore Texture` };
+      }
+      return { type: "cross", desc: `${kts}kt Cross-Shore Breeze` };
+    }
+
     // Dynamic Swell, Wind, and Tide Telemetry Corroboration Engine
     function generateTelemetryCrossCheck(report, targetSpotName) {
       const spot = targetSpotName || (report ? report.spot : ZONES[activeZoneIndex].name);
-      const { deepSwellFt, periodSec, windKts, windDir, tideLevel, tideTrend } = liveTelemetrySnapshot;
+      const { deepSwellFt, periodSec, windKts, windDir, windDeg, tideLevel, tideTrend } = liveTelemetrySnapshot;
+      const windInfo = getWindClassification(windDeg, windKts);
 
-      let buoyContext = `${deepSwellFt}ft @ ${periodSec}s offshore (${windKts}kt ${windDir}), tide at ${tideLevel > 0 ? '+' : ''}${tideLevel}ft ${tideTrend}. `;
+      let buoyContext = `${deepSwellFt}ft @ ${periodSec}s (${windInfo.desc}), tide at ${tideLevel > 0 ? '+' : ''}${tideLevel}ft ${tideTrend}. `;
 
       if (spot.includes("South HB")) {
-        return buoyContext + "South HB & River Jetties funnels incoming S/SSW groundswell directly, magnifying set faces +1 to +2ft overhead on outside bars.";
+        return buoyContext + (windInfo.type === 'offshore' ? "East winds grooming steep outside lefts peeling toward the jetty." : "Outside cobblestone shelf holding workable wedges on the push.");
       } else if (spot.includes("Pier")) {
-        if (periodSec >= 13) {
-          return buoyContext + "Long-period groundswell refracting off pilings into wedging bowl takeoffs.";
-        } else {
-          return buoyContext + "Shorter period swell producing peaky corners with a steady longshore sweep.";
-        }
+        return buoyContext + (periodSec >= 13 ? "Long-period groundswell refracting off pilings into wedging bowl takeoffs." : "Sectiony peaks refracting with steady longshore sweep.");
       } else if (spot.includes("North HB") || spot.includes("17th") || spot.includes("Cliffs")) {
-        if (periodSec >= 12 && windKts <= 9) {
-          return buoyContext + "Clean groundswell energy shoaling nicely over outside sandbars with workable A-frame corners.";
-        } else {
-          return buoyContext + `${windKts}kt onshore breeze adding chop to outside shoulders; look for protected corners under the bluffs.`;
-        }
+        return buoyContext + (windInfo.type === 'offshore' ? "Offshore breath grooming clean A-frames under the bluffs." : "Cliffs providing natural wind-baffle protection.");
       } else if (spot.includes("Bolsa")) {
-        return buoyContext + "Mellow gradient bathymetry softening set energy into gentle peelers ideal for logs.";
+        return buoyContext + "Mellow bathymetry slowing set energy into gentle peelers for single-fins.";
       }
       return buoyContext + "Community observation correlates accurately with live ocean telemetry.";
     }
@@ -903,29 +908,27 @@
     // DYNAMIC "ROCKIN' FIG" TELEMETRY-SYNTHESIZED COMMENTARY ENGINE
     // ========================================================
     function generateDynamicFigReport(spotName) {
-      const { windKts, windDir, deepSwellFt, periodSec, tideLevel, tideTrend } = liveTelemetrySnapshot;
+      const { windKts, windDir, windDeg, deepSwellFt, periodSec, tideLevel, tideTrend } = liveTelemetrySnapshot;
+      const windInfo = getWindClassification(windDeg, windKts);
 
       // 1. Wind commentary
       let windText = "";
-      const isOffshore = (windDir === "E" || windDir === "NE" || windDir === "ENE" || windDir === "SE" || (windDir === "N" && windKts > 8));
-      const isOnshore = (windDir === "W" || windDir === "WSW" || windDir === "SW" || windDir === "NW");
-
-      if (isOffshore && windKts >= 14) {
-        windText = `Man, those Santanas are howling offshore right now at ${windKts} knots out of the ${windDir}! It's grooming the swell clean but you'll want some extra foam under your chest so you don't get blown off the back of the wave on takeoff.`;
-      } else if (isOffshore && windKts >= 6) {
-        windText = `Sweet light offshore breeze at ${windKts} knots holding up the faces and keeping things groomed like a racetrack.`;
-      } else if (windKts <= 5) {
+      if (windInfo.type === 'offshore' && windKts >= 12) {
+        windText = `Man, those Santanas are howling offshore right now at ${windKts} knots out of the ${windDir}! It's holding up the faces like a racetrack, but grab a little extra foam so you don't get blown off the back on takeoff.`;
+      } else if (windInfo.type === 'offshore') {
+        windText = `Sweet light offshore breeze at ${windKts} knots keeping every peak groomed clean and glassy.`;
+      } else if (windInfo.type === 'glass') {
         windText = `Grease-calm sheet glass on the water right now with just a whisper of ${windKts}kt air.`;
-      } else if (isOnshore && windKts >= 14) {
+      } else if (windInfo.type === 'blown') {
         windText = `Onshore breeze is up to ${windKts} knots bringing in white caps and side-chop. You gotta hunt for corners in the soup.`;
       } else {
-        windText = `A light ${windKts}kt ${windDir} bump on the outside shoulders, but workable sandbar corners are still rolling through.`;
+        windText = `A light ${windKts}kt ${windDir} side-puff on the outside shoulders, but workable sandbar corners are still rolling through.`;
       }
 
       // 2. Swell & Period commentary
       let swellText = "";
       if (periodSec >= 14) {
-        swellText = `We've got legit long-period groundswell energy showing ${periodSec} seconds on the buoy, meaning those outside sandbars are shoaling up set waves well overhead of generic computer forecasts!`;
+        swellText = `We've got legit long-period groundswell showing ${periodSec} seconds on the buoy, meaning outside sandbars are shoaling up set waves well overhead of generic computer forecasts!`;
       } else if (periodSec <= 10) {
         swellText = `It's mostly shorter-period windswell at ${periodSec}s, so peaks are coming in rapid-fire without much lull between sets.`;
       } else {
@@ -949,19 +952,19 @@
       let waveRange = "";
 
       if (spotName.includes("South HB")) {
-        headline = `"South HB: ${isOffshore ? 'Offshores Firing the Jetties!' : 'Punchy Wedges on the Push!'}"`;
+        headline = `"South HB: ${windInfo.type === 'offshore' ? 'Offshores Firing the Jetties!' : 'Punchy Wedges on the Push!'}"`;
         waveRange = periodSec >= 13 ? "3–5+ FT" : "2–4 FT";
-        spotWrap = `Down here past Brookhurst toward the River, the south angle is bending hard into the sandbars. Grab your fish or everyday shortboard and paddle out before conditions shift!`;
+        spotWrap = `Down here past Brookhurst toward the River, the south angle is bending hard into the sandbars. Grab your board and paddle out before conditions shift!`;
       } else if (spotName.includes("Pier")) {
-        headline = `"The Pier: ${isOffshore ? 'Piling Wedges Reeling in the Wind!' : 'Fast Bowling Peaks North & South!'}"`;
+        headline = `"The Pier: ${windInfo.type === 'offshore' ? 'Piling Wedges Reeling in the Wind!' : 'Fast Bowling Peaks North & South!'}"`;
         waveRange = periodSec >= 13 ? "3–5 FT" : "3–4 FT";
         spotWrap = `South side piling bounce has that lively bowl if you're fast off the bottom, and north side is throwing workable rights toward the pier and lefts into the 6th St trough. Watch the north current!`;
       } else if (spotName.includes("North HB") || spotName.includes("Cliffs")) {
-        headline = `"North HB: ${isOffshore ? 'Bluff-Groomed A-Frames!' : 'Peak Action Through 17th & Cliffs!'}"`;
+        headline = `"North HB: ${windInfo.type === 'offshore' ? 'Bluff-Groomed A-Frames!' : 'Peak Action Through 17th & Cliffs!'}"`;
         waveRange = periodSec >= 13 ? "3–4+ FT" : "2–4 FT";
         spotWrap = `The 17th to Goldenwest stretch is holding peaky shapes, and the bluffs are providing great protection. Sweet little lefts running into the trough and rights wedging toward 17th!`;
       } else {
-        headline = `"Bolsa Chica: ${isOffshore ? 'Glider Heaven in the Offshores!' : 'Wax the Log for Mellow Peelers!'}"`;
+        headline = `"Bolsa Chica: ${windInfo.type === 'offshore' ? 'Glider Heaven in the Offshores!' : 'Wax the Log for Mellow Peelers!'}"`;
         waveRange = "2–3+ FT";
         spotWrap = `Classic peeling rollers between Seapoint and the North Lot. It won't push your shortboard around, but if you've got a single fin or twin fin glider, conditions are righteous.`;
       }
@@ -1002,6 +1005,25 @@
       openLiveCamTheater();
     });
     closeTheaterBtn.addEventListener('click', closeLiveCamTheater);
+
+    // Hero Photo Click -> Opens in Lightbox
+    document.getElementById('hero-photo-wrapper').onclick = (e) => {
+      if (e.target.closest('#hero-photo-tag')) return;
+      const heroSrc = document.getElementById('hero-img').src;
+      if (heroSrc) window.openLightbox(heroSrc, "Hero Spotlight");
+    };
+
+    // Event Delegation: Safely handles clicking "Tap to Expand" or photos on feed cards
+    document.getElementById('reports-feed').addEventListener('click', (e) => {
+      const trigger = e.target.closest('.feed-lightbox-trigger');
+      if (trigger) {
+        const imgSrc = trigger.getAttribute('data-img');
+        const caption = trigger.getAttribute('data-caption');
+        if (imgSrc) {
+          window.openLightbox(imgSrc, caption);
+        }
+      }
+    });
 
     // Robust Photo Compression with Automatic iPhone HEIC Conversion
     document.getElementById('report-photo-input').addEventListener('change', async function(e) {
@@ -1125,11 +1147,13 @@
       document.getElementById('current-zone-badge').innerText = `Viewing: ${ZONES[activeZoneIndex].name}`;
     }
 
+    // Selecting a zone triggers active priority feed sort
     function selectZone(index) {
       activeZoneIndex = index;
       closeLiveCamTheater();
       renderZones();
       displayHeroForCurrentZone();
+      renderFeed(allCurrentReports);
     }
 
     // Finds latest dispatch for the active spot that was posted TODAY
@@ -1145,7 +1169,6 @@
       const todayReports = allCurrentReports.filter(r => isPostedToday(r.createdAt));
       if (todayReports.length === 0) return -1;
 
-      // Most recent today report is first because reports are ordered desc
       const freshest = todayReports[0];
       const matchIdx = ZONES.findIndex(z => freshest.spot === z.name || freshest.spot.includes(z.name) || z.name.includes(freshest.spot));
       return matchIdx;
@@ -1185,7 +1208,6 @@
         document.getElementById('tag-wind').innerText = `Wind: ${latestTodayDispatch.wind}`;
         document.getElementById('tag-crowd').innerText = `Crowd: ${latestTodayDispatch.crowd || 'Moderate'}`;
         document.getElementById('tag-tide').innerText = `Tide Window: ${currentZone.idealTide}`;
-        document.getElementById('hero-reality-check').innerText = generateTelemetryCrossCheck(latestTodayDispatch, currentZone.name);
         heroAvatar.innerText = (latestTodayDispatch.author || "GT").substring(0, 2).toUpperCase();
 
         if (latestTodayDispatch.img) {
@@ -1212,7 +1234,6 @@
         document.getElementById('hero-headline').innerText = figReport.headline;
         document.getElementById('hero-wave-size').innerText = figReport.waveRange;
         document.getElementById('hero-notes').innerText = figReport.fullDispatch;
-        document.getElementById('hero-reality-check').innerText = generateTelemetryCrossCheck(null, currentZone.name);
         document.getElementById('tag-shape').innerText = `Shape: ${currentZone.shape}`;
         document.getElementById('tag-wind').innerText = `Wind: ${liveTelemetrySnapshot.windKts}kt ${liveTelemetrySnapshot.windDir}`;
         document.getElementById('tag-crowd').innerText = `Crowd: Moderate`;
@@ -1223,16 +1244,36 @@
       }
     }
 
-    // Feed Render with Clean Details
+    // Feed Render with Clean Details & Functional Lightbox Delegation
     function renderFeed(reports) {
       const container = document.getElementById('reports-feed');
       const countEl = document.getElementById('report-count');
+      const filterLabel = document.getElementById('feed-zone-filter');
       container.innerHTML = '';
       countEl.innerText = `${reports.length} Dispatches Logged`;
 
-      reports.forEach((rep) => {
+      const currentActiveZone = ZONES[activeZoneIndex];
+      filterLabel.innerText = `(${currentActiveZone.name} First)`;
+
+      const sortedReports = [...reports].sort((a, b) => {
+        const aIsActive = (a.spot === currentActiveZone.name || a.spot.includes(currentActiveZone.name) || currentActiveZone.name.includes(a.spot));
+        const bIsActive = (b.spot === currentActiveZone.name || b.spot.includes(currentActiveZone.name) || currentActiveZone.name.includes(b.spot));
+
+        if (aIsActive && !bIsActive) return -1;
+        if (!aIsActive && bIsActive) return 1;
+
+        return (b.createdAt || 0) - (a.createdAt || 0);
+      });
+
+      sortedReports.forEach((rep) => {
+        const isFromActiveZone = (rep.spot === currentActiveZone.name || rep.spot.includes(currentActiveZone.name) || currentActiveZone.name.includes(rep.spot));
+        
         const card = document.createElement('div');
-        card.className = "glass-panel p-4 sm:p-5 rounded-xl border border-slate-800 space-y-3 transition hover:border-slate-700";
+        card.className = `glass-panel p-4 sm:p-5 rounded-xl border space-y-3 transition ${
+          isFromActiveZone 
+            ? 'border-cyan-500/60 bg-slate-900/95 shadow-lg shadow-cyan-950/30' 
+            : 'border-slate-800 hover:border-slate-700'
+        }`;
 
         const timeMeta = formatReportTimestamp(rep.createdAt);
         const crossCheck = generateTelemetryCrossCheck(rep, rep.spot);
@@ -1240,11 +1281,12 @@
 
         let photoHtml = '';
         if (rep.img) {
+          // Attaches data attributes for reliable event delegation
           photoHtml = `
-            <div class="mt-3 rounded-xl overflow-hidden aspect-video bg-slate-950 border border-slate-800/80 cursor-pointer group relative" onclick="openLightbox('${rep.img}', '${rep.spot} by ${rep.author}')">
+            <div class="mt-3 rounded-xl overflow-hidden aspect-video bg-slate-950 border border-slate-800/80 cursor-pointer group relative feed-lightbox-trigger" data-img="${rep.img}" data-caption="${rep.spot} by ${rep.author}">
               <img src="${rep.img}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Report visual">
-              <span class="absolute bottom-2 right-2 bg-black/70 text-cyan-400 font-mono-code text-[10px] px-2 py-0.5 rounded backdrop-blur-sm border border-white/10">
-                🔍 Tap to Expand
+              <span class="absolute bottom-2 right-2 bg-black/75 text-cyan-400 font-mono-code text-[10px] px-2 py-0.5 rounded backdrop-blur-sm border border-white/10 flex items-center gap-1">
+                <span>🔍</span> Tap to Expand
               </span>
             </div>
           `;
@@ -1255,10 +1297,13 @@
         card.innerHTML = `
           <div class="flex items-start justify-between gap-2">
             <div>
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center space-x-2 flex-wrap gap-y-1">
                 <span class="font-bold text-white text-sm sm:text-base">${rep.author}</span>
-                <span class="text-xs px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-mono-code">${rep.spot}</span>
-                ${isToday ? '<span class="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-mono-code font-bold">TODAY</span>' : ''}
+                <span class="text-xs px-2 py-0.5 rounded ${isFromActiveZone ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-cyan-500/10 text-cyan-400'} font-mono-code">
+                  ${rep.spot}
+                </span>
+                ${isFromActiveZone ? '<span class="text-[9px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono-code font-bold border border-cyan-500/40">ACTIVE BREAK</span>' : ''}
+                ${isToday ? '<span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-mono-code font-bold">TODAY</span>' : ''}
               </div>
               <div class="text-[11px] text-slate-400 font-mono-code mt-0.5">
                 ${timeMeta.fullDate} <span class="text-cyan-400 font-semibold">(${timeMeta.relative})</span>
@@ -1286,14 +1331,14 @@
               <span>·</span>
               <span class="text-amber-400">${crowdText}</span>
             </div>
-            <span class="text-[11px] text-slate-500">Auto-Synced</span>
+            <span class="text-[11px] text-slate-500">${isFromActiveZone ? 'Priority Feed' : 'Auto-Synced'}</span>
           </div>
         `;
         container.appendChild(card);
       });
     }
 
-    // Real-Time Firebase Listeners: Auto-focuses to the freshest spot on launch
+    // Real-Time Firebase Listeners: Auto-focuses to freshest spot on launch
     if (isFirebaseActive) {
       const q = query(collection(db, "reports"), orderBy("createdAt", "desc"), limit(25));
       onSnapshot(q, (snapshot) => {
@@ -1302,9 +1347,7 @@
           cloudReports.push({ id: doc.id, ...doc.data() });
         });
         allCurrentReports = cloudReports;
-        renderFeed(cloudReports);
 
-        // Auto-focus to the break with the freshest report from today on initial load
         if (!hasAutoSelectedFreshestZone) {
           const freshestIdx = findFreshestTodayZoneIndex();
           if (freshestIdx !== -1) {
@@ -1314,6 +1357,7 @@
           renderZones();
         }
 
+        renderFeed(cloudReports);
         displayHeroForCurrentZone();
       }, (error) => {
         console.warn("Firestore snapshot error:", error);
@@ -1364,7 +1408,7 @@
           this.reset();
           compressedPhotoBase64 = null;
           document.getElementById('compression-status').innerText = "";
-          closeModal('dispatch-modal');
+          window.closeModal('dispatch-modal');
         } catch (err) {
           console.error("Cloud write failed:", err);
           errBox.innerText = `Post Error: ${err.message}. If this persists, verify Firestore rules allow writes.`;
@@ -1434,16 +1478,14 @@
 
           liveTelemetrySnapshot.windKts = windKts;
           liveTelemetrySnapshot.windDir = compass;
+          liveTelemetrySnapshot.windDeg = dirDeg;
 
           document.getElementById('tele-wind').innerText = `${windKts}kt ${compass}`;
           document.getElementById('modal-wind-speed').innerText = `${windKts} kts`;
           document.getElementById('modal-wind-heading').innerText = `${compass} (${dirDeg}°)`;
 
-          let surfaceCondition = "Clean / Glassy";
-          if (windKts > 14) surfaceCondition = "White Caps / Blown";
-          else if (windKts > 7) surfaceCondition = "Light Onshore Texture";
-          else if (windKts <= 4) surfaceCondition = "Sheet Glass";
-          document.getElementById('modal-wind-state').innerText = surfaceCondition;
+          const windInfo = getWindClassification(dirDeg, windKts);
+          document.getElementById('modal-wind-state').innerText = windInfo.desc;
         }
 
         // 1. Live Water Temp (Physical Sensor at Newport 9410580)
