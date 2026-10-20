@@ -108,8 +108,10 @@
       font-size: 16px !important;
     }
 
+    /* Native CSS field-sizing prevents JS layout thrashing & keyboard dismissal on spellcheck tap */
     #report-text {
-      min-height: 90px;
+      field-sizing: content;
+      min-height: 96px;
       max-height: 220px;
       resize: none;
       font-size: 16px;
@@ -425,7 +427,7 @@
   </main>
 
   <!-- ======================================================== -->
-  <!-- MODAL 1: OPTIMIZED DISPATCH DESK WITH WIND CHIPS & MODIFIER -->
+  <!-- MODAL 1: OPTIMIZED DISPATCH DESK WITH TAP-CLEAR PENCIL -->
   <!-- ======================================================== -->
   <div id="dispatch-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto custom-scrollbar">
     <div class="glass-panel p-5 sm:p-6 rounded-t-3xl sm:rounded-2xl border border-cyan-500/50 w-full max-w-xl space-y-3.5 shadow-2xl relative my-auto">
@@ -457,21 +459,35 @@
       </div>
 
       <form id="surf-report-form" class="space-y-3">
-        <!-- 2-Column Responsive Layout with Fig-O-Matic -->
+        <!-- 2-Column Responsive Layout with Clear-on-Pencil Handle Input -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <div class="flex items-center justify-between mb-1">
               <label class="text-slate-200 text-xs font-bold flex items-center gap-1">
                 <span>Your Name / Handle</span>
-                <span class="text-slate-500 font-normal">(Type custom)</span>
+                <span class="text-slate-500 font-normal">(Tap ✏️ to type)</span>
               </label>
               <button type="button" onclick="shuffleHandle()" class="text-[11px] text-cyan-400 hover:underline flex items-center gap-1 font-mono-code font-bold">
                 <span>🎲</span> Shuffle Fig
               </button>
             </div>
-            <div class="relative">
-              <input type="text" id="reporter-name" required placeholder="Type handle or tap shuffle..." class="beach-input w-full bg-slate-900/90 border border-cyan-500/40 focus:border-cyan-400 rounded-lg pl-8 pr-3 py-2 text-white focus:outline-none text-sm font-bold">
-              <span class="absolute left-2.5 top-2.5 text-xs text-slate-500">✏️</span>
+            <div class="relative flex items-center">
+              <button 
+                type="button" 
+                id="pencil-handle-btn" 
+                onclick="clearAndFocusHandle()" 
+                class="absolute left-2 p-1 text-slate-400 hover:text-cyan-300 transition text-xs" 
+                title="Tap to clear and type your own name"
+              >
+                ✏️
+              </button>
+              <input 
+                type="text" 
+                id="reporter-name" 
+                required 
+                placeholder="Type your handle..." 
+                class="beach-input w-full bg-slate-900/90 border border-cyan-500/40 focus:border-cyan-400 rounded-lg pl-8 pr-3 py-2 text-white focus:outline-none text-sm font-bold"
+              >
             </div>
           </div>
           <div>
@@ -520,7 +536,7 @@
           </div>
         </div>
 
-        <!-- Reality Notes Textarea -->
+        <!-- Reality Notes Textarea with Native CSS Field-Sizing -->
         <div>
           <label class="block text-slate-200 text-xs font-bold mb-1">Reality Notes</label>
           <textarea id="report-text" rows="3" required spellcheck="true" autocomplete="on" autocorrect="on" placeholder="How's the shape, crowd, or rip? What board are you riding?" class="w-full bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded-lg p-3 text-white focus:outline-none placeholder:text-slate-500 font-sans"></textarea>
@@ -597,10 +613,7 @@
         <button onclick="closeModal('wind-modal')" class="text-slate-400 hover:text-white text-2xl font-mono-code font-bold">✕</button>
       </div>
 
-      <!-- FishWeather Style Dial & Gust Breakdown -->
       <div class="bg-slate-950 rounded-xl p-4 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-        
-        <!-- Compass Dial with Shoreline Alignment -->
         <div class="relative w-32 h-32 flex-shrink-0 flex items-center justify-center">
           <svg viewBox="0 0 100 100" class="w-full h-full">
             <circle cx="50" cy="50" r="46" fill="none" stroke="#1e293b" stroke-width="6" />
@@ -619,7 +632,6 @@
           <span class="absolute left-1 text-[9px] font-mono-code font-bold text-slate-400">W</span>
         </div>
 
-        <!-- Velocity & Gust Meters -->
         <div class="space-y-2 flex-1 w-full text-center sm:text-left font-mono-code">
           <div class="flex justify-between items-baseline border-b border-slate-800 pb-1">
             <span class="text-xs text-slate-400">Sustained:</span>
@@ -639,7 +651,6 @@
         </div>
       </div>
 
-      <!-- Station Network Grid -->
       <div class="grid grid-cols-2 gap-2 text-xs font-mono-code">
         <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
           <span class="text-[10px] text-slate-500 block">PRIMARY GAUGE</span>
@@ -793,7 +804,6 @@
     let activeOpenModalId = null;
     let deferredPrompt = null;
 
-    // Detect standalone PWA mode
     const isRunningStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
     if (isRunningStandalone) {
       const mobBtn = document.getElementById('pwa-install-btn-mobile');
@@ -840,7 +850,6 @@
       document.body.style.overflow = '';
     };
 
-    // Android Hardware / Gesture Back Button Trap
     window.addEventListener('popstate', () => {
       const theaterSection = document.getElementById('hero-theater-section');
       if (theaterSection && !theaterSection.classList.contains('hidden')) {
@@ -859,9 +868,9 @@
       openModal('install-modal');
     };
 
-    // Clean Share Link (Separating URL from Text so SMS apps render Rich Thumbnails)
+    // Clean Share Link with Updated Inclusive Copy
     window.shareInviteLink = function() {
-      const inviteText = "Passing you the HB Raw Config Surf wire, built in honor of Rockin' Fig. Just raw buoy telemetry and ground-truth dispatches from the sand. You’re getting this because I know you actually surf—keep it tight and drop an update next time you're on the beach.";
+      const inviteText = "Passing you the HB Raw Config Surf wire, built in honor of Rockin' Fig. Just raw buoy telemetry and ground-truth dispatches from the sand. You’re getting this because I know you actually surf, or you hang out at the beach and you get it—keep it tight and drop an update next time you're on the sand.";
       const currentUrl = window.location.href;
 
       if (navigator.share) {
@@ -887,7 +896,6 @@
       }
     };
 
-    // Expanded 30+ Fig & HB Local Nicknames
     const FIG_NICKNAMES = [
       "17th_Street_Cruiser", "River_Jetties_Rat", "Pier_South_Bowler", 
       "Cliffs_Dawn_Patrol", "Goldenwest_Glide", "Dog_Beach_Drifter", 
@@ -910,7 +918,27 @@
       }
     };
 
-    // Centralized "Fig Says" Voice Helper
+    // Tap Pencil to Clear and Focus for Custom Typing
+    window.clearAndFocusHandle = function() {
+      const nameInput = document.getElementById('reporter-name');
+      if (nameInput) {
+        nameInput.value = '';
+        nameInput.focus();
+      }
+    };
+
+    const nameInputElement = document.getElementById('reporter-name');
+    if (nameInputElement) {
+      nameInputElement.addEventListener('blur', function() {
+        if (!this.value.trim()) {
+          const fallback = localStorage.getItem('hb_saved_handle') || FIG_NICKNAMES[0];
+          this.value = fallback;
+        } else {
+          localStorage.setItem('hb_saved_handle', this.value.trim());
+        }
+      });
+    }
+
     const FIG_NO_PHOTO_QUOTES = [
       "No camera on the beach? No worries—your own eyes tell the real story!",
       "Wax your stick and paddle out before the tide shifts!",
@@ -924,7 +952,6 @@
       return FIG_NO_PHOTO_QUOTES[Math.floor(Math.random() * FIG_NO_PHOTO_QUOTES.length)];
     };
 
-    // Wave Size Selector & "+" Booster Engine
     let hasPlusSets = false;
 
     window.selectWaveSize = function(btn, sizeVal) {
@@ -953,7 +980,6 @@
       document.getElementById('wave-height').value = finalVal;
     }
 
-    // Wind Selection Chips
     window.selectWindChip = function(btn, windVal) {
       document.getElementById('observed-wind-val').value = windVal;
       document.querySelectorAll('#wind-state-selector .wind-btn').forEach(b => {
@@ -984,16 +1010,6 @@
       if (window.checkCooldownState) window.checkCooldownState();
       openModal('dispatch-modal');
     };
-
-    const reportTextarea = document.getElementById('report-text');
-    if (reportTextarea) {
-      reportTextarea.addEventListener('input', function() {
-        window.requestAnimationFrame(() => {
-          this.style.height = 'auto';
-          this.style.height = Math.min(220, this.scrollHeight) + 'px';
-        });
-      });
-    }
   </script>
 
   <!-- Firebase Modular SDK & Core Application Script -->
@@ -1204,7 +1220,6 @@
       return { headline, waveRange, fullDispatch };
     }
 
-    // Full-Bleed Theater Live Cam Controls with Standby Fallback
     const theaterSection = document.getElementById('hero-theater-section');
     const theaterCamFrame = document.getElementById('theater-cam-frame');
     const theaterCamTitle = document.getElementById('theater-cam-title');
@@ -1223,7 +1238,6 @@
       theaterExternalLink.href = currentZone.camUrl;
       standbyLink.href = currentZone.camUrl;
 
-      // Handle offline state for breaks with down cameras
       const isOfflineCam = currentZone.name.includes("Pier");
       if (isOfflineCam) {
         standbyOverlay.classList.remove('hidden');
@@ -1266,7 +1280,6 @@
       }
     });
 
-    // Image Compression Handler
     document.getElementById('report-photo-input').addEventListener('change', async function(e) {
       let file = e.target.files[0];
       const statusEl = document.getElementById('compression-status');
@@ -1456,7 +1469,6 @@
       }
     }
 
-    // Spot-Isolated Feed with In-Feed Duplicate Pruning & Fig Placeholders
     function renderFeed(reports) {
       const container = document.getElementById('reports-feed');
       const countEl = document.getElementById('report-count');
@@ -1468,7 +1480,6 @@
 
       const latestHeroDispatch = getLatestTodayDispatchForSpot(currentActiveZone.name);
 
-      // In-feed duplicate pruning: filter out matching text/author reports within 2 mins
       const prunedReports = [];
       reports.forEach(rep => {
         const isDuplicate = prunedReports.some(existing => 
@@ -1517,7 +1528,6 @@
             </div>
           `;
         } else {
-          // Randomized "Fig Says" card for posts without a photo
           const quote = window.getFigNoPhotoQuote();
           mediaHtml = `
             <div class="mt-2.5 p-3 rounded-xl bg-amber-950/20 border border-amber-500/20 text-xs font-mono-code text-amber-300/90 flex items-start gap-2">
@@ -1559,7 +1569,6 @@
       });
     }
 
-    // Cooldown Engine (3 Minutes lockout with Fig Wisdom)
     window.checkCooldownState = function() {
       const lastPost = parseInt(localStorage.getItem('hb_last_post_time') || '0', 10);
       const now = Date.now();
@@ -1597,7 +1606,6 @@
       }
     };
 
-    // Real-Time Firebase Listeners
     if (isFirebaseActive) {
       const q = query(collection(db, "reports"), orderBy("createdAt", "desc"), limit(40));
       onSnapshot(q, (snapshot) => {
@@ -1623,7 +1631,6 @@
       });
     }
 
-    // Submit Report Form with Duplicate Prevention
     document.getElementById('surf-report-form').addEventListener('submit', async function(e) {
       e.preventDefault();
 
@@ -1642,7 +1649,6 @@
       const spotLocation = document.getElementById('spot-location').value;
       const nowMs = Date.now();
 
-      // Duplicate Check: compare with last stored post
       const lastText = localStorage.getItem('hb_last_post_text');
       const lastSpot = localStorage.getItem('hb_last_post_spot');
       const lastTime = parseInt(localStorage.getItem('hb_last_post_time') || '0', 10);
@@ -1711,7 +1717,6 @@
       }
     });
 
-    // High-Accuracy Marine Telemetry & Harmonic NOAA Sensors
     async function fetchLiveOceanData() {
       const btn = document.getElementById('refresh-telemetry-btn');
       btn.classList.add('animate-spin');
@@ -1786,7 +1791,6 @@
           }
         }
 
-        // Live Water Temp
         try {
           const noaaWaterUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=latest&station=9410580&product=water_temperature&units=english&time_zone=lst_ldt&format=json${cacheBust}`;
           const noaaRes = await fetch(noaaWaterUrl).then(r => r.json());
@@ -1810,7 +1814,6 @@
           console.warn("Water temp fallback:", noaaErr);
         }
 
-        // High-Accuracy Tide
         try {
           const tideUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=today&station=9410580&product=predictions&datum=MLLW&units=english&time_zone=lst_ldt&interval=h&format=json${cacheBust}`;
           const tideRes = await fetch(tideUrl).then(r => r.json());
