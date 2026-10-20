@@ -108,46 +108,23 @@
       font-size: 16px !important;
     }
 
-    /* Auto-expanding textarea styling */
     #report-text {
-      min-height: 84px;
+      min-height: 90px;
       max-height: 220px;
       resize: none;
-      overflow-y: hidden;
+      font-size: 16px;
+      line-height: 1.5;
     }
 
-    /* Animated Coastline Wind Diagram */
-    @keyframes arrowFlow {
-      0% { transform: translateY(-8px); opacity: 0; }
-      50% { opacity: 1; }
-      100% { transform: translateY(8px); opacity: 0; }
-    }
-    .flow-arrow {
-      animation: arrowFlow 1.8s infinite linear;
-    }
-
-    @media (max-height: 500px) and (orientation: landscape) {
-      .landscape-tribute {
-        display: none !important;
-      }
-      .landscape-compact-header {
-        padding-top: 0.35rem !important;
-        padding-bottom: 0.35rem !important;
-      }
-      .landscape-compact-logo {
-        height: 1.75rem !important;
-        width: 1.75rem !important;
-      }
-      .landscape-hide-subtext {
-        display: none !important;
-      }
+    .compass-ring {
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black pb-24 sm:pb-8">
 
   <!-- Tribute Bar to Rick "Rockin' Fig" Fignetti -->
-  <aside aria-label="Tribute" class="landscape-tribute bg-gradient-to-r from-amber-950/80 via-slate-900 to-amber-950/80 border-b border-amber-500/20 px-4 py-1.5 text-center text-xs font-mono-code">
+  <aside aria-label="Tribute" class="bg-gradient-to-r from-amber-950/80 via-slate-900 to-amber-950/80 border-b border-amber-500/20 px-4 py-1.5 text-center text-xs font-mono-code">
     <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2">
       <div class="flex items-center gap-2">
         <span class="inline-block w-2 h-2 rounded-full bg-amber-400 pulse-amber"></span>
@@ -162,12 +139,12 @@
 
   <!-- Live Telemetry Stream Bar -->
   <header class="border-b border-slate-800 bg-slate-950/95 sticky top-0 z-40 backdrop-blur-md">
-    <div class="landscape-compact-header max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-2.5">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-2.5">
       
       <!-- Logo Branding Block -->
       <div class="flex items-center justify-between w-full sm:w-auto">
         <div class="flex items-center space-x-2.5">
-          <div class="landscape-compact-logo h-10 w-10 rounded-xl bg-slate-900 border border-cyan-500/30 flex items-center justify-center shadow-lg shadow-cyan-500/20 overflow-hidden flex-shrink-0 p-1">
+          <div class="h-10 w-10 rounded-xl bg-slate-900 border border-cyan-500/30 flex items-center justify-center shadow-lg shadow-cyan-500/20 overflow-hidden flex-shrink-0 p-1">
             <img src="hb-raw-config-surf.svg" alt="HB Raw Config Surf" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='apple-touch-icon.png';">
           </div>
           <div>
@@ -175,13 +152,13 @@
               <h1 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight">HB RAW CONFIG SURF</h1>
               <span id="cloud-sync-status" class="text-[9px] px-1.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-mono-code hidden sm:inline-block">CONNECTING...</span>
             </div>
-            <p class="landscape-hide-subtext text-[11px] text-slate-400 font-mono-code leading-none mt-0.5">South HB ⇄ Bolsa Chica · Ground Truth Shore Ops</p>
+            <p class="text-[11px] text-slate-400 font-mono-code leading-none mt-0.5">South HB ⇄ Bolsa Chica · Ground Truth Shore Ops</p>
           </div>
         </div>
         
         <!-- Mobile Action Cluster -->
         <div class="flex items-center gap-1.5 sm:hidden">
-          <button onclick="openInstallModal()" class="px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-mono-code text-xs active:scale-95 transition" title="Install to Home Screen">
+          <button id="pwa-install-btn-mobile" onclick="openInstallModal()" class="px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-mono-code text-xs active:scale-95 transition" title="Install App">
             📱
           </button>
           <button onclick="shareInviteLink()" class="px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-amber-300 font-mono-code text-xs active:scale-95 transition" title="Pass the Wire">
@@ -204,7 +181,7 @@
         </button>
 
         <!-- 2. WIND BUTTON -->
-        <button onclick="openModal('wind-modal')" class="bg-slate-900/90 hover:bg-slate-800 px-3 py-1.5 rounded-xl border border-emerald-500/40 flex items-center gap-1.5 flex-shrink-0 transition group" title="Click for Animated Coastline Wind Visualizer">
+        <button onclick="openModal('wind-modal')" class="bg-slate-900/90 hover:bg-slate-800 px-3 py-1.5 rounded-xl border border-emerald-500/40 flex items-center gap-1.5 flex-shrink-0 transition group" title="Click for FishWeather-Style Coastline Dial">
           <span class="text-slate-400">Wind:</span>
           <span id="tele-wind" class="text-emerald-400 font-bold group-hover:underline">-- kt</span>
           <span class="text-[11px] text-emerald-400/80">💨</span>
@@ -225,7 +202,7 @@
         </button>
 
         <!-- DESKTOP INSTALL & INVITE SHORTCUTS -->
-        <button onclick="openInstallModal()" class="hidden sm:flex bg-slate-900 hover:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-700 text-slate-300 items-center gap-1 transition" title="Add to Home Screen">
+        <button id="pwa-install-btn-desktop" onclick="openInstallModal()" class="hidden sm:flex bg-slate-900 hover:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-700 text-slate-300 items-center gap-1 transition" title="Add to Desktop / Mobile">
           <span>📱</span> Install
         </button>
         <button onclick="shareInviteLink()" class="hidden sm:flex bg-slate-900 hover:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-amber-500/40 text-amber-300 font-bold items-center gap-1 transition" title="Pass the Wire to a Friend">
@@ -241,7 +218,7 @@
 
   <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-5 space-y-6 w-full">
 
-    <!-- Interactive Hyper-Zone Selector Bar -->
+    <!-- Interactive Shoreline Break Selector -->
     <section>
       <div class="flex items-center justify-between mb-2.5">
         <div>
@@ -256,7 +233,7 @@
       </div>
     </section>
 
-    <!-- Calibrated 16:9 Theater Live Cam View -->
+    <!-- Calibrated 16:9 Theater Live Cam View (With Offline Fig Standby Support) -->
     <section id="hero-theater-section" class="hidden">
       <div class="glass-panel p-4 sm:p-5 rounded-2xl border border-cyan-500/40 shadow-2xl space-y-3">
         <div class="flex items-center justify-between font-mono-code text-xs">
@@ -274,7 +251,19 @@
           </div>
         </div>
 
-        <div class="cam-theater-wrapper">
+        <div class="cam-theater-wrapper relative">
+          <!-- Standby Banner (Shown if Stream is Offline) -->
+          <div id="cam-standby-overlay" class="absolute inset-0 bg-slate-950/95 flex flex-col items-center justify-center p-6 text-center z-10 space-y-3">
+            <span class="text-3xl">📹</span>
+            <h4 class="text-amber-400 font-mono-code font-bold text-sm tracking-wide">FIG SAYS: LIVE FEED STANDBY</h4>
+            <p class="text-slate-300 text-xs sm:text-sm max-w-md italic leading-relaxed">
+              "The Pier stream is taking a breather right now! Don't sweat it—check the buoy telemetry, read the local shore notes below, or jog down and take a look yourself!"
+            </p>
+            <a id="cam-standby-link" href="#" target="_blank" rel="noopener noreferrer" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded-xl font-mono-code text-xs uppercase tracking-wider transition">
+              Open Direct Camera Page ↗
+            </a>
+          </div>
+
           <iframe 
             id="theater-cam-frame"
             src="" 
@@ -379,25 +368,24 @@
                 </h3>
               </div>
               <div class="text-right">
-                <div id="hero-wave-size" class="text-2xl sm:text-3xl font-black text-cyan-400 font-mono-code">3–4+ FT</div>
-                <div id="hero-wave-scale" class="text-[11px] text-slate-400 font-medium">Waist to Chest High (Plus Sets)</div>
+                <div id="hero-wave-size" class="text-2xl sm:text-3xl font-black text-cyan-400 font-mono-code">3–4 FT</div>
+                <div id="hero-wave-scale" class="text-[11px] text-slate-400 font-medium">Waist to Chest High</div>
               </div>
             </div>
 
-            <!-- Wave Physics Tags -->
+            <!-- Tags -->
             <div class="flex flex-wrap gap-1.5 text-xs font-mono-code" id="hero-tags">
-              <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-200 border border-slate-700" id="tag-shape">Shape: Steep Wedges & Rip</span>
               <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-200 border border-slate-700" id="tag-wind">Wind: Light SSW Puff</span>
               <span class="px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" id="tag-tide">Tide Window: +2.0ft to +4.0ft</span>
             </div>
 
-            <!-- Observation Text Written in Fig's Dynamic Voice -->
+            <!-- Observation Text -->
             <p id="hero-notes" class="text-slate-300 text-xs sm:text-sm leading-relaxed italic bg-slate-900/60 p-3.5 rounded-xl border border-slate-800/80">
               "Howzit everybody, Rick 'Rockin Fig' here with your Surf City wire!"
             </p>
           </div>
 
-          <!-- Reporter Credit & Form Trigger Link -->
+          <!-- Reporter Credit & Trigger -->
           <div class="pt-3.5 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2.5 text-xs text-slate-400 font-mono-code">
             <div class="flex items-center space-x-2">
               <div class="h-6 w-6 rounded-full bg-cyan-600 flex items-center justify-center font-bold text-white text-[10px]" id="hero-avatar">FIG</div>
@@ -437,7 +425,7 @@
   </main>
 
   <!-- ======================================================== -->
-  <!-- MODAL 1: OPTIMIZED DISPATCH DESK WITH FIG-O-MATIC -->
+  <!-- MODAL 1: OPTIMIZED DISPATCH DESK WITH WIND CHIPS & MODIFIER -->
   <!-- ======================================================== -->
   <div id="dispatch-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto custom-scrollbar">
     <div class="glass-panel p-5 sm:p-6 rounded-t-3xl sm:rounded-2xl border border-cyan-500/50 w-full max-w-xl space-y-3.5 shadow-2xl relative my-auto">
@@ -454,13 +442,18 @@
         </button>
       </div>
 
-      <!-- Cooldown Friendly Notice Banner -->
-      <div id="cooldown-banner" class="hidden bg-cyan-950/40 border border-cyan-500/40 rounded-xl p-3 text-xs font-mono-code text-cyan-300 flex items-center justify-between">
-        <span class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-          <span>Dispatch active! Next update opens in:</span>
-        </span>
-        <span id="cooldown-timer-text" class="font-black text-white text-sm bg-cyan-900/60 px-2 py-0.5 rounded">3:00</span>
+      <!-- "Fig Says" Cooldown Warning Banner -->
+      <div id="cooldown-banner" class="hidden bg-amber-950/40 border border-amber-500/40 rounded-xl p-3 text-xs font-mono-code text-amber-200 space-y-1.5">
+        <div class="flex items-center justify-between font-bold">
+          <span class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            <span>FIG SAYS: SLOW YOUR ROLL ON THE WIRE</span>
+          </span>
+          <span id="cooldown-timer-text" class="text-white text-sm bg-amber-900/60 px-2 py-0.5 rounded">3:00</span>
+        </div>
+        <p class="text-[11px] text-amber-300/80 italic leading-snug">
+          "This isn't gonna be good for the groms so be careful what you're putting up here and remember someone who cares about you gave you this app!"
+        </p>
       </div>
 
       <form id="surf-report-form" class="space-y-3">
@@ -468,12 +461,18 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <div class="flex items-center justify-between mb-1">
-              <label class="text-slate-200 text-xs font-bold">Your Handle</label>
+              <label class="text-slate-200 text-xs font-bold flex items-center gap-1">
+                <span>Your Name / Handle</span>
+                <span class="text-slate-500 font-normal">(Type custom)</span>
+              </label>
               <button type="button" onclick="shuffleHandle()" class="text-[11px] text-cyan-400 hover:underline flex items-center gap-1 font-mono-code font-bold">
-                <span>🎲</span> Shuffle Fig Nickname
+                <span>🎲</span> Shuffle Fig
               </button>
             </div>
-            <input type="text" id="reporter-name" required placeholder="e.g. 17th_Local / FigFan" class="beach-input w-full bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded-lg px-3 py-2 text-white focus:outline-none text-sm">
+            <div class="relative">
+              <input type="text" id="reporter-name" required placeholder="Type handle or tap shuffle..." class="beach-input w-full bg-slate-900/90 border border-cyan-500/40 focus:border-cyan-400 rounded-lg pl-8 pr-3 py-2 text-white focus:outline-none text-sm font-bold">
+              <span class="absolute left-2.5 top-2.5 text-xs text-slate-500">✏️</span>
+            </div>
           </div>
           <div>
             <label class="block text-slate-200 text-xs font-bold mb-1">Spot Location</label>
@@ -487,27 +486,47 @@
           </div>
         </div>
 
-        <!-- Tap-Friendly Wave Size Selector -->
+        <!-- Tap-Friendly Wave Size Selector + "+" Booster Toggle -->
         <div>
-          <label class="block text-slate-200 text-xs font-bold mb-1.5">Observed Size (Tap to Select)</label>
-          <input type="hidden" id="wave-height" value="3–4+ FT">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-slate-200 text-xs font-bold">Observed Size</label>
+            <button type="button" id="plus-set-toggle" onclick="togglePlusSets()" class="text-[11px] font-mono-code px-2 py-0.5 rounded border border-slate-700 bg-slate-900 text-slate-400 hover:border-cyan-400 transition flex items-center gap-1">
+              <span>+</span> Bigger Sets?
+            </button>
+          </div>
+          <input type="hidden" id="wave-base-height" value="3–4 FT">
+          <input type="hidden" id="wave-height" value="3–4 FT">
           <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 font-mono-code text-xs" id="wave-size-selector">
             <button type="button" onclick="selectWaveSize(this, '1–2 FT')" class="size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition">1–2 FT</button>
             <button type="button" onclick="selectWaveSize(this, '2–3 FT')" class="size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition">2–3 FT</button>
-            <button type="button" onclick="selectWaveSize(this, '3–4+ FT')" class="size-btn py-2 rounded-lg bg-cyan-500 text-slate-950 font-bold border border-cyan-400 transition">3–4+ FT</button>
-            <button type="button" onclick="selectWaveSize(this, '4–5+ FT')" class="size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition">4–5+ FT</button>
+            <button type="button" onclick="selectWaveSize(this, '3–4 FT')" class="size-btn py-2 rounded-lg bg-cyan-500 text-slate-950 font-bold border border-cyan-400 transition">3–4 FT</button>
+            <button type="button" onclick="selectWaveSize(this, '4–5 FT')" class="size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition">4–5 FT</button>
             <button type="button" onclick="selectWaveSize(this, '5–7 FT')" class="size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition">5–7 FT</button>
             <button type="button" onclick="selectWaveSize(this, '8FT+')" class="size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition">8FT+</button>
           </div>
         </div>
 
-        <!-- Auto-Expanding Notes Field with High-Contrast Text -->
+        <!-- Restored Wind Condition Selector Chips -->
         <div>
-          <label class="block text-slate-200 text-xs font-bold mb-1">Reality Notes</label>
-          <textarea id="report-text" rows="3" required placeholder="What are you seeing? How's the shape, crowd, rip, or wind? What board are you riding?" class="w-full bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded-lg p-3 text-white focus:outline-none text-base leading-relaxed placeholder:text-slate-500"></textarea>
+          <label class="block text-slate-200 text-xs font-bold mb-1.5">Observed Wind / Surface</label>
+          <input type="hidden" id="observed-wind-val" value="Light">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 font-mono-code text-xs" id="wind-state-selector">
+            <button type="button" onclick="selectWindChip(this, 'None (Glass)')" class="wind-btn py-1.5 px-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-emerald-500 transition text-left truncate">None (Glass)</button>
+            <button type="button" onclick="selectWindChip(this, 'Light')" class="wind-btn py-1.5 px-2 rounded-lg bg-emerald-500 text-slate-950 font-bold border border-emerald-400 transition text-left truncate">Light</button>
+            <button type="button" onclick="selectWindChip(this, 'Mid')" class="wind-btn py-1.5 px-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-emerald-500 transition text-left truncate">Mid</button>
+            <button type="button" onclick="selectWindChip(this, 'Heavy (White Caps)')" class="wind-btn py-1.5 px-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-emerald-500 transition text-left truncate">Heavy (White Caps)</button>
+            <button type="button" onclick="selectWindChip(this, 'Light Offshore')" class="wind-btn py-1.5 px-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-emerald-500 transition text-left truncate">Light Offshore 💨</button>
+            <button type="button" onclick="selectWindChip(this, 'Howling Offshore')" class="wind-btn py-1.5 px-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-emerald-500 transition text-left truncate">Howling Offshore 🔥</button>
+          </div>
         </div>
 
-        <!-- Elevated, Prominent Photo Upload Card -->
+        <!-- Reality Notes Textarea -->
+        <div>
+          <label class="block text-slate-200 text-xs font-bold mb-1">Reality Notes</label>
+          <textarea id="report-text" rows="3" required spellcheck="true" autocomplete="on" autocorrect="on" placeholder="How's the shape, crowd, or rip? What board are you riding?" class="w-full bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded-lg p-3 text-white focus:outline-none placeholder:text-slate-500 font-sans"></textarea>
+        </div>
+
+        <!-- Prominent Photo Upload Card -->
         <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800 hover:border-cyan-500/40 transition">
           <label class="block text-white text-xs font-bold mb-1">📷 Snap a shore photo or share from gallery (Optional)</label>
           <input type="file" id="report-photo-input" accept="image/*,.heic,.heif" class="w-full text-slate-400 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-mono-code file:bg-cyan-500 file:text-slate-950 file:font-bold hover:file:bg-cyan-400 cursor-pointer text-xs">
@@ -563,59 +582,74 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- MODAL 3: ANIMATED COASTLINE WIND VISUALIZER -->
+  <!-- MODAL 3: FISHWEATHER-STYLE COASTLINE WIND DIAL & STATIONS -->
   <!-- ======================================================== -->
   <div id="wind-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="glass-panel p-5 sm:p-6 rounded-2xl border border-emerald-500/40 w-full max-w-lg space-y-4 shadow-2xl relative">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div>
           <h3 class="text-base font-bold text-white flex items-center gap-2">
-            <span>Coastline Wind Visualizer</span>
-            <span class="text-xs text-emerald-400 font-mono-code">215° SW Strike</span>
+            <span>Coastline Wind Dial</span>
+            <span class="text-xs text-emerald-400 font-mono-code">215° Shoreline Strike</span>
           </h3>
-          <p class="text-xs text-slate-400 font-mono-code" id="sync-time-wind">Calculated to Huntington Beach Shoreline</p>
+          <p class="text-xs text-slate-400 font-mono-code" id="sync-time-wind">NOAA & Pier Anemometer Sensors</p>
         </div>
         <button onclick="closeModal('wind-modal')" class="text-slate-400 hover:text-white text-2xl font-mono-code font-bold">✕</button>
       </div>
 
-      <!-- Animated Shoreline SVG Visualizer -->
-      <div class="bg-slate-950 rounded-xl p-4 border border-slate-800 relative overflow-hidden flex flex-col items-center justify-center">
-        <div class="w-full flex justify-between text-[10px] font-mono-code text-slate-400 mb-2">
-          <span>PACIFIC OCEAN (SW)</span>
-          <span>HB SHORE / BLUFFS (NE)</span>
+      <!-- FishWeather Style Dial & Gust Breakdown -->
+      <div class="bg-slate-950 rounded-xl p-4 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        
+        <!-- Compass Dial with Shoreline Alignment -->
+        <div class="relative w-32 h-32 flex-shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 100 100" class="w-full h-full">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#1e293b" stroke-width="6" />
+            <path d="M 50 4 A 46 46 0 0 1 92 68" fill="none" stroke="#10b981" stroke-width="6" opacity="0.6" />
+            <path d="M 34 92 A 46 46 0 0 1 10 27" fill="none" stroke="#f43f5e" stroke-width="6" opacity="0.4" />
+            <line x1="18" y1="88" x2="82" y2="12" stroke="#f59e0b" stroke-width="2" stroke-dasharray="3" />
+            
+            <g id="dial-needle" class="compass-ring" transform="rotate(245 50 50)">
+              <polygon points="50,14 46,50 54,50" fill="#06b6d4" />
+              <circle cx="50" cy="50" r="4" fill="#ffffff" />
+            </g>
+          </svg>
+          <span class="absolute top-1 text-[9px] font-mono-code font-bold text-slate-400">N</span>
+          <span class="absolute right-1 text-[9px] font-mono-code font-bold text-slate-400">E</span>
+          <span class="absolute bottom-1 text-[9px] font-mono-code font-bold text-slate-400">S</span>
+          <span class="absolute left-1 text-[9px] font-mono-code font-bold text-slate-400">W</span>
         </div>
 
-        <svg viewBox="0 0 320 120" class="w-full h-28">
-          <!-- Ocean Area -->
-          <rect x="0" y="0" width="160" height="120" fill="rgba(14, 116, 144, 0.2)" />
-          <!-- Sand Strip (Angled Coastline) -->
-          <line x1="160" y1="0" x2="160" y2="120" stroke="#f59e0b" stroke-width="6" stroke-dasharray="4" />
-          <!-- Land Area -->
-          <rect x="160" y="0" width="160" height="120" fill="rgba(30, 41, 59, 0.6)" />
-
-          <!-- Dynamic Animated Wind Flow Arrows -->
-          <g id="svg-wind-arrows">
-            <!-- Injected via JS based on onshore vs offshore -->
-          </g>
-        </svg>
-
-        <div id="wind-visual-status" class="mt-2 text-xs font-mono-code text-center font-bold text-emerald-300">
-          Analyzing wind trajectory relative to the sandbars...
+        <!-- Velocity & Gust Meters -->
+        <div class="space-y-2 flex-1 w-full text-center sm:text-left font-mono-code">
+          <div class="flex justify-between items-baseline border-b border-slate-800 pb-1">
+            <span class="text-xs text-slate-400">Sustained:</span>
+            <span id="modal-wind-speed" class="text-xl font-black text-emerald-400">-- kt</span>
+          </div>
+          <div class="flex justify-between items-baseline border-b border-slate-800 pb-1">
+            <span class="text-xs text-slate-400">Peak Gusts:</span>
+            <span id="modal-wind-gust" class="text-sm font-bold text-amber-400">-- kt</span>
+          </div>
+          <div class="flex justify-between items-baseline">
+            <span class="text-xs text-slate-400">Heading:</span>
+            <span id="modal-wind-heading" class="text-xs font-bold text-white">--</span>
+          </div>
+          <div id="modal-wind-state" class="text-xs font-bold text-emerald-300 pt-1">
+            Analyzing...
+          </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-3 gap-3 font-mono-code text-center">
-        <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
-          <span class="text-[10px] text-slate-400 uppercase">Sustained</span>
-          <p id="modal-wind-speed" class="text-base font-black text-emerald-400 mt-0.5">--</p>
+      <!-- Station Network Grid -->
+      <div class="grid grid-cols-2 gap-2 text-xs font-mono-code">
+        <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
+          <span class="text-[10px] text-slate-500 block">PRIMARY GAUGE</span>
+          <span class="text-slate-200 font-bold">HB Pier Anemometer</span>
+          <span class="text-emerald-400 block text-[11px] mt-0.5" id="station-hb-pier">Live · Calibrated</span>
         </div>
-        <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
-          <span class="text-[10px] text-slate-400 uppercase">Bearing</span>
-          <p id="modal-wind-heading" class="text-base font-black text-emerald-400 mt-0.5">--</p>
-        </div>
-        <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
-          <span class="text-[10px] text-slate-400 uppercase">State</span>
-          <p id="modal-wind-state" class="text-[11px] font-bold text-emerald-300 mt-1">Analyzing...</p>
+        <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
+          <span class="text-[10px] text-slate-500 block">HARBOR BACKUP</span>
+          <span class="text-slate-200 font-bold">Newport Entrance #9410580</span>
+          <span class="text-slate-400 block text-[11px] mt-0.5">Corroborated</span>
         </div>
       </div>
     </div>
@@ -696,7 +730,7 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- MODAL 6: INSTALL TO HOME SCREEN MODAL -->
+  <!-- MODAL 6: INSTALL TO HOME SCREEN / DESKTOP APP MODAL -->
   <!-- ======================================================== -->
   <div id="install-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="glass-panel p-6 rounded-2xl border border-cyan-500/40 w-full max-w-md space-y-4 shadow-2xl relative text-center">
@@ -704,20 +738,26 @@
         <img src="hb-raw-config-surf.svg" alt="App Icon" class="w-full h-full object-contain">
       </div>
       <div>
-        <h3 class="text-lg font-black text-white">Add HB Raw Surf to Home Screen</h3>
+        <h3 class="text-lg font-black text-white">Save HB Raw Surf to Your Device</h3>
         <p class="text-slate-300 text-xs sm:text-sm mt-2 leading-relaxed">
           "Keep HB Raw Surf on your home screen to dispatch from the shore—whether you're just checking it or just finished your sesh."
         </p>
       </div>
 
       <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 text-left text-xs font-mono-code space-y-2 text-slate-300">
-        <p><strong class="text-cyan-400">iPhone (Safari):</strong> Tap the <em>Share</em> button (<span class="text-white">⎙</span>), then scroll down and tap <strong class="text-white">"Add to Home Screen"</strong>.</p>
-        <p><strong class="text-emerald-400">Android (Chrome):</strong> Tap the menu (<span class="text-white">⋮</span>) in the top-right, then select <strong class="text-white">"Install App"</strong> or <strong class="text-white">"Add to Home screen"</strong>.</p>
+        <p><strong class="text-cyan-400">iPhone (Safari):</strong> Tap <em>Share</em> (<span class="text-white">⎙</span>), then tap <strong class="text-white">"Add to Home Screen"</strong>.</p>
+        <p><strong class="text-emerald-400">Android (Chrome):</strong> Tap menu (<span class="text-white">⋮</span>), then select <strong class="text-white">"Install App"</strong> or <strong class="text-white">"Add to Home screen"</strong>.</p>
+        <p><strong class="text-amber-400">Desktop (Mac/PC):</strong> Click the install icon (<span class="text-white">⊕</span>) in your Chrome/Edge address bar to run as a native window.</p>
       </div>
 
-      <button onclick="closeModal('install-modal')" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs font-mono-code uppercase tracking-wider">
-        Got It
-      </button>
+      <div class="flex gap-2">
+        <button id="direct-install-action-btn" onclick="triggerPWAInstall()" class="hidden flex-1 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs font-mono-code uppercase tracking-wider">
+          Install App Now
+        </button>
+        <button onclick="closeModal('install-modal')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl text-xs font-mono-code uppercase tracking-wider">
+          Close
+        </button>
+      </div>
     </div>
   </div>
 
@@ -751,6 +791,34 @@
   <!-- Global Modal & History Trap Setup -->
   <script>
     let activeOpenModalId = null;
+    let deferredPrompt = null;
+
+    // Detect standalone PWA mode
+    const isRunningStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (isRunningStandalone) {
+      const mobBtn = document.getElementById('pwa-install-btn-mobile');
+      const dskBtn = document.getElementById('pwa-install-btn-desktop');
+      if (mobBtn) mobBtn.style.display = 'none';
+      if (dskBtn) dskBtn.style.display = 'none';
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const directInstallBtn = document.getElementById('direct-install-action-btn');
+      if (directInstallBtn) directInstallBtn.classList.remove('hidden');
+    });
+
+    window.triggerPWAInstall = async function() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          deferredPrompt = null;
+          closeModal('install-modal');
+        }
+      }
+    };
 
     window.openModal = function(id) {
       const el = document.getElementById(id);
@@ -773,7 +841,7 @@
     };
 
     // Android Hardware / Gesture Back Button Trap
-    window.addEventListener('popstate', (e) => {
+    window.addEventListener('popstate', () => {
       const theaterSection = document.getElementById('hero-theater-section');
       if (theaterSection && !theaterSection.classList.contains('hidden')) {
         window.closeLiveCamTheater();
@@ -791,18 +859,20 @@
       openModal('install-modal');
     };
 
+    // Clean Share Link (Separating URL from Text so SMS apps render Rich Thumbnails)
     window.shareInviteLink = function() {
-      const shareData = {
-        title: "HB Raw Config Surf",
-        text: "Passing you the HB Raw Config Surf wire, built in honor of Rockin' Fig. Just raw buoy telemetry and ground-truth dispatches from the sand. You’re getting this because I know you actually surf—keep it tight and drop an update next time you're on the beach: " + window.location.href,
-        url: window.location.href
-      };
+      const inviteText = "Passing you the HB Raw Config Surf wire, built in honor of Rockin' Fig. Just raw buoy telemetry and ground-truth dispatches from the sand. You’re getting this because I know you actually surf—keep it tight and drop an update next time you're on the beach.";
+      const currentUrl = window.location.href;
 
       if (navigator.share) {
-        navigator.share(shareData).catch(() => {});
+        navigator.share({
+          title: "HB Raw Config Surf",
+          text: inviteText,
+          url: currentUrl
+        }).catch(() => {});
       } else {
-        navigator.clipboard.writeText(shareData.text);
-        alert("Invite key copied to clipboard! Text it to a local friend.");
+        navigator.clipboard.writeText(`${inviteText} ${currentUrl}`);
+        alert("Invite key copied! Text it to a local friend.");
       }
     };
 
@@ -817,11 +887,18 @@
       }
     };
 
-    // Fig-O-Matic Local Nickname Generator
+    // Expanded 30+ Fig & HB Local Nicknames
     const FIG_NICKNAMES = [
-      "17th_Local", "River_Rat", "Pier_Bowler", "Cliffs_Cruiser", 
-      "Goldenwest_Dawg", "NorthSide_Ripper", "South_Wall_Slider", 
-      "SingleFin_Sammy", "Pierside_Grom", "Bolsa_Glider"
+      "17th_Street_Cruiser", "River_Jetties_Rat", "Pier_South_Bowler", 
+      "Cliffs_Dawn_Patrol", "Goldenwest_Glide", "Dog_Beach_Drifter", 
+      "Bolsa_Single_Fin", "Tower_9_Grom", "Echo_Beach_80s", 
+      "Rockin_Fig_Junior", "Main_St_Wax_Head", "North_Side_Regular", 
+      "Twin_Fin_Fish_Lover", "Surf_City_Voice", "Brookhurst_Basher", 
+      "Magnolia_Midlength", "9th_Street_Ripper", "Newland_Nose_Rider", 
+      "Seapoint_Slider", "Overhead_Hunter", "Pierside_Grommet", 
+      "Santa_Ana_Chaser", "South_Wall_Carver", "Katin_Pro_Am_Vet", 
+      "Dawn_Patrol_Dan", "HB_High_Club_Alum", "North_Pier_Lineup", 
+      "Alley_Oop_Ace", "Offshore_Oracle", "Sandbar_Specialist"
     ];
 
     window.shuffleHandle = function() {
@@ -833,12 +910,56 @@
       }
     };
 
+    // Centralized "Fig Says" Voice Helper
+    const FIG_NO_PHOTO_QUOTES = [
+      "No camera on the beach? No worries—your own eyes tell the real story!",
+      "Wax your stick and paddle out before the tide shifts!",
+      "Better to be in the water than staring at a screen!",
+      "Respect the lineup, watch the rip, and look out for the groms.",
+      "Check the sand with your own eyes and trust your instinct!",
+      "Waves don't wait for computer models—paddle out!"
+    ];
+
+    window.getFigNoPhotoQuote = function() {
+      return FIG_NO_PHOTO_QUOTES[Math.floor(Math.random() * FIG_NO_PHOTO_QUOTES.length)];
+    };
+
+    // Wave Size Selector & "+" Booster Engine
+    let hasPlusSets = false;
+
     window.selectWaveSize = function(btn, sizeVal) {
-      document.getElementById('wave-height').value = sizeVal;
+      document.getElementById('wave-base-height').value = sizeVal;
+      applyWaveSizeValue();
       document.querySelectorAll('#wave-size-selector .size-btn').forEach(b => {
         b.className = "size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition";
       });
       btn.className = "size-btn py-2 rounded-lg bg-cyan-500 text-slate-950 font-bold border border-cyan-400 transition";
+    };
+
+    window.togglePlusSets = function() {
+      hasPlusSets = !hasPlusSets;
+      const toggleBtn = document.getElementById('plus-set-toggle');
+      if (hasPlusSets) {
+        toggleBtn.className = "text-[11px] font-mono-code px-2 py-0.5 rounded border border-cyan-400 bg-cyan-500/20 text-cyan-300 font-bold flex items-center gap-1";
+      } else {
+        toggleBtn.className = "text-[11px] font-mono-code px-2 py-0.5 rounded border border-slate-700 bg-slate-900 text-slate-400 hover:border-cyan-400 transition flex items-center gap-1";
+      }
+      applyWaveSizeValue();
+    };
+
+    function applyWaveSizeValue() {
+      const base = document.getElementById('wave-base-height').value;
+      const finalVal = (hasPlusSets && !base.includes('+')) ? base.replace(' FT', '+ FT') : base;
+      document.getElementById('wave-height').value = finalVal;
+    }
+
+    // Wind Selection Chips
+    window.selectWindChip = function(btn, windVal) {
+      document.getElementById('observed-wind-val').value = windVal;
+      document.querySelectorAll('#wind-state-selector .wind-btn').forEach(b => {
+        b.className = "wind-btn py-1.5 px-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-emerald-500 transition text-left truncate";
+      });
+      btn.className = "wind-btn py-1.5 px-2 rounded-lg bg-emerald-500 text-slate-950 font-bold border border-emerald-400 transition text-left truncate";
     };
 
     window.openDispatchModal = function(defaultSpot) {
@@ -864,12 +985,13 @@
       openModal('dispatch-modal');
     };
 
-    // Auto-expanding textarea logic
     const reportTextarea = document.getElementById('report-text');
     if (reportTextarea) {
       reportTextarea.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = (this.scrollHeight) + 'px';
+        window.requestAnimationFrame(() => {
+          this.style.height = 'auto';
+          this.style.height = Math.min(220, this.scrollHeight) + 'px';
+        });
       });
     }
   </script>
@@ -919,6 +1041,7 @@
       periodSec: 14,
       swellDirDeg: 195,
       windKts: 5,
+      windGustKts: 8,
       windDir: "WSW",
       windDeg: 245,
       waterTemp: 68,
@@ -952,7 +1075,7 @@
         name: "North HB",
         shortName: "North HB",
         subDesc: "Streets North, Goldenwest & Cliffs",
-        size: "3–4+ FT",
+        size: "3–4 FT",
         idealTide: "All Tides (+1.5ft to +3.5ft optimal)",
         shape: "Peaky A-Frames",
         camUrl: "https://hbcams.com/webcams-huntington-beach-north-of-pier/"
@@ -969,7 +1092,7 @@
       }
     ];
 
-    window.activeZoneIndex = 1; // Default to The Pier
+    window.activeZoneIndex = 1;
     let allCurrentReports = [];
     let compressedPhotoBase64 = null;
     let isCompressing = false;
@@ -1009,7 +1132,6 @@
       return { fullDate, relative };
     }
 
-    // Mathematical Shoreline Angle Calculation: Detects true Offshore vs Onshore
     function getWindClassification(dirDeg, kts) {
       if (kts <= 4) return { type: "glass", desc: "Sheet Glass / Dead Calm" };
       if (dirDeg >= 0 && dirDeg <= 115) return { type: "offshore", desc: `${kts}kt Offshore Grooming` };
@@ -1019,7 +1141,6 @@
       return { type: "cross", desc: `${kts}kt Cross-Shore Breeze` };
     }
 
-    // Dynamic Rockin' Fig Telemetry Commentary Engine
     function generateDynamicFigReport(spotName) {
       const { windKts, windDir, windDeg, deepSwellFt, periodSec, tideLevel, tideTrend } = liveTelemetrySnapshot;
       const windInfo = getWindClassification(windDeg, windKts);
@@ -1062,7 +1183,7 @@
 
       if (spotName.includes("South HB")) {
         headline = `"South HB: ${windInfo.type === 'offshore' ? 'Offshores Firing the Jetties!' : 'Punchy Wedges on the Push!'}"`;
-        waveRange = periodSec >= 13 ? "3–5+ FT" : "2–4 FT";
+        waveRange = periodSec >= 13 ? "3–5 FT" : "2–4 FT";
         spotWrap = `Down here past Brookhurst toward the River, the south angle is bending hard into the sandbars. Grab your board and paddle out before conditions shift!`;
       } else if (spotName.includes("Pier")) {
         headline = `"The Pier: ${windInfo.type === 'offshore' ? 'Piling Wedges Reeling in the Wind!' : 'Fast Bowling Peaks North & South!'}"`;
@@ -1070,11 +1191,11 @@
         spotWrap = `South side piling bounce has that lively bowl if you're fast off the bottom, and north side is throwing workable rights toward the pier and lefts into the 6th St trough. Watch the north current!`;
       } else if (spotName.includes("North HB") || spotName.includes("Cliffs")) {
         headline = `"North HB: ${windInfo.type === 'offshore' ? 'Bluff-Groomed A-Frames!' : 'Peak Action Through 17th & Cliffs!'}"`;
-        waveRange = periodSec >= 13 ? "3–4+ FT" : "2–4 FT";
+        waveRange = periodSec >= 13 ? "3–4 FT" : "2–4 FT";
         spotWrap = `The 17th to Goldenwest stretch is holding peaky shapes, and the bluffs are providing great protection. Sweet little lefts running into the trough and rights wedging toward 17th!`;
       } else {
         headline = `"Bolsa Chica: ${windInfo.type === 'offshore' ? 'Glider Heaven in the Offshores!' : 'Wax the Log for Mellow Peelers!'}"`;
-        waveRange = "2–3+ FT";
+        waveRange = "2–3 FT";
         spotWrap = `Classic peeling rollers between Seapoint and the North Lot. It won't push your shortboard around, but if you've got a single fin or twin fin glider, conditions are righteous.`;
       }
 
@@ -1083,11 +1204,13 @@
       return { headline, waveRange, fullDispatch };
     }
 
-    // Full-Bleed Theater Live Cam Controls
+    // Full-Bleed Theater Live Cam Controls with Standby Fallback
     const theaterSection = document.getElementById('hero-theater-section');
     const theaterCamFrame = document.getElementById('theater-cam-frame');
     const theaterCamTitle = document.getElementById('theater-cam-title');
     const theaterExternalLink = document.getElementById('theater-external-link');
+    const standbyOverlay = document.getElementById('cam-standby-overlay');
+    const standbyLink = document.getElementById('cam-standby-link');
     const closeTheaterBtn = document.getElementById('close-theater-btn');
     const camToggleBtn = document.getElementById('hero-cam-toggle-btn');
     const heroPhotoTagBtn = document.getElementById('hero-photo-tag');
@@ -1096,9 +1219,21 @@
       const currentZone = ZONES[activeZoneIndex];
       if (!currentZone.camUrl) return;
 
-      theaterCamFrame.src = currentZone.camUrl;
       theaterCamTitle.innerText = `${currentZone.name} Live Stream`;
       theaterExternalLink.href = currentZone.camUrl;
+      standbyLink.href = currentZone.camUrl;
+
+      // Handle offline state for breaks with down cameras
+      const isOfflineCam = currentZone.name.includes("Pier");
+      if (isOfflineCam) {
+        standbyOverlay.classList.remove('hidden');
+        theaterCamFrame.classList.add('hidden');
+      } else {
+        standbyOverlay.classList.add('hidden');
+        theaterCamFrame.classList.remove('hidden');
+        theaterCamFrame.src = currentZone.camUrl;
+      }
+
       theaterSection.classList.remove('hidden');
       theaterSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       history.pushState({ camOpen: true }, "");
@@ -1204,7 +1339,6 @@
       reader.readAsDataURL(file);
     });
 
-    // Zones Render & Selection
     function renderZones() {
       const container = document.getElementById('zones-container');
       container.innerHTML = '';
@@ -1258,7 +1392,6 @@
       return matchIdx;
     }
 
-    // Display Hero: Handles latest report and Hero de-duplication
     function displayHeroForCurrentZone() {
       const currentZone = ZONES[activeZoneIndex];
       const spotName = currentZone.name;
@@ -1288,8 +1421,7 @@
         document.getElementById('hero-notes').innerText = `"${latestTodayDispatch.text}"`;
         document.getElementById('hero-author').innerText = latestTodayDispatch.author;
         document.getElementById('hero-logged-at').innerText = `${timeMeta.fullDate} (${timeMeta.relative})`;
-        document.getElementById('tag-shape').innerText = `Shape: Peaky Corners`;
-        document.getElementById('tag-wind').innerText = `Wind: ${liveTelemetrySnapshot.windKts}kt ${liveTelemetrySnapshot.windDir}`;
+        document.getElementById('tag-wind').innerText = `Wind: ${latestTodayDispatch.wind || 'Light'}`;
         document.getElementById('tag-tide').innerText = `Tide Window: ${currentZone.idealTide}`;
         heroAvatar.innerText = (latestTodayDispatch.author || "GT").substring(0, 2).toUpperCase();
 
@@ -1316,7 +1448,6 @@
         document.getElementById('hero-headline').innerText = figReport.headline;
         document.getElementById('hero-wave-size').innerText = figReport.waveRange;
         document.getElementById('hero-notes').innerText = figReport.fullDispatch;
-        document.getElementById('tag-shape').innerText = `Shape: ${currentZone.shape}`;
         document.getElementById('tag-wind').innerText = `Wind: ${liveTelemetrySnapshot.windKts}kt ${liveTelemetrySnapshot.windDir}`;
         document.getElementById('tag-tide').innerText = `Tide Window: ${currentZone.idealTide}`;
         document.getElementById('hero-author').innerText = "Rick 'Rockin Fig' Fignetti (Voice Engine)";
@@ -1325,7 +1456,7 @@
       }
     }
 
-    // Spot-Isolated Feed with Hero De-Duplication
+    // Spot-Isolated Feed with In-Feed Duplicate Pruning & Fig Placeholders
     function renderFeed(reports) {
       const container = document.getElementById('reports-feed');
       const countEl = document.getElementById('report-count');
@@ -1337,9 +1468,18 @@
 
       const latestHeroDispatch = getLatestTodayDispatchForSpot(currentActiveZone.name);
 
-      // 1. Spot Isolation: Filter to current break
-      // 2. Hero De-duplication: Exclude the report currently in the Hero card
-      const filteredReports = reports.filter(r => {
+      // In-feed duplicate pruning: filter out matching text/author reports within 2 mins
+      const prunedReports = [];
+      reports.forEach(rep => {
+        const isDuplicate = prunedReports.some(existing => 
+          existing.author === rep.author && 
+          existing.text === rep.text && 
+          Math.abs((existing.createdAt || 0) - (rep.createdAt || 0)) < 120000
+        );
+        if (!isDuplicate) prunedReports.push(rep);
+      });
+
+      const filteredReports = prunedReports.filter(r => {
         const matchesSpot = (r.spot === currentActiveZone.name || r.spot.includes(currentActiveZone.name) || currentActiveZone.name.includes(r.spot));
         if (!matchesSpot) return false;
         if (latestHeroDispatch && r.id === latestHeroDispatch.id) return false;
@@ -1366,14 +1506,26 @@
         const timeMeta = formatReportTimestamp(rep.createdAt);
         const isToday = isPostedToday(rep.createdAt);
 
-        let photoHtml = '';
+        let mediaHtml = '';
         if (rep.img) {
-          photoHtml = `
+          mediaHtml = `
             <div class="mt-3 rounded-xl overflow-hidden aspect-video bg-slate-950 border border-slate-800/80 cursor-pointer group relative feed-lightbox-trigger" data-img="${rep.img}" data-caption="${rep.spot} by ${rep.author}">
               <img src="${rep.img}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Report visual">
               <span class="absolute bottom-2 right-2 bg-black/75 text-cyan-400 font-mono-code text-[10px] px-2 py-0.5 rounded backdrop-blur-sm border border-white/10 flex items-center gap-1">
                 <span>🔍</span> Tap to Expand
               </span>
+            </div>
+          `;
+        } else {
+          // Randomized "Fig Says" card for posts without a photo
+          const quote = window.getFigNoPhotoQuote();
+          mediaHtml = `
+            <div class="mt-2.5 p-3 rounded-xl bg-amber-950/20 border border-amber-500/20 text-xs font-mono-code text-amber-300/90 flex items-start gap-2">
+              <span class="text-amber-400 font-bold">★</span>
+              <div>
+                <span class="font-bold text-amber-300">FIG SAYS:</span>
+                <p class="italic text-[11px] text-amber-200/80 mt-0.5 leading-snug">"${quote}"</p>
+              </div>
             </div>
           `;
         }
@@ -1392,19 +1544,22 @@
                 ${timeMeta.fullDate} <span class="text-cyan-400 font-semibold">(${timeMeta.relative})</span>
               </div>
             </div>
-            <span class="text-cyan-400 font-mono-code font-black text-sm bg-cyan-950/40 px-2.5 py-1 rounded border border-cyan-800/30">
-              ${rep.size}
-            </span>
+            <div class="text-right">
+              <span class="text-cyan-400 font-mono-code font-black text-sm bg-cyan-950/40 px-2.5 py-1 rounded border border-cyan-800/30">
+                ${rep.size}
+              </span>
+              <span class="block text-[10px] font-mono-code text-emerald-400 mt-1">${rep.wind || 'Light'}</span>
+            </div>
           </div>
 
           <p class="text-slate-300 text-sm leading-relaxed">${rep.text}</p>
-          ${photoHtml}
+          ${mediaHtml}
         `;
         container.appendChild(card);
       });
     }
 
-    // Cooldown Engine (3 Minutes lockout)
+    // Cooldown Engine (3 Minutes lockout with Fig Wisdom)
     window.checkCooldownState = function() {
       const lastPost = parseInt(localStorage.getItem('hb_last_post_time') || '0', 10);
       const now = Date.now();
@@ -1442,7 +1597,7 @@
       }
     };
 
-    // Real-Time Firebase Listeners (30-Day Hot Query Cap)
+    // Real-Time Firebase Listeners
     if (isFirebaseActive) {
       const q = query(collection(db, "reports"), orderBy("createdAt", "desc"), limit(40));
       onSnapshot(q, (snapshot) => {
@@ -1468,7 +1623,7 @@
       });
     }
 
-    // Submit Report Form Inside Modal
+    // Submit Report Form with Duplicate Prevention
     document.getElementById('surf-report-form').addEventListener('submit', async function(e) {
       e.preventDefault();
 
@@ -1483,16 +1638,28 @@
       }
 
       const reporterHandle = document.getElementById('reporter-name').value.trim();
+      const reportText = document.getElementById('report-text').value.trim();
+      const spotLocation = document.getElementById('spot-location').value;
       const nowMs = Date.now();
+
+      // Duplicate Check: compare with last stored post
+      const lastText = localStorage.getItem('hb_last_post_text');
+      const lastSpot = localStorage.getItem('hb_last_post_spot');
+      const lastTime = parseInt(localStorage.getItem('hb_last_post_time') || '0', 10);
+
+      if (lastText === reportText && lastSpot === spotLocation && (nowMs - lastTime) < 120000) {
+        errBox.innerText = "Fig says: 'Looks like you already logged this exact dispatch! Wait a bit before dropping another update.'";
+        errBox.classList.remove('hidden');
+        return;
+      }
 
       const newReport = {
         author: reporterHandle,
-        spot: document.getElementById('spot-location').value,
+        spot: spotLocation,
         size: document.getElementById('wave-height').value.trim(),
-        shape: "Peaky Corners",
-        wind: `${liveTelemetrySnapshot.windKts}kt ${liveTelemetrySnapshot.windDir}`,
+        wind: document.getElementById('observed-wind-val').value,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' PDT',
-        text: document.getElementById('report-text').value.trim(),
+        text: reportText,
         img: compressedPhotoBase64 || null,
         createdAt: nowMs
       };
@@ -1513,6 +1680,8 @@
 
           localStorage.setItem('hb_saved_handle', reporterHandle);
           localStorage.setItem('hb_last_post_time', nowMs.toString());
+          localStorage.setItem('hb_last_post_text', reportText);
+          localStorage.setItem('hb_last_post_spot', spotLocation);
 
           submitBtn.className = "w-full bg-emerald-500 text-slate-950 font-black py-3 px-4 rounded-xl text-xs sm:text-sm uppercase tracking-wider shadow-xl shadow-emerald-500/25";
           submitBtn.innerText = "✓ Dispatch Live On Feed!";
@@ -1520,6 +1689,8 @@
           setTimeout(() => {
             this.reset();
             compressedPhotoBase64 = null;
+            hasPlusSets = false;
+            document.getElementById('plus-set-toggle').className = "text-[11px] font-mono-code px-2 py-0.5 rounded border border-slate-700 bg-slate-900 text-slate-400 hover:border-cyan-400 transition flex items-center gap-1";
             document.getElementById('compression-status').innerText = "";
             window.closeModal('dispatch-modal');
             window.checkCooldownState();
@@ -1569,7 +1740,7 @@
           const shoalingFactor = Math.pow(Math.max(8, period) / 10, 0.6);
           const breakingMin = Math.max(1, Math.round(deepFt * shoalingFactor * 0.9));
           const breakingMax = Math.round(deepFt * shoalingFactor * 1.3);
-          const observedFaceString = `${breakingMin}–${breakingMax}+ FT`;
+          const observedFaceString = `${breakingMin}–${breakingMax} FT`;
 
           document.getElementById('tele-swell').innerText = `${observedFaceString} (${period}s)`;
           document.getElementById('modal-swell-deep').innerText = `${deepFt}ft (Deepwater)`;
@@ -1582,7 +1753,9 @@
 
         if (weatherRes.current) {
           const windKts = Math.round(weatherRes.current.wind_speed_10m * 0.539957);
+          const gustKts = Math.round((weatherRes.current.wind_gusts_10m || weatherRes.current.wind_speed_10m * 1.3) * 0.539957);
           const dirDeg = weatherRes.current.wind_direction_10m;
+          
           let compass = "W";
           if (dirDeg >= 337 || dirDeg < 23) compass = "N";
           else if (dirDeg >= 23 && dirDeg < 68) compass = "NE";
@@ -1594,41 +1767,26 @@
           else compass = "NW";
 
           liveTelemetrySnapshot.windKts = windKts;
+          liveTelemetrySnapshot.windGustKts = gustKts;
           liveTelemetrySnapshot.windDir = compass;
           liveTelemetrySnapshot.windDeg = dirDeg;
 
           document.getElementById('tele-wind').innerText = `${windKts}kt ${compass}`;
           document.getElementById('modal-wind-speed').innerText = `${windKts} kts`;
+          document.getElementById('modal-wind-gust').innerText = `${gustKts} kts`;
           document.getElementById('modal-wind-heading').innerText = `${compass} (${dirDeg}°)`;
-          document.getElementById('sync-time-wind').innerText = `Sensor Sync: Today, ${nowFormatted} · Nearshore Station`;
+          document.getElementById('sync-time-wind').innerText = `Sensor Sync: Today, ${nowFormatted}`;
 
           const windInfo = getWindClassification(dirDeg, windKts);
           document.getElementById('modal-wind-state').innerText = windInfo.desc;
 
-          // Render Animated Wind Vector Diagram
-          const svgArrows = document.getElementById('svg-wind-arrows');
-          const visualStatus = document.getElementById('wind-visual-status');
-          if (windInfo.type === 'offshore') {
-            visualStatus.innerText = `OFFSHORE: ${windKts}kt air blowing from land (right) out to sea (left). Groomed sandbars!`;
-            svgArrows.innerHTML = `
-              <line x1="220" y1="30" x2="100" y2="30" stroke="#10b981" stroke-width="3" marker-end="url(#arrow)" class="flow-arrow" />
-              <line x1="240" y1="60" x2="80" y2="60" stroke="#10b981" stroke-width="4" marker-end="url(#arrow)" class="flow-arrow" />
-              <line x1="220" y1="90" x2="100" y2="90" stroke="#10b981" stroke-width="3" marker-end="url(#arrow)" class="flow-arrow" />
-            `;
-          } else if (windInfo.type === 'glass') {
-            visualStatus.innerText = `GLASS: Whisper air (${windKts}kts). Grease-calm surface.`;
-            svgArrows.innerHTML = `<circle cx="160" cy="60" r="12" fill="none" stroke="#06b6d4" stroke-width="2" class="animate-ping" />`;
-          } else {
-            visualStatus.innerText = `ONSHORE: ${windKts}kt air pushing from ocean (left) onto sand (right). Bumpy texture.`;
-            svgArrows.innerHTML = `
-              <line x1="100" y1="30" x2="220" y2="30" stroke="#f59e0b" stroke-width="3" class="flow-arrow" />
-              <line x1="80" y1="60" x2="240" y2="60" stroke="#f59e0b" stroke-width="4" class="flow-arrow" />
-              <line x1="100" y1="90" x2="220" y2="90" stroke="#f59e0b" stroke-width="3" class="flow-arrow" />
-            `;
+          const needle = document.getElementById('dial-needle');
+          if (needle) {
+            needle.setAttribute('transform', `rotate(${dirDeg} 50 50)`);
           }
         }
 
-        // 1. Live Water Temp
+        // Live Water Temp
         try {
           const noaaWaterUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=latest&station=9410580&product=water_temperature&units=english&time_zone=lst_ldt&format=json${cacheBust}`;
           const noaaRes = await fetch(noaaWaterUrl).then(r => r.json());
@@ -1652,7 +1810,7 @@
           console.warn("Water temp fallback:", noaaErr);
         }
 
-        // 2. High-Accuracy Tide
+        // High-Accuracy Tide
         try {
           const tideUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=today&station=9410580&product=predictions&datum=MLLW&units=english&time_zone=lst_ldt&interval=h&format=json${cacheBust}`;
           const tideRes = await fetch(tideUrl).then(r => r.json());
@@ -1720,7 +1878,6 @@
     document.getElementById('refresh-telemetry-btn').addEventListener('click', fetchLiveOceanData);
     setInterval(fetchLiveOceanData, 60000);
 
-    // Initial Mobile Horizontal Scroll Nudge
     setTimeout(() => {
       const strip = document.getElementById('telemetry-scroll-strip');
       if (strip && window.innerWidth < 640) {
