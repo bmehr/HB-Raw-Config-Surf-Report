@@ -108,18 +108,48 @@
       font-size: 16px !important;
     }
 
-    /* Native CSS field-sizing prevents JS layout thrashing & keyboard dismissal on spellcheck tap */
     #report-text {
-      field-sizing: content;
-      min-height: 96px;
-      max-height: 220px;
-      resize: none;
-      font-size: 16px;
+      font-size: 16px !important;
       line-height: 1.5;
+      min-height: 84px;
+      max-height: 180px;
+      resize: vertical;
+      touch-action: manipulation;
     }
 
     .compass-ring {
       transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Old-school mercury tube slider */
+    .retro-temp-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: #1e293b;
+      outline: none;
+    }
+    .retro-temp-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #f59e0b;
+      border: 2px solid #ffffff;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+    }
+    .retro-temp-slider::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #f59e0b;
+      border: 2px solid #ffffff;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
     }
   </style>
 </head>
@@ -254,7 +284,6 @@
         </div>
 
         <div class="cam-theater-wrapper relative">
-          <!-- Standby Banner (Shown if Stream is Offline) -->
           <div id="cam-standby-overlay" class="absolute inset-0 bg-slate-950/95 flex flex-col items-center justify-center p-6 text-center z-10 space-y-3">
             <span class="text-3xl">📹</span>
             <h4 class="text-amber-400 font-mono-code font-bold text-sm tracking-wide">FIG SAYS: LIVE FEED STANDBY</h4>
@@ -301,7 +330,6 @@
         <!-- Media Container -->
         <div class="lg:col-span-5 relative bg-slate-950 min-h-[280px] sm:min-h-[320px] lg:min-h-full flex items-center justify-center overflow-hidden group">
           
-          <!-- Mode A: Community User Photo View -->
           <div id="hero-photo-wrapper" class="w-full h-full relative cursor-pointer min-h-[280px] hidden flex items-center">
             <img 
               id="hero-img" 
@@ -326,7 +354,6 @@
             </div>
           </div>
 
-          <!-- Mode B: Rockin' Fig Call-to-Action Placeholder Box -->
           <div id="hero-fig-cta-wrapper" class="w-full h-full min-h-[280px] p-6 sm:p-8 flex flex-col justify-between bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-950 border-r border-amber-500/20">
             <div class="space-y-3">
               <div class="flex items-center justify-between">
@@ -356,7 +383,7 @@
 
         </div>
 
-        <!-- Body: Clean, Focused Layout -->
+        <!-- Body: Clean, Focused Physical Layout -->
         <div class="lg:col-span-7 p-5 sm:p-7 flex flex-col justify-between space-y-5">
           <div class="space-y-4">
             
@@ -375,19 +402,16 @@
               </div>
             </div>
 
-            <!-- Tags -->
             <div class="flex flex-wrap gap-1.5 text-xs font-mono-code" id="hero-tags">
               <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-200 border border-slate-700" id="tag-wind">Wind: Light SSW Puff</span>
-              <span class="px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" id="tag-tide">Tide Window: +2.0ft to +4.0ft</span>
+              <span class="px-2.5 py-1 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30" id="tag-water">Water: NOAA Sensor Sync</span>
             </div>
 
-            <!-- Observation Text -->
             <p id="hero-notes" class="text-slate-300 text-xs sm:text-sm leading-relaxed italic bg-slate-900/60 p-3.5 rounded-xl border border-slate-800/80">
               "Howzit everybody, Rick 'Rockin Fig' here with your Surf City wire!"
             </p>
           </div>
 
-          <!-- Reporter Credit & Trigger -->
           <div class="pt-3.5 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2.5 text-xs text-slate-400 font-mono-code">
             <div class="flex items-center space-x-2">
               <div class="h-6 w-6 rounded-full bg-cyan-600 flex items-center justify-center font-bold text-white text-[10px]" id="hero-avatar">FIG</div>
@@ -427,10 +451,10 @@
   </main>
 
   <!-- ======================================================== -->
-  <!-- MODAL 1: OPTIMIZED DISPATCH DESK WITH TAP-CLEAR PENCIL -->
+  <!-- MODAL 1: OPTIMIZED DISPATCH DESK WITH RETRO THERMOMETER -->
   <!-- ======================================================== -->
   <div id="dispatch-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto custom-scrollbar">
-    <div class="glass-panel p-5 sm:p-6 rounded-t-3xl sm:rounded-2xl border border-cyan-500/50 w-full max-w-xl space-y-3.5 shadow-2xl relative my-auto">
+    <div id="dispatch-panel" class="glass-panel p-5 sm:p-6 rounded-t-3xl sm:rounded-2xl border border-cyan-500/50 w-full max-w-xl space-y-3.5 shadow-2xl relative my-auto">
       
       <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
         <div>
@@ -505,30 +529,30 @@
         <!-- Tap-Friendly Wave Size Selector + "+" Booster Toggle -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label class="text-slate-200 text-xs font-bold">Observed Size</label>
+            <label class="text-slate-200 text-xs font-bold">Observed Size <span class="text-slate-500 font-normal font-mono-code">(Optional)</span></label>
             <button type="button" id="plus-set-toggle" onclick="togglePlusSets()" class="text-[11px] font-mono-code px-2 py-0.5 rounded border border-slate-700 bg-slate-900 text-slate-400 hover:border-cyan-400 transition flex items-center gap-1">
               <span>+</span> Bigger Sets?
             </button>
           </div>
-          <input type="hidden" id="wave-base-height" value="3–4 FT">
-          <input type="hidden" id="wave-height" value="3–4 FT">
+          <input type="hidden" id="wave-base-height" value="">
+          <input type="hidden" id="wave-height" value="">
           <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 font-mono-code text-xs" id="wave-size-selector">
             <button type="button" onclick="selectWaveSize(this, '1–2 FT')" class="size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition">1–2 FT</button>
             <button type="button" onclick="selectWaveSize(this, '2–3 FT')" class="size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition">2–3 FT</button>
-            <button type="button" onclick="selectWaveSize(this, '3–4 FT')" class="size-btn py-2 rounded-lg bg-cyan-500 text-slate-950 font-bold border border-cyan-400 transition">3–4 FT</button>
+            <button type="button" onclick="selectWaveSize(this, '3–4 FT')" class="size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition">3–4 FT</button>
             <button type="button" onclick="selectWaveSize(this, '4–5 FT')" class="size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition">4–5 FT</button>
             <button type="button" onclick="selectWaveSize(this, '5–7 FT')" class="size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition">5–7 FT</button>
             <button type="button" onclick="selectWaveSize(this, '8FT+')" class="size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition">8FT+</button>
           </div>
         </div>
 
-        <!-- Restored Wind Condition Selector Chips -->
+        <!-- Wind Condition Selector Chips -->
         <div>
-          <label class="block text-slate-200 text-xs font-bold mb-1.5">Observed Wind / Surface</label>
-          <input type="hidden" id="observed-wind-val" value="Light">
+          <label class="block text-slate-200 text-xs font-bold mb-1.5">Observed Wind / Surface <span class="text-slate-500 font-normal font-mono-code">(Optional)</span></label>
+          <input type="hidden" id="observed-wind-val" value="">
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 font-mono-code text-xs" id="wind-state-selector">
             <button type="button" onclick="selectWindChip(this, 'None (Glass)')" class="wind-btn py-1.5 px-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-emerald-500 transition text-left truncate">None (Glass)</button>
-            <button type="button" onclick="selectWindChip(this, 'Light')" class="wind-btn py-1.5 px-2 rounded-lg bg-emerald-500 text-slate-950 font-bold border border-emerald-400 transition text-left truncate">Light</button>
+            <button type="button" onclick="selectWindChip(this, 'Light')" class="wind-btn py-1.5 px-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-emerald-500 transition text-left truncate">Light</button>
             <button type="button" onclick="selectWindChip(this, 'Mid')" class="wind-btn py-1.5 px-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-emerald-500 transition text-left truncate">Mid</button>
             <button type="button" onclick="selectWindChip(this, 'Heavy (White Caps)')" class="wind-btn py-1.5 px-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-emerald-500 transition text-left truncate">Heavy (White Caps)</button>
             <button type="button" onclick="selectWindChip(this, 'Light Offshore')" class="wind-btn py-1.5 px-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-emerald-500 transition text-left truncate">Light Offshore 💨</button>
@@ -536,14 +560,114 @@
           </div>
         </div>
 
-        <!-- Reality Notes Textarea with Native CSS Field-Sizing -->
-        <div>
-          <label class="block text-slate-200 text-xs font-bold mb-1">Reality Notes</label>
-          <textarea id="report-text" rows="3" required spellcheck="true" autocomplete="on" autocorrect="on" placeholder="How's the shape, crowd, or rip? What board are you riding?" class="w-full bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded-lg p-3 text-white focus:outline-none placeholder:text-slate-500 font-sans"></textarea>
+        <!-- Water Temperature Section (With Vintage Mercury Thermometer Slider) -->
+        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <label class="text-slate-200 text-xs font-bold flex items-center gap-1.5">
+              <span>Water Temperature</span>
+              <span id="temp-baseline-hint" class="text-[10px] text-amber-400 font-mono-code">(NOAA: ~68°)</span>
+            </label>
+            <!-- 3-Way Mode Switcher -->
+            <div class="flex rounded-lg bg-slate-950 p-0.5 border border-slate-800 font-mono-code text-[10px]">
+              <button type="button" id="tab-temp-none" onclick="setWaterTempMode('none')" class="px-2.5 py-1 rounded text-cyan-400 font-bold bg-slate-800">Skip</button>
+              <button type="button" id="tab-temp-gauge" onclick="setWaterTempMode('gauge')" class="px-2.5 py-1 rounded text-slate-400 hover:text-white">🌡️ Gauge</button>
+              <button type="button" id="tab-temp-feel" onclick="setWaterTempMode('feel')" class="px-2.5 py-1 rounded text-slate-400 hover:text-white">🏄‍♂️ Feel</button>
+            </div>
+          </div>
+
+          <input type="hidden" id="water-temp-mode" value="none">
+          <input type="hidden" id="water-temp-val" value="">
+
+          <!-- VINTAGE MERCURY THERMOMETER GAUGE SLIDER -->
+          <div id="temp-gauge-container" class="hidden space-y-3 pt-1">
+            <div class="bg-slate-950/80 rounded-xl p-3 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
+              
+              <!-- Retro Glass Mercury Tube Visualizer -->
+              <div class="flex items-center gap-3">
+                <div class="relative w-7 h-24 bg-slate-900 rounded-full border-2 border-slate-700 flex flex-col justify-end items-center p-1 overflow-hidden shadow-inner">
+                  <!-- Glass Reflection Highlights -->
+                  <div class="absolute left-1 top-2 bottom-2 w-1 bg-white/20 rounded-full pointer-events-none"></div>
+                  <!-- Liquid Column -->
+                  <div id="mercury-column" class="w-2.5 bg-gradient-to-t from-rose-600 via-rose-500 to-amber-400 rounded-full transition-all duration-150" style="height: 65%;"></div>
+                  <!-- Mercury Bulb -->
+                  <div class="w-4 h-4 rounded-full bg-rose-600 mt-0.5 shadow-lg shadow-rose-600/50 flex-shrink-0"></div>
+                </div>
+
+                <!-- Degree Readout Block -->
+                <div>
+                  <span class="text-[10px] text-slate-400 font-mono-code uppercase block">Observed Reading:</span>
+                  <div class="flex items-baseline gap-1 mt-0.5">
+                    <span id="slider-temp-display" class="text-3xl font-black font-mono-code text-amber-300">68.0</span>
+                    <span class="text-base font-bold font-mono-code text-amber-400">°F</span>
+                  </div>
+                  <span class="text-[10px] text-emerald-400 font-mono-code">★ Hardware Gauge Verified</span>
+                </div>
+              </div>
+
+              <!-- Interactive Slider & Micro-Nudge Controls -->
+              <div class="flex-1 w-full space-y-2">
+                <div class="flex items-center justify-between text-[10px] font-mono-code text-slate-400">
+                  <span>50°F (Winter)</span>
+                  <span class="text-amber-400 font-bold">Slide to Set ◀</span>
+                  <span>78°F (Summer)</span>
+                </div>
+
+                <input 
+                  type="range" 
+                  id="retro-mercury-range" 
+                  min="50" 
+                  max="78" 
+                  step="0.1" 
+                  value="68.0" 
+                  class="retro-temp-slider cursor-pointer"
+                  oninput="updateMercuryFromSlider(this.value)"
+                >
+
+                <!-- Micro-Nudge Buttons -->
+                <div class="flex items-center justify-end gap-1.5 pt-1">
+                  <button type="button" onclick="nudgeMercury(-0.1)" class="px-2 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded text-slate-300 font-mono-code text-xs active:scale-95 transition">
+                    –0.1°
+                  </button>
+                  <button type="button" onclick="nudgeMercury(0.1)" class="px-2 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded text-slate-300 font-mono-code text-xs active:scale-95 transition">
+                    +0.1°
+                  </button>
+                  <button type="button" onclick="resetMercuryToBaseline()" class="px-2 py-1 bg-slate-900 hover:bg-slate-800 border border-amber-500/30 rounded text-amber-300 font-mono-code text-[11px] active:scale-95 transition">
+                    Sync NOAA
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Feel Mode Container with Refined Rubber Labels -->
+          <div id="temp-feel-container" class="hidden space-y-1.5 pt-1">
+            <span class="text-[10px] text-slate-400 font-mono-code block">How did it feel in the lineup?</span>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 font-mono-code text-[11px]">
+              <button type="button" onclick="selectFeelChip(this, 'Cold (4/3mm)')" class="feel-btn py-2 px-2.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-cyan-400 transition text-center font-bold">Cold (4/3mm)</button>
+              <button type="button" onclick="selectFeelChip(this, 'Chilly (3/2mm)')" class="feel-btn py-2 px-2.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-cyan-400 transition text-center font-bold">Chilly (3/2mm)</button>
+              <button type="button" onclick="selectFeelChip(this, 'Pleasant (Spring)')" class="feel-btn py-2 px-2.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-cyan-400 transition text-center font-bold">Pleasant (Spring)</button>
+              <button type="button" onclick="selectFeelChip(this, 'Warm (Trunks)')" class="feel-btn py-2 px-2.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-cyan-400 transition text-center font-bold">Warm (Trunks)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reality Notes Textarea -->
+        <div class="relative">
+          <label class="block text-slate-200 text-xs font-bold mb-1">Reality Notes <span class="text-slate-500 font-normal font-mono-code">(Optional)</span></label>
+          <textarea 
+            id="report-text" 
+            rows="3" 
+            spellcheck="true" 
+            autocomplete="on" 
+            autocorrect="on" 
+            placeholder="How's the shape, crowd, or rip? What board are you riding?" 
+            class="w-full bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded-lg p-3 text-white focus:outline-none placeholder:text-slate-500 font-sans"
+          ></textarea>
         </div>
 
         <!-- Prominent Photo Upload Card -->
-        <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800 hover:border-cyan-500/40 transition">
+        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 hover:border-cyan-500/40 transition">
           <label class="block text-white text-xs font-bold mb-1">📷 Snap a shore photo or share from gallery (Optional)</label>
           <input type="file" id="report-photo-input" accept="image/*,.heic,.heif" class="w-full text-slate-400 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-mono-code file:bg-cyan-500 file:text-slate-950 file:font-bold hover:file:bg-cyan-400 cursor-pointer text-xs">
           <p id="compression-status" class="text-[11px] text-cyan-400 mt-1 italic"></p>
@@ -868,7 +992,6 @@
       openModal('install-modal');
     };
 
-    // Clean Share Link with Updated Inclusive Copy
     window.shareInviteLink = function() {
       const inviteText = "Passing you the HB Raw Config Surf wire, built in honor of Rockin' Fig. Just raw buoy telemetry and ground-truth dispatches from the sand. You’re getting this because I know you actually surf, or you hang out at the beach and you get it—keep it tight and drop an update next time you're on the sand.";
       const currentUrl = window.location.href;
@@ -918,7 +1041,6 @@
       }
     };
 
-    // Tap Pencil to Clear and Focus for Custom Typing
     window.clearAndFocusHandle = function() {
       const nameInput = document.getElementById('reporter-name');
       if (nameInput) {
@@ -955,6 +1077,13 @@
     let hasPlusSets = false;
 
     window.selectWaveSize = function(btn, sizeVal) {
+      const current = document.getElementById('wave-base-height').value;
+      if (current === sizeVal) {
+        document.getElementById('wave-base-height').value = '';
+        document.getElementById('wave-height').value = '';
+        btn.className = "size-btn py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 font-bold hover:border-cyan-500 transition";
+        return;
+      }
       document.getElementById('wave-base-height').value = sizeVal;
       applyWaveSizeValue();
       document.querySelectorAll('#wave-size-selector .size-btn').forEach(b => {
@@ -976,16 +1105,97 @@
 
     function applyWaveSizeValue() {
       const base = document.getElementById('wave-base-height').value;
+      if (!base) {
+        document.getElementById('wave-height').value = '';
+        return;
+      }
       const finalVal = (hasPlusSets && !base.includes('+')) ? base.replace(' FT', '+ FT') : base;
       document.getElementById('wave-height').value = finalVal;
     }
 
     window.selectWindChip = function(btn, windVal) {
+      const current = document.getElementById('observed-wind-val').value;
+      if (current === windVal) {
+        document.getElementById('observed-wind-val').value = '';
+        btn.className = "wind-btn py-1.5 px-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-emerald-500 transition text-left truncate";
+        return;
+      }
       document.getElementById('observed-wind-val').value = windVal;
       document.querySelectorAll('#wind-state-selector .wind-btn').forEach(b => {
         b.className = "wind-btn py-1.5 px-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-emerald-500 transition text-left truncate";
       });
       btn.className = "wind-btn py-1.5 px-2 rounded-lg bg-emerald-500 text-slate-950 font-bold border border-emerald-400 transition text-left truncate";
+    };
+
+    // Retro Mercury Thermometer Slider Logic
+    window.setWaterTempMode = function(mode) {
+      document.getElementById('water-temp-mode').value = mode;
+
+      const tabNone = document.getElementById('tab-temp-none');
+      const tabGauge = document.getElementById('tab-temp-gauge');
+      const tabFeel = document.getElementById('tab-temp-feel');
+      const gaugeCont = document.getElementById('temp-gauge-container');
+      const feelCont = document.getElementById('temp-feel-container');
+
+      [tabNone, tabGauge, tabFeel].forEach(t => {
+        t.className = "px-2.5 py-1 rounded text-slate-400 hover:text-white";
+      });
+
+      if (mode === 'gauge') {
+        tabGauge.className = "px-2.5 py-1 rounded text-amber-300 font-bold bg-amber-500/20";
+        gaugeCont.classList.remove('hidden');
+        feelCont.classList.add('hidden');
+        resetMercuryToBaseline();
+      } else if (mode === 'feel') {
+        tabFeel.className = "px-2.5 py-1 rounded text-sky-300 font-bold bg-sky-500/20";
+        gaugeCont.classList.add('hidden');
+        feelCont.classList.remove('hidden');
+        document.getElementById('water-temp-val').value = '';
+      } else {
+        tabNone.className = "px-2.5 py-1 rounded text-cyan-400 font-bold bg-slate-800";
+        gaugeCont.classList.add('hidden');
+        feelCont.classList.add('hidden');
+        document.getElementById('water-temp-val').value = '';
+      }
+    };
+
+    window.updateMercuryFromSlider = function(val) {
+      const floatVal = parseFloat(val);
+      const formatted = floatVal.toFixed(1);
+      document.getElementById('slider-temp-display').innerText = formatted;
+      document.getElementById('water-temp-val').value = `${formatted}°F`;
+
+      // Map 50°F - 78°F to 10% - 92% mercury column height
+      const pct = Math.max(10, Math.min(92, Math.round(((floatVal - 50) / 28) * 82 + 10)));
+      const mercuryCol = document.getElementById('mercury-column');
+      if (mercuryCol) mercuryCol.style.height = `${pct}%`;
+    };
+
+    window.nudgeMercury = function(delta) {
+      const slider = document.getElementById('retro-mercury-range');
+      if (slider) {
+        let cur = parseFloat(slider.value) || 68.0;
+        cur = Math.max(50, Math.min(78, cur + delta));
+        slider.value = cur.toFixed(1);
+        window.updateMercuryFromSlider(slider.value);
+      }
+    };
+
+    window.resetMercuryToBaseline = function() {
+      const baseTemp = (window.liveWaterTempBaseline || 68).toFixed(1);
+      const slider = document.getElementById('retro-mercury-range');
+      if (slider) {
+        slider.value = baseTemp;
+        window.updateMercuryFromSlider(baseTemp);
+      }
+    };
+
+    window.selectFeelChip = function(btn, feelVal) {
+      document.getElementById('water-temp-val').value = feelVal;
+      document.querySelectorAll('#temp-feel-container .feel-btn').forEach(b => {
+        b.className = "feel-btn py-2 px-2.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-cyan-400 transition text-center font-bold";
+      });
+      btn.className = "feel-btn py-2 px-2.5 rounded-lg bg-sky-400 text-slate-950 font-bold border border-sky-300 transition text-center font-bold";
     };
 
     window.openDispatchModal = function(defaultSpot) {
@@ -1007,9 +1217,31 @@
         }
       }
 
+      const baseTemp = window.liveWaterTempBaseline || 68;
+      const hint = document.getElementById('temp-baseline-hint');
+      if (hint) hint.innerText = `(NOAA: ~${baseTemp}°)`;
+
       if (window.checkCooldownState) window.checkCooldownState();
       openModal('dispatch-modal');
     };
+
+    const notesTextarea = document.getElementById('report-text');
+    if (notesTextarea) {
+      ['touchstart', 'pointerdown', 'click'].forEach(evt => {
+        notesTextarea.addEventListener(evt, (e) => {
+          e.stopPropagation();
+        }, { passive: true });
+      });
+    }
+
+    const modalInnerPanel = document.getElementById('dispatch-panel');
+    if (modalInnerPanel) {
+      ['touchstart', 'pointerdown', 'click'].forEach(evt => {
+        modalInnerPanel.addEventListener(evt, (e) => {
+          e.stopPropagation();
+        });
+      });
+    }
   </script>
 
   <!-- Firebase Modular SDK & Core Application Script -->
@@ -1064,6 +1296,7 @@
       tideLevel: 2.6,
       tideTrend: "Rising"
     };
+    window.liveWaterTempBaseline = 68;
 
     window.ZONES = [
       {
@@ -1072,7 +1305,6 @@
         shortName: "South HB",
         subDesc: "State Beach, Brookhurst & River Jetties",
         size: "3–5 FT",
-        idealTide: "Low to Mid Incoming (1.0–3.0ft)",
         shape: "Steep Wedges & Dredging Peaks",
         camUrl: null
       },
@@ -1082,7 +1314,6 @@
         shortName: "The Pier",
         subDesc: "North Side Bowl & South Side Wedge",
         size: "3–4 FT",
-        idealTide: "Mid to High (2.0–4.0ft)",
         shape: "Steep Wedges & Rip",
         camUrl: "https://hbcams.com/webcams-huntington-beach-south-of-pier/"
       },
@@ -1092,7 +1323,6 @@
         shortName: "North HB",
         subDesc: "Streets North, Goldenwest & Cliffs",
         size: "3–4 FT",
-        idealTide: "All Tides (+1.5ft to +3.5ft optimal)",
         shape: "Peaky A-Frames",
         camUrl: "https://hbcams.com/webcams-huntington-beach-north-of-pier/"
       },
@@ -1102,7 +1332,6 @@
         shortName: "Bolsa Chica",
         subDesc: "Seapoint Area to North Lot",
         size: "2–3 FT",
-        idealTide: "Low to Mid (+0.8ft to +2.5ft)",
         shape: "Mellow Longboard Rollers",
         camUrl: null
       }
@@ -1183,16 +1412,6 @@
         swellText = `A solid mid-period ${periodSec}s pulse is spacing out the sets nicely with good recovery time between waves.`;
       }
 
-      let tideText = "";
-      const numTide = parseFloat(tideLevel);
-      if (numTide >= 4.0) {
-        tideText = `Tide is pushed way up at ${tideLevel}ft, so expect some deep-water bogging until the tide begins to drain.`;
-      } else if (numTide <= 1.5) {
-        tideText = `Tide is pulled right off the bars at a low ${tideLevel}ft, so watch out for fast pitching closeouts and shallow sandbars!`;
-      } else {
-        tideText = `Tide is in the sweet spot at ${tideLevel}ft ${tideTrend}, cushioning the drop without drowning out the shape.`;
-      }
-
       let spotWrap = "";
       let headline = "";
       let waveRange = "";
@@ -1215,7 +1434,7 @@
         spotWrap = `Classic peeling rollers between Seapoint and the North Lot. It won't push your shortboard around, but if you've got a single fin or twin fin glider, conditions are righteous.`;
       }
 
-      const fullDispatch = `"Howzit Surf City! Rick 'Rockin Fig' here with your live wire! ${windText} ${swellText} ${tideText} ${spotWrap}"`;
+      const fullDispatch = `"Howzit Surf City! Rick 'Rockin Fig' here with your live wire! ${windText} ${swellText} ${spotWrap}"`;
 
       return { headline, waveRange, fullDispatch };
     }
@@ -1339,7 +1558,7 @@
 
             compressedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.65);
             const sizeKb = Math.round((compressedPhotoBase64.length * 3 / 4) / 1024);
-            statusEl.innerText = `✓ Ready (${sizeKb} KB - Tap to view full size)`;
+            statusEl.innerText = `✓ Ready (${sizeKb} KB - Photo attached)`;
           } catch(err) {
             console.error("Canvas error:", err);
             compressedPhotoBase64 = null;
@@ -1430,12 +1649,22 @@
         document.getElementById('hero-badge-title').innerText = "Latest Shore Dispatch (Today)";
         document.getElementById('hero-zone-name').innerText = latestTodayDispatch.spot;
         document.getElementById('hero-headline').innerText = `${latestTodayDispatch.spot} — Ground Truth Wire`;
-        document.getElementById('hero-wave-size').innerText = latestTodayDispatch.size;
-        document.getElementById('hero-notes').innerText = `"${latestTodayDispatch.text}"`;
+        document.getElementById('hero-wave-size').innerText = latestTodayDispatch.size || currentZone.size;
+        document.getElementById('hero-notes').innerText = latestTodayDispatch.text ? `"${latestTodayDispatch.text}"` : '"Field dispatch logged from the sand."';
         document.getElementById('hero-author').innerText = latestTodayDispatch.author;
         document.getElementById('hero-logged-at').innerText = `${timeMeta.fullDate} (${timeMeta.relative})`;
-        document.getElementById('tag-wind').innerText = `Wind: ${latestTodayDispatch.wind || 'Light'}`;
-        document.getElementById('tag-tide').innerText = `Tide Window: ${currentZone.idealTide}`;
+        document.getElementById('tag-wind').innerText = `Wind: ${latestTodayDispatch.wind || 'Unchecked'}`;
+
+        const waterTag = document.getElementById('tag-water');
+        if (latestTodayDispatch.waterTemp) {
+          waterTag.innerText = latestTodayDispatch.waterType === 'gauge' 
+            ? `Water: 🌡️ ${latestTodayDispatch.waterTemp} (Gauge)` 
+            : `Water: 🏄‍♂️ ${latestTodayDispatch.waterTemp}`;
+          waterTag.classList.remove('hidden');
+        } else {
+          waterTag.innerText = `Water: ~${liveTelemetrySnapshot.waterTemp}°F (NOAA)`;
+        }
+
         heroAvatar.innerText = (latestTodayDispatch.author || "GT").substring(0, 2).toUpperCase();
 
         if (latestTodayDispatch.img) {
@@ -1462,7 +1691,7 @@
         document.getElementById('hero-wave-size').innerText = figReport.waveRange;
         document.getElementById('hero-notes').innerText = figReport.fullDispatch;
         document.getElementById('tag-wind').innerText = `Wind: ${liveTelemetrySnapshot.windKts}kt ${liveTelemetrySnapshot.windDir}`;
-        document.getElementById('tag-tide').innerText = `Tide Window: ${currentZone.idealTide}`;
+        document.getElementById('tag-water').innerText = `Water: ~${liveTelemetrySnapshot.waterTemp}°F (NOAA Sensor)`;
         document.getElementById('hero-author').innerText = "Rick 'Rockin Fig' Fignetti (Voice Engine)";
         document.getElementById('hero-logged-at').innerText = "Telemetry Synthesized Wire";
         heroAvatar.innerText = "FIG";
@@ -1527,6 +1756,8 @@
               </span>
             </div>
           `;
+        } else if (!rep.text && (rep.size || rep.waterTemp)) {
+          mediaHtml = '';
         } else {
           const quote = window.getFigNoPhotoQuote();
           mediaHtml = `
@@ -1538,6 +1769,15 @@
               </div>
             </div>
           `;
+        }
+
+        let waterBadge = '';
+        if (rep.waterTemp) {
+          if (rep.waterType === 'gauge') {
+            waterBadge = `<span class="inline-block text-[10px] font-mono-code font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 mt-1">🌡️ ${rep.waterTemp} (Gauge Verified)</span>`;
+          } else {
+            waterBadge = `<span class="inline-block text-[10px] font-mono-code px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/30 mt-1">🏄‍♂️ ${rep.waterTemp}</span>`;
+          }
         }
 
         card.innerHTML = `
@@ -1553,16 +1793,15 @@
               <div class="text-[11px] text-slate-400 font-mono-code mt-0.5">
                 ${timeMeta.fullDate} <span class="text-cyan-400 font-semibold">(${timeMeta.relative})</span>
               </div>
+              ${waterBadge ? `<div>${waterBadge}</div>` : ''}
             </div>
             <div class="text-right">
-              <span class="text-cyan-400 font-mono-code font-black text-sm bg-cyan-950/40 px-2.5 py-1 rounded border border-cyan-800/30">
-                ${rep.size}
-              </span>
-              <span class="block text-[10px] font-mono-code text-emerald-400 mt-1">${rep.wind || 'Light'}</span>
+              ${rep.size ? `<span class="text-cyan-400 font-mono-code font-black text-sm bg-cyan-950/40 px-2.5 py-1 rounded border border-cyan-800/30">${rep.size}</span>` : ''}
+              ${rep.wind ? `<span class="block text-[10px] font-mono-code text-emerald-400 mt-1">${rep.wind}</span>` : ''}
             </div>
           </div>
 
-          <p class="text-slate-300 text-sm leading-relaxed">${rep.text}</p>
+          ${rep.text ? `<p class="text-slate-300 text-sm leading-relaxed">${rep.text}</p>` : ''}
           ${mediaHtml}
         `;
         container.appendChild(card);
@@ -1647,14 +1886,17 @@
       const reporterHandle = document.getElementById('reporter-name').value.trim();
       const reportText = document.getElementById('report-text').value.trim();
       const spotLocation = document.getElementById('spot-location').value;
+      const waveSize = document.getElementById('wave-height').value.trim();
+      const observedWind = document.getElementById('observed-wind-val').value;
+      const waterMode = document.getElementById('water-temp-mode').value;
+      const waterVal = document.getElementById('water-temp-val').value;
+      const hasPhoto = Boolean(compressedPhotoBase64);
       const nowMs = Date.now();
 
-      const lastText = localStorage.getItem('hb_last_post_text');
-      const lastSpot = localStorage.getItem('hb_last_post_spot');
-      const lastTime = parseInt(localStorage.getItem('hb_last_post_time') || '0', 10);
+      const hasAnyObservation = Boolean(waveSize || observedWind || (waterMode !== 'none' && waterVal) || reportText || hasPhoto);
 
-      if (lastText === reportText && lastSpot === spotLocation && (nowMs - lastTime) < 120000) {
-        errBox.innerText = "Fig says: 'Looks like you already logged this exact dispatch! Wait a bit before dropping another update.'";
+      if (!hasAnyObservation) {
+        errBox.innerText = "Fig says: 'Drop at least one quick read from the sand—a wave height, wind check, water temp, photo, or a quick note!'";
         errBox.classList.remove('hidden');
         return;
       }
@@ -1662,10 +1904,13 @@
       const newReport = {
         author: reporterHandle,
         spot: spotLocation,
-        size: document.getElementById('wave-height').value.trim(),
-        wind: document.getElementById('observed-wind-val').value,
+        size: waveSize || null,
+        wind: observedWind || null,
+        waterTemp: (waterMode !== 'none' && waterVal) ? waterVal : null,
+        waterType: (waterMode !== 'none' && waterVal) ? waterMode : null,
+        waterBaseline: (waterMode !== 'none' && waterVal) ? window.liveWaterTempBaseline : null,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' PDT',
-        text: reportText,
+        text: reportText || "",
         img: compressedPhotoBase64 || null,
         createdAt: nowMs
       };
@@ -1696,6 +1941,7 @@
             this.reset();
             compressedPhotoBase64 = null;
             hasPlusSets = false;
+            window.setWaterTempMode('none');
             document.getElementById('plus-set-toggle').className = "text-[11px] font-mono-code px-2 py-0.5 rounded border border-slate-700 bg-slate-900 text-slate-400 hover:border-cyan-400 transition flex items-center gap-1";
             document.getElementById('compression-status').innerText = "";
             window.closeModal('dispatch-modal');
@@ -1802,6 +2048,7 @@
           }
 
           liveTelemetrySnapshot.waterTemp = waterTempF;
+          window.liveWaterTempBaseline = waterTempF;
           document.getElementById('tele-water').innerText = `${waterTempF}°F`;
           document.getElementById('modal-water-temp').innerText = `${waterTempF}°F`;
           document.getElementById('sync-time-water').innerText = `Sensor Sync: Today, ${nowFormatted} · Newport Gauge`;
